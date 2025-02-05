@@ -12,6 +12,7 @@ import {
 } from "../ui/sheet";
 import { usePathname } from "next/navigation";
 import { ModeToggle } from "../ui/mode-toggle";
+import { signOut } from "next-auth/react";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -32,9 +33,7 @@ export default function Navbar() {
 
         {/* Desktop Links */}
         <div className="hidden place-items-center md:flex space-x-6">
-          <a>About</a>
-          <a>Services</a>
-          <a>Contact</a>
+          <div onClick={() => signOut()}> Log Out </div>
           <div className="">
             <ModeToggle />
           </div>
@@ -58,25 +57,7 @@ export default function Navbar() {
                 className="text-gray-600 hover:text-gray-800"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Home
-              </a>
-              <a
-                className="text-gray-600 hover:text-gray-800"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                About
-              </a>
-              <a
-                className="text-gray-600 hover:text-gray-800"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Services
-              </a>
-              <a
-                className="text-gray-600 hover:text-gray-800"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Contact
+                Log Out / Salir
               </a>
             </div>
           </SheetContent>
