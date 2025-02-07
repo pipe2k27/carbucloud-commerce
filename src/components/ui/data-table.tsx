@@ -132,7 +132,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Sin Resultados o productos agregados
                 </TableCell>
               </TableRow>
             )}

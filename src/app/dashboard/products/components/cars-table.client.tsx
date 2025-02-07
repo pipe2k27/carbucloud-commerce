@@ -2,7 +2,6 @@
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import {
-  Car,
   MoreHorizontal,
   PauseCircle,
   Clock,
@@ -11,24 +10,11 @@ import {
   ChevronDown,
 } from "lucide-react";
 import CarHoverImage from "./car-hover-image";
-import {} from "lucide-react";
 import { useAtomValue } from "jotai";
 import { carsAtom } from "@/jotai/cars-atom.jotai";
+import { Car, CarStatusType } from "@/dynamo-db/cars";
 
 // Define the data type for the used cars
-export type Car = {
-  id: string;
-  brand: string;
-  model: string;
-  year: number;
-  transmission: "Automatica" | "Manual";
-  type: "SUV" | "Sedan" | "Pick-Up" | "Hatchback" | "Coupe";
-  price: number;
-  imageUrl: string;
-  status?: CarStatusType;
-};
-
-export type CarStatusType = "available" | "reserved" | "sold" | "paused";
 
 interface StatusBadgeProps {
   status: CarStatusType;
@@ -118,7 +104,7 @@ export const columns: ColumnDef<Car>[] = [
     size: 10, // 15% of the table width
   },
   {
-    accessorKey: "type",
+    accessorKey: "carType",
     header: "Tipo",
     size: 10, // 15% of the table width
   },
@@ -151,11 +137,13 @@ export const columns: ColumnDef<Car>[] = [
 // Mock data for 20 cars
 
 // Component to render the table
-export default function CarsTable() {
+export default function CarsTable({ cars }: { cars: Car[] }) {
   const { filteredCars } = useAtomValue(carsAtom);
+
+  console.log("Cars", cars);
   return (
     <div className="container py-10" suppressHydrationWarning>
-      <DataTable columns={columns} data={filteredCars} />
+      <DataTable columns={columns} data={cars} />
     </div>
   );
 }

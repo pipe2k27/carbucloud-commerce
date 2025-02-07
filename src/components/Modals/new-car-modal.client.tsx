@@ -16,12 +16,14 @@ import {
   transmisionTypes,
 } from "@/constants/car-constants";
 import { addOneCarToAtom } from "@/jotai/cars-atom.jotai";
+import { FormCar } from "@/dynamo-db/cars";
+import { createCarAction } from "@/service/actions/cars.actions";
 
 const NewCarModal = () => {
   const [section, setCurrentSection] = useState<1 | 2>(1);
   const [currentImage, setCurrentImage] = useState<number>(1);
 
-  const defaultValues = {
+  const defaultValues: FormCar = {
     brand: "",
     model: "",
     year: "",
@@ -29,23 +31,39 @@ const NewCarModal = () => {
     transmission: "",
     engine: "",
     currency: "",
-    price: "",
+    price: 0,
     description: "",
     internalNotes: "",
+    km: 0,
+    status: "available",
   };
 
-  const { control, handleSubmit } = useForm<any>({
+  const { control, handleSubmit } = useForm<FormCar>({
     defaultValues,
   });
 
-  const onSubmit = (data: any) => {
-    addOneCarToAtom({
+  const onSubmit = async (data: FormCar) => {
+    const newCar: FormCar = {
       ...data,
       status: "available",
       price: Number(data.price),
       km: Number(data.km),
-    });
+    };
+
+    console.log(newCar);
+
+    addOneCarToAtom(newCar);
     setCurrentSection(2);
+    try {
+      const data = await createCarAction(newCar);
+      if (data.status === 200) {
+        alert("Auto creado con éxito");
+      } else {
+        alert("Error");
+      }
+    } catch {
+      alert("Error");
+    }
   };
 
   const handleNext = () => {
@@ -97,7 +115,7 @@ const NewCarModal = () => {
               required: true,
             },
             {
-              name: "type",
+              name: "carType",
               label: "Tipo de Vehículo",
               type: "options",
               required: true,

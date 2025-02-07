@@ -52,3 +52,30 @@ export async function getOrCreateUser(data: {
     return { status: 500, message: "an error ocurred please try again" };
   }
 }
+
+export async function getUser(data: { userId: string }) {
+  const tableName = "users";
+
+  console.log(process.env.AWS_SECRET_ACCESS_KEY);
+
+  try {
+    // Step 1: Check if the object exists
+    const getCommand = new GetCommand({
+      TableName: tableName,
+      Key: { userId: data.userId }, // Use the unique key to search
+    });
+
+    const { Item } = await dynamoDbClient.send(getCommand);
+
+    if (!Item) {
+      return { status: 400, message: "user not found" };
+    }
+
+    if (Item) {
+      return { status: 200, data: Item };
+    }
+  } catch (error) {
+    console.error("DynamoDB Error:", error);
+    return { status: 500, message: "an error ocurred please try again" };
+  }
+}
