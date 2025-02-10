@@ -59,12 +59,12 @@ const CarHoverImage: React.FC<HoverCarProps> = ({ imageUrl }) => {
             onMouseEnter={(e) => setIsHovered(false)}
             style={{
               transition: "all 0.1s ease-in",
-              top: position?.y ? position.y - 230 : 100, // Offset by 10px below the mouse
+              top: position?.y ? position.y - 248 : 100, // Offset by 10px below the mouse
               left: position?.x ? position.x - 130 : 100,
               borderWidth: 2,
             }}
             className={cn(
-              "fixed z-50 mt-2 w-[260px] rounded-2xl border border-gray-200 bg-gray-200 shadow-lg",
+              "fixed z-50 mt-2 w-[220px] h-[220px] rounded-2xl border border-gray-200 bg-gray-200 shadow-lg",
               `${
                 isVisible
                   ? "opacity-100 translate-y-0 scale-100"
@@ -75,7 +75,7 @@ const CarHoverImage: React.FC<HoverCarProps> = ({ imageUrl }) => {
             <img
               src={imageUrl}
               alt="Car Preview"
-              className="rounded-2xl object-cover w-full h-auto"
+              className="rounded-2xl object-cover w-full h-full"
             />
           </div>
         </Portal>

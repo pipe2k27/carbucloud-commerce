@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/Providers/theme-provider.client";
 import Navbar from "@/components/Navbar/navbar.client";
 import { CommonComponentsProvider } from "@/components/Providers/common-components-provider.client";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -27,6 +28,7 @@ export default function RootLayout({
         >
           <Navbar />
           {children}
+          <Toaster />
           <CommonComponentsProvider />
         </ThemeProvider>
       </body>

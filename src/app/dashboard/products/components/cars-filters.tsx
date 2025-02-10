@@ -2,8 +2,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAtomValue } from "jotai";
 import { Metadata } from "next";
-import { Car } from "./cars-table.client";
 import { carsAtom, setCarsState } from "@/jotai/cars-atom.jotai";
+import { Car } from "@/dynamo-db/cars.db";
 
 export const metadata: Metadata = {
   title: "Dashboard",

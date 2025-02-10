@@ -1,8 +1,8 @@
+import { errorObject } from "@/constants/api-constants";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   GetCommand,
   PutCommand,
-  UpdateCommand,
   DeleteCommand,
   QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
@@ -22,6 +22,7 @@ export type FormCar = {
   internalNotes: string;
   km: number;
   status: CarStatusType;
+  mainImageUrl?: string;
 };
 
 export type Car = FormCar & {
@@ -136,5 +137,31 @@ export async function getCarsByCompanyId(companyId: string): Promise<any> {
   } catch (error) {
     console.error("[getCarsByCompanyId] Error:", error);
     return { status: 500, message: "An error occurred while retrieving cars" };
+  }
+}
+
+export async function getCar(
+  companyId: string,
+  productId: string
+): Promise<any> {
+  try {
+    const getCommand = new GetCommand({
+      TableName: TABLE_NAME,
+      Key: {
+        companyId, // Partition Key
+        productId, // Sort Key
+      },
+    });
+
+    const response = await dynamoDbClient.send(getCommand);
+
+    if (!response.Item) {
+      return { status: 404, message: "Car not found" };
+    }
+
+    return { status: 200, data: response.Item };
+  } catch (error) {
+    console.error("[getCarByProductIdAndCompanyId] Error:", error);
+    return errorObject;
   }
 }

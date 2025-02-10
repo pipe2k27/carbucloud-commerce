@@ -22,7 +22,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { StockCarImage } from "@/dynamo-db/product-images.db";
 
 const carSchema = z.object({
   brand: z.string().trim().max(50, "La marca no puede superar 50 caracteres"),
@@ -74,9 +73,7 @@ const carSchema = z.object({
 
 const NewCarModal = () => {
   const [section, setCurrentSection] = useState<1 | 2>(1);
-  const [currentCarImages, setCurrentCarImages] = useState<
-    null | StockCarImage[]
-  >(null);
+  const [currentImage, setCurrentImage] = useState<number>(1);
   const [currentCar, setCurrentCar] = useState<Car | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -109,13 +106,13 @@ const NewCarModal = () => {
       price: Number(data.price),
       km: Number(data.km),
     };
+    addOneCarToAtom(newCar);
     try {
       setLoading(true);
 
       const res = await createCarAction(newCar);
       if (res.status === 200) {
         setCurrentCar(res.data);
-        addOneCarToAtom(res.data);
         setCurrentSection(2);
       } else {
         toast({
@@ -143,27 +140,6 @@ const NewCarModal = () => {
     } else {
       resetCommonComponentAtom();
     }
-  };
-
-  const onDelete = (index: number) => {
-    setLoading(true);
-    if (!currentCarImages) return;
-    const newImages = currentCarImages.filter((_, i) => i !== index);
-    setCurrentCarImages([...newImages]);
-    setTimeout(() => {
-      setLoading(false);
-    }, 700);
-  };
-
-  const onUpload = (image: StockCarImage) => {
-    const newImages = currentCarImages ? [...currentCarImages, image] : [image];
-    setCurrentCarImages(newImages);
-  };
-
-  const onUploadMain = (imageUrl: string) => {
-    if (!currentCar) return;
-    const newCar: Car = { ...currentCar, mainImageUrl: imageUrl };
-    setCurrentCar(newCar);
   };
 
   return (
@@ -259,16 +235,9 @@ const NewCarModal = () => {
             <FormLabel label="Imagen Principal:" required />
             <div className="grid-cols-3 grid">
               <UploadImage
+                index={0}
                 isMainImage
                 productId={currentCar.productId}
-                currentImage={
-                  currentCar?.mainImageUrl
-                    ? { imageUrl: currentCar?.mainImageUrl }
-                    : undefined
-                }
-                onUpload={(url: string) => {
-                  onUploadMain(url);
-                }}
               />
             </div>
           </div>
@@ -277,28 +246,21 @@ const NewCarModal = () => {
             *Hasta 9 imágenes
           </div>
           <div className="grid-cols-3 grid">
-            {currentCarImages?.map((image, index) => {
-              // if (index > 8) return null;
-              return (
-                <UploadImage
-                  key={image.imageId}
-                  onUpload={(im: StockCarImage) => {
-                    onUpload(im);
-                  }}
-                  currentImage={image}
-                  productId={currentCar.productId}
-                  onImageDelete={() => {
-                    onDelete(index);
-                  }}
-                />
-              );
-            })}
-            <UploadImage
-              onUpload={(im: StockCarImage) => {
-                onUpload(im);
-              }}
-              productId={currentCar.productId}
-            />
+            {Array.from({ length: currentImage }, (_, index) => index).map(
+              (e) => {
+                if (e > 8) return null;
+                return (
+                  <UploadImage
+                    key={e}
+                    index={e + 1}
+                    onUpload={(i) => {
+                      setCurrentImage(i + 1);
+                    }}
+                    productId={currentCar.productId}
+                  />
+                );
+              }
+            )}
           </div>
         </>
       )}

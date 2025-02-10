@@ -3,7 +3,7 @@ import { Sidebar } from "./components/sidebar.client";
 import CarsTable from "./components/cars-table.client";
 import ProductsSummary from "./components/products-summary";
 import CarsTabs from "./components/cars-filters";
-import { getCarsByCompanyId } from "@/dynamo-db/cars";
+import { getCarsByCompanyId } from "@/dynamo-db/cars.db";
 
 export const metadata: Metadata = {
   title: "Dashboard",

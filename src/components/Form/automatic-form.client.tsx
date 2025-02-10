@@ -3,10 +3,6 @@ import FormSelect, { Option } from "./form-select.client";
 import FormInput from "./form-input.client";
 import FormNumber from "./form-number.client";
 import FormTextArea from "./form-text-area.client";
-// import FormNumber from "./FormNumber";
-// import { Stack } from "@mui/material";
-// import FormDate from "./FormDate";
-// import FormDatePlain from "./FormDatePlain";
 
 export type Field = {
   name: string;
@@ -49,18 +45,6 @@ const AutomaticForm: React.FC<Props> = ({ control, fields }) => {
             />
           );
         }
-        // // if (field.type === "checkbox" && field.options) {
-        // //   return (
-        // //     <FormCheckbox
-        // //       key={field.name}
-        // //       options={field.options}
-        // //       control={control}
-        // //       name={field.name}
-        // //       required={field.required || false}
-        // //       label={field.label}
-        // //     />
-        // //   );
-        // // }
         if (field.type === "number") {
           return (
             <FormNumber
@@ -85,30 +69,6 @@ const AutomaticForm: React.FC<Props> = ({ control, fields }) => {
             />
           );
         }
-        // if (field.type === "date") {
-        //   return (
-        //     <FormDate
-        //       key={field.name}
-        //       control={control}
-        //       label={field.label}
-        //       name={field.name}
-        //       required={field.required || false}
-        //       //   isInvalid={errors && errors[field.name]}
-        //     />
-        //   );
-        // }
-        // // if (field.type === "plainDate") {
-        // //   return (
-        // //     <FormDatePlain
-        // //       key={field.name}
-        // //       control={control}
-        // //       label={field.label}
-        // //       name={field.name}
-        // //       required={field.required || false}
-        // //       //   isInvalid={errors && errors[field.name]}
-        // //     />
-        // //   );
-        // // }
 
         return (
           <FormInput

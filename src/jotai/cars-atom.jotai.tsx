@@ -1,20 +1,7 @@
-import { CarStatusType } from "@/dynamo-db/cars";
+import { Car } from "@/dynamo-db/cars.db";
 import { atom, getDefaultStore } from "jotai";
 
 const store = getDefaultStore();
-
-export type Car = {
-  id: string;
-  brand: string;
-  model: string;
-  year: number;
-  transmission: "Automatica" | "Manual";
-  type: "SUV" | "Sedan" | "Pick-Up" | "Hatchback" | "Coupe";
-  price: number;
-  imageUrl: string;
-  status?: CarStatusType;
-  km: number;
-};
 
 type CarsState = { cars: Car[]; filteredCars: Car[] };
 

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getToken, JWT } from "next-auth/jwt";
-import { getOrCreateUser, User } from "./dynamo-db/user";
+import { getOrCreateUser, User } from "./dynamo-db/user.db";
 
 const userCheck = async (jwt: JWT): Promise<User | false> => {
   // case 1 userIs logged in but does not have a user on db or does not have a company asdsigned yet

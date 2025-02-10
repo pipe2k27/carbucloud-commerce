@@ -62,9 +62,13 @@ const FormNumber: React.FC<Props> = ({
                 // Allow only numeric characters and special control keys
                 if (
                   !/[0-9]/.test(e.key) &&
-                  !["Backspace", "ArrowLeft", "ArrowRight", "Delete"].includes(
-                    e.key
-                  )
+                  ![
+                    "Backspace",
+                    "ArrowLeft",
+                    "ArrowRight",
+                    "Delete",
+                    "Tab",
+                  ].includes(e.key)
                 ) {
                   e.preventDefault();
                 }

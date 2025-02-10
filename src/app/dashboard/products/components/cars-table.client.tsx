@@ -1,72 +1,27 @@
 "use client";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  MoreHorizontal,
-  PauseCircle,
-  Clock,
-  CircleDollarSign,
-  CheckCircle2Icon,
-  ChevronDown,
-} from "lucide-react";
 import CarHoverImage from "./car-hover-image";
 import { useAtomValue } from "jotai";
-import { carsAtom } from "@/jotai/cars-atom.jotai";
-import { Car, CarStatusType } from "@/dynamo-db/cars";
-
-// Define the data type for the used cars
-
-interface StatusBadgeProps {
-  status: CarStatusType;
-}
-
-const statusConfig = {
-  available: {
-    label: "Disponible",
-    icon: CheckCircle2Icon,
-    color: "text-primary",
-  },
-  reserved: {
-    label: "Reservado",
-    icon: Clock,
-    color: "text-gray-500",
-  },
-  sold: {
-    label: "Vendido",
-    icon: CircleDollarSign,
-    color: "text-green-500",
-  },
-  paused: {
-    label: "Pausado",
-    icon: PauseCircle,
-    color: "text-muted",
-  },
-};
-
-const CarStatus: React.FC<StatusBadgeProps> = ({ status }) => {
-  const data = statusConfig[status] || statusConfig["available"];
-
-  const { label, icon: Icon, color } = data;
-
-  return (
-    <div className={`flex items-center space-x-2 ${color}`}>
-      <div className="w-[100px] flex items-center">
-        <Icon className="w-4 h-4 mr-1" />
-        <span className="text-sm font-bold">{label}</span>
-      </div>
-      <ChevronDown className="cursor-pointer w-5 text-muted-foreground" />
-    </div>
-  );
-};
+import { carsAtom, setCarsState } from "@/jotai/cars-atom.jotai";
+import { Car, CarStatusType } from "@/dynamo-db/cars.db";
+import { useEffect } from "react";
+import { ActionsCarTable } from "./actions-car-table.client";
+import { CarStatus } from "./car-status.client";
 
 // Define the column definitions for the used cars table
 export const columns: ColumnDef<Car>[] = [
   {
     accessorKey: "brand",
     header: "Marca",
-    cell: ({ getValue }) => (
+    cell: ({ getValue, row }) => (
       <div className="flex gap-2 items-center">
-        <CarHoverImage imageUrl="https://http2.mlstatic.com/D_NQ_NP_2X_909044-MLA81304104973_122024-F.webp" />
+        <CarHoverImage
+          imageUrl={
+            row?.original?.mainImageUrl || // Access another field from the row
+            "https://http2.mlstatic.com/D_NQ_NP_2X_909044-MLA81304104973_122024-F.webp"
+          }
+        />
         {getValue() as string}
       </div>
     ),
@@ -86,8 +41,10 @@ export const columns: ColumnDef<Car>[] = [
     accessorKey: "status",
     header: "Estado",
     size: 15, // 15% of the table width
-    cell: ({ getValue }) => {
-      return <CarStatus status={getValue() as CarStatusType} />;
+    cell: ({ getValue, row }) => {
+      return (
+        <CarStatus status={getValue() as CarStatusType} row={row.original} />
+      );
     },
   },
   {
@@ -121,29 +78,27 @@ export const columns: ColumnDef<Car>[] = [
   {
     id: "actions",
     header: "",
-    cell: () => (
+    cell: ({ row }) => (
       <div className="flex w-full justify-center gap-2">
-        {/* <Plus className="cursor-pointer text-primary w-4" />
-        <ShoppingBag className="cursor-pointer text-primary w-4" />{" "}
-        <Wand2Icon className="cursor-pointer text-primary w-4" />
-        <Trash2 className="cursor-pointer text-red-300 w-4" /> */}
-        <MoreHorizontal className="cursor-pointer w-5" />
+        <ActionsCarTable row={row.original} />
       </div>
     ),
     size: 4, // 10% of the table width
   },
 ];
 
-// Mock data for 20 cars
-
-// Component to render the table
 export default function CarsTable({ cars }: { cars: Car[] }) {
   const { filteredCars } = useAtomValue(carsAtom);
 
-  console.log("Cars", cars);
+  useEffect(() => {
+    if (cars.length) {
+      setCarsState({ filteredCars: cars, cars });
+    }
+  }, [cars]);
+
   return (
     <div className="container py-10" suppressHydrationWarning>
-      <DataTable columns={columns} data={cars} />
+      <DataTable columns={columns} data={filteredCars || []} />
     </div>
   );
 }

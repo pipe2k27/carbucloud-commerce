@@ -22,8 +22,6 @@ export async function getOrCreateUser(data: {
 }) {
   const tableName = "users";
 
-  console.log(process.env.AWS_SECRET_ACCESS_KEY);
-
   try {
     // Step 1: Check if the object exists
     const getCommand = new GetCommand({
@@ -55,8 +53,6 @@ export async function getOrCreateUser(data: {
 
 export async function getUser(data: { userId: string }) {
   const tableName = "users";
-
-  console.log(process.env.AWS_SECRET_ACCESS_KEY);
 
   try {
     // Step 1: Check if the object exists

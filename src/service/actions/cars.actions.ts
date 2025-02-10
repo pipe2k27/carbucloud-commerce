@@ -1,10 +1,99 @@
 "use server";
 
-import { FormCar, Car, createCar } from "@/dynamo-db/cars";
+import {
+  FormCar,
+  Car,
+  createCar,
+  updateCar,
+  getCar,
+} from "@/dynamo-db/cars.db";
 import { getServerSession } from "next-auth";
 import { authConfig } from "../../../next-auth.config";
-import { getUser } from "@/dynamo-db/user";
+import { getUser } from "@/dynamo-db/user.db";
+import { z } from "zod";
 import { errorObject, ServerResponse } from "@/constants/api-constants";
+
+const carSchema = z.object({
+  brand: z
+    .string()
+    .trim()
+    .max(50, "La marca no puede superar 50 caracteres")
+    .optional()
+    .nullable(),
+  model: z
+    .string()
+    .trim()
+    .max(100, "El modelo no puede superar 100 caracteres")
+    .optional()
+    .nullable(),
+  year: z
+    .string()
+    .length(4, "El año debe tener 4 dígitos")
+    .regex(/^\d{4}$/, "El año debe ser numérico")
+    .optional()
+    .nullable(),
+  carType: z
+    .string()
+    .trim()
+    .max(50, "El tipo de auto no puede superar 50 caracteres")
+    .optional()
+    .nullable(),
+  transmission: z
+    .string()
+    .trim()
+    .max(50, "La transmisión no puede superar 50 caracteres")
+    .optional()
+    .nullable(),
+  engine: z
+    .string()
+    .trim()
+    .max(100, "El motor no puede superar 100 caracteres")
+    .optional()
+    .nullable(),
+  currency: z
+    .string()
+    .trim()
+    .max(3, "La moneda debe ser un código de 3 letras")
+    .optional()
+    .nullable(),
+  price: z
+    .number()
+    .min(0, "El precio no puede ser negativo")
+    .optional()
+    .nullable(),
+  description: z
+    .string()
+    .trim()
+    .max(500, "La descripción no puede superar 500 caracteres")
+    .optional()
+    .nullable(),
+  internalNotes: z
+    .string()
+    .trim()
+    .max(500, "Las notas internas no pueden superar 500 caracteres")
+    .optional()
+    .nullable(),
+  km: z
+    .number()
+    .min(0, "El kilometraje no puede ser negativo")
+    .optional()
+    .nullable(),
+  status: z
+    .enum(["available", "reserved", "sold", "paused"], "Estado inválido")
+    .optional()
+    .nullable(),
+  mainImageUrl: z
+    .string()
+    .url("La URL de la imagen no es válida")
+    .optional()
+    .nullable(),
+  productId: z
+    .string()
+    .trim()
+    .max(50, "El modelo no puede superar 50 caracteres")
+    .optional()
+    .nullable(),
+});
 
 export async function createCarAction(
   formCar: FormCar
@@ -12,8 +101,6 @@ export async function createCarAction(
   try {
     // ✅ Get session from NextAuth
     const session = await getServerSession(authConfig);
-
-    console.log(session);
 
     if (!session || !session.user.id) {
       return { status: 401, message: "Unauthorized: User not logged in" };
@@ -25,6 +112,15 @@ export async function createCarAction(
 
     if (!user || user.status !== 200 || !user.data || !user.data.companyId) {
       return { status: 404, message: "User not found" };
+    }
+
+    const validatedBody = carSchema.safeParse(formCar);
+    if (!validatedBody.success) {
+      return {
+        status: 400,
+        message: "Invalid input data",
+        data: validatedBody.error,
+      };
     }
 
     const now = String(Date.now());
@@ -41,10 +137,140 @@ export async function createCarAction(
       createdBy: user.data.name || "Desconocido",
     };
 
+    const sanitizedData = Object.fromEntries(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      Object.entries(newCar).filter(([_, value]) => value !== null)
+    ) as Car;
+
     // ✅ Call createCar function to save to DynamoDB
-    return await createCar(newCar);
+    return await createCar(sanitizedData);
   } catch (error) {
-    console.log("[createCarAction] Error:", error);
     return errorObject;
+  }
+}
+
+export async function updateCarImageAction(
+  productId: string,
+  imageUrl: string
+): Promise<ServerResponse> {
+  try {
+    // ✅ Get session from NextAuth
+    const session = await getServerSession(authConfig);
+
+    if (!session || !session.user.id) {
+      return { status: 401, message: "Unauthorized: User not logged in" };
+    }
+
+    const userId = session.user.id;
+    const user = await getUser({ userId });
+
+    if (!user || user.status !== 200 || !user.data || !user.data.companyId) {
+      return { status: 404, message: "User not found" };
+    }
+
+    const companyId = user.data.companyId;
+
+    const imageSchema = z.object({
+      mainImageUrl: z.string().url("La URL de la imagen no es válida"),
+    });
+
+    const validatedBody = imageSchema.safeParse({ mainImageUrl: imageUrl });
+    if (!validatedBody.success) {
+      return {
+        status: 400,
+        message: "Invalid input data",
+        data: validatedBody.error,
+      };
+    }
+    // ✅ Call updateCar function to update the image URL
+    const updateResponse = await updateCar(productId, companyId, {
+      mainImageUrl: imageUrl,
+    });
+
+    return updateResponse;
+  } catch (error) {
+    console.error("[updateCarImageAction] Error:", error);
+    return errorObject;
+  }
+}
+
+export async function updateCarAction(
+  productId: string,
+  body: Partial<Car>
+): Promise<ServerResponse> {
+  try {
+    // ✅ Get session from NextAuth
+    const session = await getServerSession(authConfig);
+
+    if (!session || !session.user.id) {
+      return { status: 401, message: "Unauthorized: User not logged in" };
+    }
+
+    const userId = session.user.id;
+    const user = await getUser({ userId });
+
+    if (!user || user.status !== 200 || !user.data || !user.data.companyId) {
+      return { status: 404, message: "User not found" };
+    }
+
+    const companyId = user.data.companyId;
+
+    // ✅ Validate & sanitize input data (with optional fields)
+    const validatedBody = carSchema.safeParse(body);
+    if (!validatedBody.success) {
+      return {
+        status: 400,
+        message: "Invalid input data",
+        data: validatedBody.error,
+      };
+    }
+
+    const sanitizedData = Object.fromEntries(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      Object.entries(validatedBody.data).filter(([_, value]) => value !== null)
+    );
+
+    // ✅ Call updateCar function to update the image URL
+    const updateResponse = await updateCar(productId, companyId, sanitizedData);
+
+    return updateResponse;
+  } catch (error) {
+    console.error("[updateCarImageAction] Error:", error);
+    return errorObject;
+  }
+}
+
+export async function getCarAction(productId: string): Promise<ServerResponse> {
+  try {
+    // ✅ Get session from NextAuth
+    const session = await getServerSession(authConfig);
+
+    if (!session || !session.user.id) {
+      return { status: 401, message: "Unauthorized: User not logged in" };
+    }
+
+    const userId = session.user.id; // Get userId from JWT
+    const user = await getUser({ userId });
+
+    if (!user || user.status !== 200 || !user.data || !user.data.companyId) {
+      return { status: 404, message: "User or company not found" };
+    }
+
+    const companyId = user.data.companyId;
+
+    // ✅ Fetch car from DynamoDB by companyId + productId (Composite Key)
+    const response = await getCar(companyId, productId);
+
+    if (!response) {
+      return { status: 404, message: "Car not found" };
+    }
+
+    return { status: 200, data: response.data };
+  } catch (error) {
+    console.error("[getCarAction] Error:", error);
+    return {
+      status: 500,
+      message: "An error occurred while retrieving the car",
+    };
   }
 }
