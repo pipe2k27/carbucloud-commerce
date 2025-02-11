@@ -14,6 +14,7 @@ import { updateCarImageAction } from "@/service/actions/cars.actions";
 import { RefreshCcw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StockCarImage } from "@/dynamo-db/product-images.db";
+import { editCarByProductId } from "@/jotai/cars-atom.jotai";
 
 type UploadImageProps = {
   productId: string;
@@ -50,6 +51,9 @@ const UploadImage: React.FC<UploadImageProps> = ({
           );
           if (res?.status === 200) {
             if (onUpload) onUpload(result.data.imageUrl);
+            editCarByProductId(productId, {
+              mainImageUrl: result.data.imageUrl,
+            });
           } else {
             setError("Error al cargar la imagen");
           }

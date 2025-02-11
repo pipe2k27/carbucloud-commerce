@@ -4,10 +4,11 @@ import { useForm } from "react-hook-form";
 import AutomaticForm from "../Form/automatic-form.client";
 import { Button } from "../ui/button";
 import Modal from "./modal.client";
-import UploadImage from "@/app/dashboard/products/components/car-image-handler.client";
-import FormLabel from "../Form/form-label.client";
-import { useState } from "react";
-import { resetCommonComponentAtom } from "@/jotai/common-components-atom.jotai";
+import { useEffect, useState } from "react";
+import {
+  commonComponentAtom,
+  resetCommonComponentAtom,
+} from "@/jotai/common-components-atom.jotai";
 import {
   carBrandsInArgentina,
   carTypes,
@@ -15,13 +16,19 @@ import {
   currencyOptions,
   transmisionTypes,
 } from "@/constants/car-constants";
-import { addOneCarToAtom } from "@/jotai/cars-atom.jotai";
-import { Car, FormCar } from "@/dynamo-db/cars.db";
-import { createCarAction } from "@/service/actions/cars.actions";
+import { addOneCarToAtom, editCarByProductId } from "@/jotai/cars-atom.jotai";
+import { FormCar, tractionOptions } from "@/dynamo-db/cars.db";
+import {
+  createCarAction,
+  getCarAction,
+  updateCarAction,
+} from "@/service/actions/cars.actions";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAtomValue } from "jotai";
+import { errorToast } from "@/constants/api-constants";
 
 const carSchema = z.object({
   brand: z.string().trim().max(50, "La marca no puede superar 50 caracteres"),
@@ -71,11 +78,9 @@ const carSchema = z.object({
     .optional(),
 });
 
-const NewCarModal = () => {
-  const [section, setCurrentSection] = useState<1 | 2>(1);
-  const [currentImage, setCurrentImage] = useState<number>(1);
-  const [currentCar, setCurrentCar] = useState<Car | null>(null);
+const EditCarModal = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const { editingCarId } = useAtomValue(commonComponentAtom);
 
   const { toast } = useToast();
 
@@ -94,12 +99,13 @@ const NewCarModal = () => {
     status: "available",
   };
 
-  const { control, handleSubmit } = useForm<FormCar>({
+  const { control, handleSubmit, reset } = useForm<FormCar>({
     defaultValues,
     resolver: zodResolver(carSchema), // ✅ Apply Zod validation
   });
 
   const onSubmit = async (data: FormCar) => {
+    if (!editingCarId) return;
     const newCar: FormCar = {
       ...data,
       status: "available",
@@ -110,10 +116,10 @@ const NewCarModal = () => {
     try {
       setLoading(true);
 
-      const res = await createCarAction(newCar);
+      const res = await updateCarAction(editingCarId, newCar);
       if (res.status === 200) {
-        setCurrentCar(res.data);
-        setCurrentSection(2);
+        editCarByProductId(editingCarId, newCar);
+        resetCommonComponentAtom();
       } else {
         toast({
           variant: "destructive",
@@ -135,18 +141,54 @@ const NewCarModal = () => {
   };
 
   const handleNext = () => {
-    if (section === 1) {
-      handleSubmit(onSubmit)();
-    } else {
+    handleSubmit(onSubmit)();
+  };
+
+  const getCar = async () => {
+    if (!editingCarId) return;
+    setLoading(true);
+    try {
+      const { data } = await getCarAction(editingCarId);
+      if (data) {
+        const newDefaultValues: FormCar = {
+          brand: data.brand,
+          model: data.model,
+          year: data.year,
+          carType: data.carType,
+          transmission: data.transmission,
+          engine: data.engine,
+          currency: data.currency,
+          price: String(data.price),
+          description: data.description,
+          internalNotes: data.internalNotes,
+          km: String(data.km),
+          status: data.status,
+          traction: data.traction || "4x2",
+          buyingPrice: data.buyingPrice ? String(data.buyingPrice) : "0",
+        };
+        reset(newDefaultValues);
+      } else {
+        toast(errorToast);
+        resetCommonComponentAtom();
+      }
+    } catch {
+      toast(errorToast);
       resetCommonComponentAtom();
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    getCar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingCarId]);
 
   return (
     <Modal
       isOpen
-      title="Nuevo Vehiculo"
-      description="Complete los campos para agregar un nuevo auto"
+      title="Editar datos del Vehiculo"
+      description="Edite los campos que desee modificar"
       footer={
         <Button onClick={handleNext} disabled={loading}>
           {loading && <Loader2 className="animate-spin" />}
@@ -154,7 +196,12 @@ const NewCarModal = () => {
         </Button>
       }
     >
-      {section === 1 && (
+      {loading && (
+        <div className="h-[200px] w-full flex items-center justify-center">
+          <Loader2 className="animate-spin" />
+        </div>
+      )}
+      {!loading && (
         <AutomaticForm
           control={control}
           fields={[
@@ -202,7 +249,15 @@ const NewCarModal = () => {
                 label: brand,
               })),
             },
-
+            {
+              name: "traction",
+              label: "Tracción",
+              type: "options",
+              options: tractionOptions.map((brand) => ({
+                value: brand,
+                label: brand,
+              })),
+            },
             {
               name: "engine",
               label: "Motor",
@@ -217,6 +272,12 @@ const NewCarModal = () => {
             },
             { name: "price", label: "Precio", type: "number", required: true },
             {
+              name: "buyingPrice",
+              label: "Precio de compra (costo)",
+              type: "number",
+              required: true,
+            },
+            {
               name: "description",
               label: "Descripción",
               type: "textarea",
@@ -229,43 +290,8 @@ const NewCarModal = () => {
           ]}
         />
       )}
-      {section === 2 && currentCar && (
-        <>
-          <div className="my-2">
-            <FormLabel label="Imagen Principal:" required />
-            <div className="grid-cols-3 grid">
-              <UploadImage
-                index={0}
-                isMainImage
-                productId={currentCar.productId}
-              />
-            </div>
-          </div>
-          <FormLabel label="Imagenes complementarias:" required />
-          <div className="text-xs text-gray-500 opacity-45">
-            *Hasta 9 imágenes
-          </div>
-          <div className="grid-cols-3 grid">
-            {Array.from({ length: currentImage }, (_, index) => index).map(
-              (e) => {
-                if (e > 8) return null;
-                return (
-                  <UploadImage
-                    key={e}
-                    index={e + 1}
-                    onUpload={(i) => {
-                      setCurrentImage(i + 1);
-                    }}
-                    productId={currentCar.productId}
-                  />
-                );
-              }
-            )}
-          </div>
-        </>
-      )}
     </Modal>
   );
 };
 
-export default NewCarModal;
+export default EditCarModal;

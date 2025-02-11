@@ -9,6 +9,10 @@ import {
 
 export type CarStatusType = "available" | "reserved" | "sold" | "paused";
 
+export const tractionOptions = ["4x2", "4x4", "AWD", "4wd"];
+
+export type TractionType = "4x2" | "4x4" | "AWD" | "4WD";
+
 export type FormCar = {
   brand: string;
   model: string;
@@ -17,10 +21,12 @@ export type FormCar = {
   transmission: string;
   engine: string;
   currency: string;
-  price: number;
+  price: number | string;
+  buyingPrice: number | string;
+  traction: TractionType;
   description: string;
   internalNotes: string;
-  km: number;
+  km: number | string;
   status: CarStatusType;
   mainImageUrl?: string;
 };

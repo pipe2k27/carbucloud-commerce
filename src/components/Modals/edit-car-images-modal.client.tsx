@@ -100,7 +100,7 @@ const EditCarImagesModal = () => {
       <Modal
         isOpen
         title="Editar Imagenes"
-        description="Agrega o edita las imagenes de tu auto"
+        description="Agrega o edita las imagenes del producto"
         footer={
           <Button
             onClick={() => {
@@ -122,7 +122,7 @@ const EditCarImagesModal = () => {
     <Modal
       isOpen
       title="Editar Imagenes"
-      description="Agrega o edita las imagenes de tu auto"
+      description="Agrega o edita las imagenes del producto"
       footer={
         <Button
           onClick={() => {

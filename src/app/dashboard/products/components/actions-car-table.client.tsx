@@ -1,7 +1,13 @@
 /* eslint-disable jsx-a11y/alt-text */
 "use client";
 
-import { MoreHorizontal, Pencil, Image, Trash2 } from "lucide-react";
+import {
+  MoreHorizontal,
+  Pencil,
+  Image,
+  Trash2,
+  PlusCircle,
+} from "lucide-react";
 
 import {
   DropdownMenuItem,
@@ -13,8 +19,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { setCommonComponentAtom } from "@/jotai/common-components-atom.jotai";
 import { Car } from "@/dynamo-db/cars.db";
+import { useRouter } from "next/navigation";
 
 export function ActionsCarTable({ row }: { row: Car }) {
+  const router = useRouter();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -27,7 +36,21 @@ export function ActionsCarTable({ row }: { row: Car }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[260px]">
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            router.push(`/dashboard/product-detail/${row.productId}`);
+          }}
+        >
+          <PlusCircle size={18} className="mr-2" /> Ver detalles
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            setCommonComponentAtom({
+              showEditCarModal: true,
+              editingCarId: row.productId,
+            });
+          }}
+        >
           <Pencil size={18} className="mr-2" /> Editar datos del producto
         </DropdownMenuItem>
         <DropdownMenuItem

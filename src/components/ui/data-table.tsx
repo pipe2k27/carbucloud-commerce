@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
+  getPaginationRowModel,
 } from "@tanstack/react-table";
 
 import {
@@ -18,6 +19,14 @@ import {
 } from "@/components/ui/table";
 import { useState, useMemo } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -31,12 +40,11 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState([
     {
       id: "status",
-      desc: false, // sort by name in descending order by default
+      desc: false,
     },
   ]);
-  const [searchQuery, setSearchQuery] = useState(""); // State for the search input
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Memoize the filtered data to avoid unnecessary recomputations
   const filteredData = useMemo(() => {
     if (!searchQuery) return data;
     return data.filter((row) =>
@@ -55,7 +63,17 @@ export function DataTable<TData, TValue>({
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageIndex: 0,
+        pageSize: 20,
+      },
+    },
   });
+
+  const pageIndex = table.getState().pagination.pageIndex;
+  const pageCount = table.getPageCount();
 
   return (
     <>
@@ -69,22 +87,19 @@ export function DataTable<TData, TValue>({
         />
       </div>
       <div className="rounded-md border">
-        {/* Search Input */}
         <Table className="text-sm">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   const isSorted = header.column.getIsSorted();
-                  const columnSize = header.column.columnDef.size; // Access the size property
+                  const columnSize = header.column.columnDef.size;
                   return (
                     <TableHead
                       key={header.id}
                       onClick={header.column.getToggleSortingHandler()}
                       className="cursor-pointer select-none"
-                      style={{
-                        width: columnSize ? `${columnSize}%` : "auto", // Apply size as a percentage
-                      }}
+                      style={{ width: columnSize ? `${columnSize}%` : "auto" }}
                     >
                       <div className="flex items-center justify-start">
                         {header.isPlaceholder
@@ -112,10 +127,7 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -138,6 +150,52 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
+        <Pagination className="my-2">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                className="cursor-pointer"
+                onClick={() => {
+                  if (table.getCanPreviousPage()) {
+                    table.previousPage();
+                  }
+                }}
+              />
+            </PaginationItem>
+            {pageIndex > 0 && (
+              <PaginationItem>
+                <PaginationLink
+                  onClick={() => table.setPageIndex(pageIndex - 1)}
+                >
+                  {pageIndex}
+                </PaginationLink>
+              </PaginationItem>
+            )}
+            <PaginationItem>
+              <PaginationLink isActive>{pageIndex + 1}</PaginationLink>
+            </PaginationItem>
+            {pageIndex < pageCount - 1 && (
+              <PaginationItem>
+                <PaginationLink
+                  onClick={() => table.setPageIndex(pageIndex + 1)}
+                >
+                  {pageIndex + 2}
+                </PaginationLink>
+              </PaginationItem>
+            )}
+            <PaginationItem>
+              <PaginationNext
+                lang="es"
+                className="cursor-pointer"
+                onClick={() => {
+                  if (table.getCanNextPage()) {
+                    table.nextPage();
+                  }
+                }}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </>
   );

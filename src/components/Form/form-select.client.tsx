@@ -73,7 +73,9 @@ const FormSelect: React.FC<Props> = ({
               >
                 <SelectTrigger
                   className={`w-full ${
-                    isPlaceholder ? "text-[rgba(147,147,147,0.4)]" : ""
+                    isPlaceholder && field.value === ""
+                      ? "text-[rgba(147,147,147,0.4)]"
+                      : ""
                   } ${error && "border-red-400"} `}
                 >
                   <SelectValue placeholder={placeholder || "Seleccionar"} />

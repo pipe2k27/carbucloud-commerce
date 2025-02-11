@@ -16,7 +16,7 @@ import {
   transmisionTypes,
 } from "@/constants/car-constants";
 import { addOneCarToAtom } from "@/jotai/cars-atom.jotai";
-import { Car, FormCar } from "@/dynamo-db/cars.db";
+import { Car, FormCar, tractionOptions } from "@/dynamo-db/cars.db";
 import { createCarAction } from "@/service/actions/cars.actions";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -56,6 +56,7 @@ const carSchema = z.object({
     .min(1, "Por favor complete este campo")
     .max(3, "La moneda debe ser un código de 3 letras"),
   price: z.coerce.number().min(1, "El precio debe ser positivo"), // ✅ Ensures price is a number
+  buyingPrice: z.coerce.number().min(1, "El precio debe ser positivo"), // ✅ Ensures price is a number
   km: z.coerce
     .number()
     .min(0, "El kilometraje no puede ser negativo")
@@ -70,6 +71,11 @@ const carSchema = z.object({
     .trim()
     .max(500, "Las notas internas no pueden superar 500 caracteres")
     .optional(),
+  traction: z
+    .string()
+    .trim()
+    .min(1, "Por favor complete este campo")
+    .max(50, "La transmisión no puede superar 50 caracteres"),
 });
 
 const NewCarModal = () => {
@@ -91,9 +97,11 @@ const NewCarModal = () => {
     engine: "",
     currency: "",
     price: 0,
+    buyingPrice: 0,
     description: "",
     internalNotes: "",
     km: 0,
+    traction: "4x2",
     status: "available",
   };
 
@@ -226,7 +234,15 @@ const NewCarModal = () => {
                 label: brand,
               })),
             },
-
+            {
+              name: "traction",
+              label: "Tracción",
+              type: "options",
+              options: tractionOptions.map((brand) => ({
+                value: brand,
+                label: brand,
+              })),
+            },
             {
               name: "engine",
               label: "Motor",
@@ -240,6 +256,12 @@ const NewCarModal = () => {
               options: currencyOptions,
             },
             { name: "price", label: "Precio", type: "number", required: true },
+            {
+              name: "buyingPrice",
+              label: "Precio de compra (costo)",
+              type: "number",
+              required: true,
+            },
             {
               name: "description",
               label: "Descripción",
