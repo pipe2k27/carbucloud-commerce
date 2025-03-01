@@ -20,65 +20,101 @@ export type Field = {
   options?: Option[];
   checkboxOptions?: string[];
   validation?: any;
+  depndency?: {
+    field: string;
+    value: string;
+  };
 };
 
 type Props = {
   control: any;
   fields: Field[];
+  dualColumn?: boolean;
+  watch?: any;
 };
 
-const AutomaticForm: React.FC<Props> = ({ control, fields }) => {
+const FormFields = ({ control, field }: any) => {
+  if (field.type === "options" && field.options) {
+    return (
+      <FormSelect
+        key={field.name}
+        options={field.options}
+        control={control}
+        label={field.label}
+        name={field.name}
+        required={field.required || false}
+        //   isInvalid={errors && errors[field.name]}
+      />
+    );
+  }
+  if (field.type === "number") {
+    return (
+      <FormNumber
+        key={field.name}
+        control={control}
+        label={field.label}
+        name={field.name}
+        required={field.required || false}
+        //   isInvalid={errors && errors[field.name]}
+      />
+    );
+  }
+  if (field.type === "textarea") {
+    return (
+      <FormTextArea
+        key={field.name}
+        control={control}
+        label={field.label}
+        name={field.name}
+        required={field.required || false}
+        //   isInvalid={errors && errors[field.name]}
+      />
+    );
+  }
+
+  return (
+    <FormInput
+      control={control}
+      key={field.name}
+      label={field.label}
+      name={field.name}
+      required={field.required || false}
+      rules={field.validation}
+    />
+  );
+};
+
+const AutomaticForm: React.FC<Props> = ({
+  control,
+  fields,
+  dualColumn,
+  watch,
+}) => {
+  const renderUponDependency = (field: Field) => {
+    if (field.depndency) {
+      return watch(field.depndency.field) === field.depndency.value;
+    }
+    return false;
+  };
+
   // test
   return (
-    <div className="w-full flex-col space-y-6">
+    <div
+      className={`w-full flex-col space-y-6 ${
+        dualColumn ? "md:grid md:grid-cols-2 md:space-y-0 md:gap-x-8" : ""
+      }`}
+    >
       {fields.map((field: Field) => {
-        if (field.type === "options" && field.options) {
-          return (
-            <FormSelect
-              key={field.name}
-              options={field.options}
-              control={control}
-              label={field.label}
-              name={field.name}
-              required={field.required || false}
-              //   isInvalid={errors && errors[field.name]}
-            />
-          );
+        if (watch && field.depndency && !renderUponDependency(field)) {
+          return null;
         }
-        if (field.type === "number") {
-          return (
-            <FormNumber
-              key={field.name}
-              control={control}
-              label={field.label}
-              name={field.name}
-              required={field.required || false}
-              //   isInvalid={errors && errors[field.name]}
-            />
-          );
-        }
-        if (field.type === "textarea") {
-          return (
-            <FormTextArea
-              key={field.name}
-              control={control}
-              label={field.label}
-              name={field.name}
-              required={field.required || false}
-              //   isInvalid={errors && errors[field.name]}
-            />
-          );
-        }
-
         return (
-          <FormInput
-            control={control}
+          <div
             key={field.name}
-            label={field.label}
-            name={field.name}
-            required={field.required || false}
-            rules={field.validation}
-          />
+            className={`${dualColumn ? "md:h-[100px]" : ""}`}
+          >
+            <FormFields key={field.name} control={control} field={field} />
+          </div>
         );
       })}
     </div>

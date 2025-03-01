@@ -5,12 +5,14 @@ import {
   Car,
   Headset,
   House,
+  MessageCircleQuestion,
   PackagePlus,
   Percent,
   PersonStanding,
   TicketSlash,
   TrendingUp,
 } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 
 export interface SidebarSection {
   title: string;
@@ -21,6 +23,7 @@ export interface SidebarItem {
   label: string;
   icon: React.ReactNode;
   variant?: "secondary" | "ghost";
+  url?: string;
 }
 
 export const sidebarData: SidebarSection[] = [
@@ -28,17 +31,24 @@ export const sidebarData: SidebarSection[] = [
     title: "Inventario de Productos",
     items: [
       {
-        label: "Todos los productos",
+        label: "Productos en stock",
         icon: <Car className="mr-2 h-4 w-4" />,
         variant: "secondary",
+        url: "/dashboard/products",
       },
       {
-        label: "Agregar o editar productos",
+        label: "Posibles Compras",
         icon: <PackagePlus className="mr-2 h-4 w-4" />,
+        variant: "ghost",
+        url: "/dashboard/purchases",
+      },
+      {
+        label: "Consultas por whatsapp",
+        icon: <MessageCircleQuestion className="mr-2 h-4 w-4" />,
         variant: "ghost",
       },
       {
-        label: "Estadísticas de productos",
+        label: "Ventas en el mes",
         icon: <TrendingUp className="mr-2 h-4 w-4" />,
         variant: "ghost",
       },
@@ -77,6 +87,10 @@ export const sidebarData: SidebarSection[] = [
 ];
 
 export function Sidebar() {
+  const router = useRouter();
+
+  const pathname = usePathname();
+
   return (
     <div className={cn("pb-12")}>
       <div className="space-y-4 py-4">
@@ -89,8 +103,11 @@ export function Sidebar() {
               {section.items.map((item, itemIndex) => (
                 <Button
                   key={itemIndex}
-                  variant={item.variant || "ghost"}
+                  variant={item.url === pathname ? "secondary" : "ghost"}
                   className="w-full justify-start"
+                  onClick={() => {
+                    if (item.url) router.push(item.url);
+                  }}
                 >
                   <span className="text-primary">{item.icon}</span>
                   {item.label}

@@ -10,45 +10,45 @@ import {
   resetCommonComponentAtom,
 } from "@/jotai/common-components-atom.jotai";
 import { FormCar } from "@/dynamo-db/cars.db";
-import { getCarAction, updateCarAction } from "@/service/actions/cars.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAtomValue } from "jotai";
 import { errorToast } from "@/constants/api-constants";
 import {
-  carFormdefaultValues,
-  carFormFields,
-  carSchema,
-} from "./car-form-utils";
-import { useRouter } from "next/navigation";
+  getPotentialCarPurchaseAction,
+  updatePotentialCarPurchaseAction,
+} from "@/service/actions/potentialCarPurchase.actions";
+import { FormPotentialCarPurchase } from "@/dynamo-db/potentialCarPurchases.db";
+import {
+  potentialCarFormdefaultValues,
+  potentialCarPurchasaeFormFields,
+  potentialCarPurchaseSchema,
+} from "./potential-car-purchase-form-utils";
+import { editPotentialCarByProductId } from "@/jotai/potential-cars-atom.jotai";
 
-const EditCarModal = () => {
+const EditPurchaseModal = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { editingCarId, shouldRefreshRouter } =
-    useAtomValue(commonComponentAtom);
+  const { editingCarId } = useAtomValue(commonComponentAtom);
 
   const { toast } = useToast();
-  const router = useRouter();
 
   const { control, handleSubmit, reset, watch } = useForm<FormCar>({
-    defaultValues: carFormdefaultValues,
-    resolver: zodResolver(carSchema), // ✅ Apply Zod validation
+    defaultValues: potentialCarFormdefaultValues,
+    resolver: zodResolver(potentialCarPurchaseSchema), // ✅ Apply Zod validation
   });
 
-  const onSubmit = async (data: FormCar) => {
+  const onSubmit = async (data: FormPotentialCarPurchase) => {
     if (!editingCarId) return;
-    const newCar: FormCar = {
+    const newCar: FormPotentialCarPurchase = {
       ...data,
-      price: Number(data.price),
-      km: Number(data.km),
     };
     try {
       setLoading(true);
 
-      const res = await updateCarAction(editingCarId, newCar);
+      const res = await updatePotentialCarPurchaseAction(editingCarId, newCar);
       if (res.status === 200) {
-        router.refresh();
+        editPotentialCarByProductId(editingCarId, newCar);
         resetCommonComponentAtom();
       } else {
         toast({
@@ -78,24 +78,16 @@ const EditCarModal = () => {
     if (!editingCarId) return;
     setLoading(true);
     try {
-      const { data } = await getCarAction(editingCarId);
+      const { data } = await getPotentialCarPurchaseAction(editingCarId);
       if (data) {
-        const newDefaultValues: FormCar = {
+        const newDefaultValues: FormPotentialCarPurchase = {
           brand: data.brand,
           model: data.model,
           year: data.year,
-          carType: data.carType,
-          transmission: data.transmission,
-          engine: data.engine,
           currency: data.currency,
-          price: String(data.price),
           description: data.description,
-          internalNotes: data.internalNotes,
           km: String(data.km),
-          status: data.status,
-          traction: data.traction || "4x2",
           buyingPrice: data.buyingPrice ? String(data.buyingPrice) : "0",
-          ownershipType: data.ownershipType || "",
           ownerName: data.ownerName || "",
           ownerPhone: data.ownerPhone || "",
         };
@@ -124,7 +116,7 @@ const EditCarModal = () => {
       description="Edite los campos que desee modificar"
       className={`max-w-[1200px] w-[80vw]`}
       footer={
-        <Button onClick={handleNext} disabled={loading} className="mt-4">
+        <Button onClick={handleNext} disabled={loading}>
           {loading && <Loader2 className="animate-spin" />}
           Siguiente
         </Button>
@@ -140,11 +132,11 @@ const EditCarModal = () => {
           dualColumn
           watch={watch}
           control={control}
-          fields={carFormFields}
+          fields={potentialCarPurchasaeFormFields}
         />
       )}
     </Modal>
   );
 };
 
-export default EditCarModal;
+export default EditPurchaseModal;

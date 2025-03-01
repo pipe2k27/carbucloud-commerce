@@ -7,21 +7,25 @@ import Modal from "./modal.client";
 import FormLabel from "../Form/form-label.client";
 import { useState } from "react";
 import { resetCommonComponentAtom } from "@/jotai/common-components-atom.jotai";
-import { addOneCarToAtom, editCarByProductId } from "@/jotai/cars-atom.jotai";
 import { Car, FormCar } from "@/dynamo-db/cars.db";
-import { createCarAction } from "@/service/actions/cars.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { StockCarImage } from "@/dynamo-db/product-images.db";
 import {
-  carFormdefaultValues,
-  carFormFields,
-  carSchema,
-} from "./car-form-utils";
+  potentialCarFormdefaultValues,
+  potentialCarPurchasaeFormFields,
+  potentialCarPurchaseSchema,
+} from "./potential-car-purchase-form-utils";
+import {
+  addOnePotentialCarToAtom,
+  editPotentialCarByProductId,
+} from "@/jotai/potential-cars-atom.jotai";
+import { createPotentialCarPurchaseAction } from "@/service/actions/potentialCarPurchase.actions";
+import { FormPotentialCarPurchase } from "@/dynamo-db/potentialCarPurchases.db";
 import UploadImage from "@/app/dashboard/_components/upload-image.client";
 
-const NewCarModal = () => {
+const NewPurchaseModal = () => {
   const [section, setCurrentSection] = useState<1 | 2>(1);
   const [currentCarImages, setCurrentCarImages] = useState<
     null | StockCarImage[]
@@ -32,24 +36,22 @@ const NewCarModal = () => {
   const { toast } = useToast();
 
   const { control, handleSubmit, watch } = useForm<FormCar>({
-    defaultValues: carFormdefaultValues,
-    resolver: zodResolver(carSchema), // ✅ Apply Zod validation
+    defaultValues: potentialCarFormdefaultValues,
+    resolver: zodResolver(potentialCarPurchaseSchema), // ✅ Apply Zod validation
   });
 
-  const onSubmit = async (data: FormCar) => {
-    const newCar: FormCar = {
+  const onSubmit = async (data: FormPotentialCarPurchase) => {
+    const newCar: FormPotentialCarPurchase = {
       ...data,
-      status: "available",
-      price: Number(data.price),
       km: Number(data.km),
     };
     try {
       setLoading(true);
 
-      const res = await createCarAction(newCar);
+      const res = await createPotentialCarPurchaseAction(newCar);
       if (res.status === 200) {
         setCurrentCar(res.data);
-        addOneCarToAtom(res.data);
+        addOnePotentialCarToAtom(res.data);
         setCurrentSection(2);
       } else {
         toast({
@@ -94,11 +96,11 @@ const NewCarModal = () => {
     setCurrentCarImages(newImages);
   };
 
-  const onUploadMain = async (imageUrl: string) => {
+  const onUploadMain = (imageUrl: string) => {
     if (!currentCar) return;
     const newCar: Car = { ...currentCar, mainImageUrl: imageUrl };
     setCurrentCar(newCar);
-    editCarByProductId(currentCar.productId, {
+    editPotentialCarByProductId(currentCar.productId, {
       mainImageUrl: imageUrl,
     });
   };
@@ -106,8 +108,8 @@ const NewCarModal = () => {
   return (
     <Modal
       isOpen
-      title="Nuevo Vehiculo"
-      description="Complete los campos para agregar un nuevo auto"
+      title="Vehiculo a comprar"
+      description="Complete los campos para agregar un nuevo vehículo"
       footer={
         <Button onClick={handleNext} disabled={loading} className="mt-4">
           {loading && <Loader2 className="animate-spin" />}
@@ -123,7 +125,7 @@ const NewCarModal = () => {
           control={control}
           dualColumn
           watch={watch}
-          fields={carFormFields}
+          fields={potentialCarPurchasaeFormFields}
         />
       )}
       {section === 2 && currentCar && (
@@ -132,7 +134,7 @@ const NewCarModal = () => {
             <FormLabel label="Imagen Principal:" required />
             <div className="grid-cols-3 grid">
               <UploadImage
-                isMainImage
+                isMainPotentialCarImage
                 productId={currentCar.productId}
                 currentImage={
                   currentCar?.mainImageUrl
@@ -179,4 +181,4 @@ const NewCarModal = () => {
   );
 };
 
-export default NewCarModal;
+export default NewPurchaseModal;

@@ -31,18 +31,20 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  initialSort?: { id: string; desc: boolean }[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState([
+  initialSort = [
     {
       id: "status",
       desc: false,
     },
-  ]);
+  ],
+}: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState(initialSort);
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredData = useMemo(() => {

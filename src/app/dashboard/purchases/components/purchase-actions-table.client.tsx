@@ -17,37 +17,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import {
-  resetCommonComponentAtom,
-  setCommonComponentAtom,
-} from "@/jotai/common-components-atom.jotai";
-import { Car } from "@/dynamo-db/cars.db";
+import { setCommonComponentAtom } from "@/jotai/common-components-atom.jotai";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { deleteOneCarFromAtom } from "@/jotai/cars-atom.jotai";
-import { deleteCarAction } from "@/service/actions/cars.actions";
+import { PotentialCarPurchase } from "@/dynamo-db/potentialCarPurchases.db";
 
-export function ActionsCarTable({ row }: { row: Car }) {
+export function PurchaseActionsTable({ row }: { row: PotentialCarPurchase }) {
   const router = useRouter();
-
-  const { toast } = useToast();
-
-  const deleteCar = async () => {
-    deleteOneCarFromAtom(row.productId);
-    resetCommonComponentAtom();
-    const res = await deleteCarAction(row.productId);
-    if (res.status !== 200) {
-      toast({
-        variant: "destructive",
-        title: "Error!",
-        description:
-          "Ha habido un error de eliminando el producto, intentelo más tarde.",
-      });
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
-    }
-  };
 
   return (
     <DropdownMenu>
@@ -71,9 +46,8 @@ export function ActionsCarTable({ row }: { row: Car }) {
         <DropdownMenuItem
           onClick={() => {
             setCommonComponentAtom({
-              showEditCarModal: true,
+              showEditPurchaseModal: true,
               editingCarId: row.productId,
-              shouldRefreshRouter: true,
             });
           }}
         >
@@ -90,21 +64,7 @@ export function ActionsCarTable({ row }: { row: Car }) {
           <Image size={18} className="mr-2" /> Cargar o modificar imágenes
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => {
-            setCommonComponentAtom({
-              confirmModal: {
-                show: true,
-                title: "Eliminar producto",
-                description: `¿Está seguro que desea eliminar el producto ${row.brand} ${row.model} ${row.year}?`,
-                onConfirm: () => {
-                  deleteCar();
-                },
-              },
-            });
-          }}
-          className="text-red-500"
-        >
+        <DropdownMenuItem className="text-red-500">
           <Trash2 size={18} className="mr-2" /> Eliminar producto
         </DropdownMenuItem>
       </DropdownMenuContent>

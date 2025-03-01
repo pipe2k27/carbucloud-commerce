@@ -2,7 +2,6 @@
 
 import { Button } from "../ui/button";
 import Modal from "./modal.client";
-import UploadImage from "@/app/dashboard/products/components/car-image-handler.client";
 import FormLabel from "../Form/form-label.client";
 import { useEffect, useState } from "react";
 import {
@@ -17,6 +16,8 @@ import { Car } from "@/dynamo-db/cars.db";
 import { Loader2 } from "lucide-react";
 import { getStockImagesByProductIdAction } from "@/service/actions/images.actions";
 import { StockCarImage } from "@/dynamo-db/product-images.db";
+import { editCarByProductId } from "@/jotai/cars-atom.jotai";
+import UploadImage from "@/app/dashboard/_components/upload-image.client";
 
 const EditCarImagesModal = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -93,6 +94,9 @@ const EditCarImagesModal = () => {
     if (!currentCar) return;
     const newCar: Car = { ...currentCar, mainImageUrl: imageUrl };
     setCurrentCar(newCar);
+    editCarByProductId(currentCar.productId, {
+      mainImageUrl: imageUrl,
+    });
   };
 
   if (loading || !currentCar || !currentCarImages) {

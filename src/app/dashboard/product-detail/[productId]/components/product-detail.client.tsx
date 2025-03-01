@@ -12,13 +12,22 @@ import {
 import Image from "next/image";
 import { Car } from "@/dynamo-db/cars.db";
 import { useRouter } from "next/navigation";
+import { setCommonComponentAtom } from "@/jotai/common-components-atom.jotai";
+import { useEffect, useState } from "react";
 
 interface Props {
-  car: Car;
+  data: Car;
 }
 
-export default function ProductDetail({ car }: Props) {
+export default function ProductDetail({ data }: Props) {
+  const [car, setCar] = useState<Car | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    setCar(data);
+  }, [data]);
+
+  if (!car) return <></>;
 
   return (
     <div className="max-w-[1300px] w-[90%] mx-auto p-6">
@@ -36,10 +45,28 @@ export default function ProductDetail({ car }: Props) {
           {car.brand} {car.model}
         </h1>
         <div className="flex space-x-2">
-          <Button variant="outline">
+          <Button
+            variant="outline"
+            onClick={() => {
+              setCommonComponentAtom({
+                showEditCarModal: true,
+                editingCarId: car.productId,
+                shouldRefreshRouter: true,
+              });
+            }}
+          >
             <Pencil className="w-4 h-4 mr-2" /> Editar Detalles
           </Button>
-          <Button variant="outline">
+          <Button
+            variant="outline"
+            onClick={() => {
+              setCommonComponentAtom({
+                showEditCarImagesModal: true,
+                editingCarId: car.productId,
+                shouldRefreshRouter: true,
+              });
+            }}
+          >
             <ImageIcon className="w-4 h-4 mr-2" /> Editar Imágenes
           </Button>
         </div>

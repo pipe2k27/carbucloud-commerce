@@ -15,5 +15,5 @@ export default async function ProductDetailPage({ params }: Props) {
     return notFound(); // Show 404 if product is not found
   }
 
-  return <ProductDetail car={response.data} />;
+  return <ProductDetail data={response.data} />;
 }

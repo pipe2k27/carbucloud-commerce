@@ -41,3 +41,10 @@ export const editCarByProductId = (
 
   store.set(carsAtom, { cars: updatedCars, filteredCars: updatedFilteredCars });
 };
+
+export const deleteOneCarFromAtom = (productId: string) => {
+  const cars = store.get(carsAtom).cars;
+  const newCars = cars.filter((car) => car.productId !== productId);
+
+  store.set(carsAtom, { cars: newCars, filteredCars: newCars });
+};

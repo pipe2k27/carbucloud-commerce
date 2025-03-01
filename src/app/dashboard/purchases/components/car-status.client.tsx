@@ -19,7 +19,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { updateCarAction } from "@/service/actions/cars.actions";
 import { editCarByProductId } from "@/jotai/cars-atom.jotai";
-import { useRouter } from "next/navigation";
 
 interface StatusBadgeProps {
   status: CarStatusType;
@@ -55,19 +54,14 @@ const statusConfig: Record<
 export const CarStatus: React.FC<StatusBadgeProps> = ({ status, row }) => {
   const [currentStatus, setCurrentStatus] = useState<CarStatusType>(status);
 
-  const router = useRouter();
-
   const handleStatusChange = async (newStatus: CarStatusType) => {
     setCurrentStatus(newStatus);
     if (newStatus !== currentStatus) {
       const res = await updateCarAction(row.productId, { status: newStatus });
       editCarByProductId(row.productId, { status: newStatus });
-
       if (res.status !== 200) {
         alert("Error al actualizar el estado del vehículo");
         setCurrentStatus(currentStatus);
-      } else {
-        router.refresh();
       }
     }
   };

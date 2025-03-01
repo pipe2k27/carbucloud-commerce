@@ -6,6 +6,9 @@ import * as React from "react";
 import NewCarModal from "../Modals/new-car-modal.client";
 import EditCarImagesModal from "../Modals/edit-car-images-modal.client";
 import EditCarModal from "../Modals/edit-car-modal.client";
+import NewPurchaseModal from "../Modals/new-purchase-modal.client";
+import EditPurchaseModal from "../Modals/edit-purchase-modal.client copy";
+import ConfirmationModal from "../Modals/confimation-modal.client";
 
 export const CommonComponentsProvider: React.FC<any> = () => {
   const commonComponentsState = useAtomValue(commonComponentAtom);
@@ -15,6 +18,9 @@ export const CommonComponentsProvider: React.FC<any> = () => {
       {commonComponentsState.showNewCarModal && <NewCarModal />}
       {commonComponentsState.showEditCarModal && <EditCarModal />}
       {commonComponentsState.showEditCarImagesModal && <EditCarImagesModal />}
+      {commonComponentsState.showNewCarPurchaseModal && <NewPurchaseModal />}
+      {commonComponentsState.showEditPurchaseModal && <EditPurchaseModal />}
+      {commonComponentsState.confirmModal.show && <ConfirmationModal />}
     </>
   );
 };

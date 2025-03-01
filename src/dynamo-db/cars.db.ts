@@ -13,6 +13,13 @@ export const tractionOptions = ["4x2", "4x4", "AWD", "4wd"];
 
 export type TractionType = "4x2" | "4x4" | "AWD" | "4WD";
 
+export type OwnershipType = "own" | "other";
+
+export const ownershipOptions = [
+  { value: "own", label: "Producto Propio" },
+  { value: "other", label: "Producto de un Tercero" },
+];
+
 export type FormCar = {
   brand: string;
   model: string;
@@ -29,6 +36,9 @@ export type FormCar = {
   km: number | string;
   status: CarStatusType;
   mainImageUrl?: string;
+  ownershipType: string;
+  ownerName: string;
+  ownerPhone: string;
 };
 
 export type Car = FormCar & {

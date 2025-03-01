@@ -18,33 +18,32 @@ export default function CarsTabs() {
   };
 
   return (
-    <Tabs
-      defaultValue="overview"
-      className="space-y-4 translate-y-[110px] w-fit"
-    >
-      <TabsList>
-        <TabsTrigger
-          value="overview"
-          onClick={() => {
-            setCarsState({ cars, filteredCars: cars });
-          }}
-        >
-          Todos
-        </TabsTrigger>
-        <TabsTrigger value="analytics" onClick={() => onFilter("available")}>
-          Activos
-        </TabsTrigger>
-        <TabsTrigger value="reports" onClick={() => onFilter("reserved")}>
-          Reservados
-        </TabsTrigger>
-        <TabsTrigger value="sold" onClick={() => onFilter("sold")}>
-          Vendidos
-        </TabsTrigger>
-        <TabsTrigger value="notifications" onClick={() => onFilter("paused")}>
-          Pausados
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent value="overview" className="space-y-4"></TabsContent>
-    </Tabs>
+    <div className="translate-y-[90px]">
+      <Tabs defaultValue="overview" className="space-y-4 w-fit">
+        <TabsList>
+          <TabsTrigger
+            value="overview"
+            onClick={() => {
+              setCarsState({ cars, filteredCars: cars });
+            }}
+          >
+            Todos
+          </TabsTrigger>
+          <TabsTrigger value="analytics" onClick={() => onFilter("available")}>
+            Activos
+          </TabsTrigger>
+          <TabsTrigger value="reports" onClick={() => onFilter("reserved")}>
+            Reservados
+          </TabsTrigger>
+          <TabsTrigger value="sold" onClick={() => onFilter("sold")}>
+            Vendidos
+          </TabsTrigger>
+          <TabsTrigger value="notifications" onClick={() => onFilter("paused")}>
+            Pausados
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="overview" className="space-y-4"></TabsContent>
+      </Tabs>
+    </div>
   );
 }

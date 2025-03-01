@@ -18,6 +18,7 @@ type ModalProps = {
   description?: string;
   children?: ReactNode;
   footer?: ReactNode;
+  className?: string;
 };
 
 const Modal: React.FC<ModalProps> = ({
@@ -27,6 +28,7 @@ const Modal: React.FC<ModalProps> = ({
   description,
   children,
   footer,
+  className,
 }) => {
   const handleClose = () => {
     if (onClose) {
@@ -38,7 +40,7 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent>
+      <DialogContent className={`${className || ""}`}>
         <DialogHeader>
           {title && <DialogTitle>{title}</DialogTitle>}
           {description && <DialogDescription>{description}</DialogDescription>}

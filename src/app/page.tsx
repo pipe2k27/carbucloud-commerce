@@ -1,10 +1,7 @@
-import { Button } from "@/components/ui/button";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div>
-      Carbucloud
-      <Button>Click</Button>
-    </div>
-  );
+  redirect("/login");
+
+  return <></>;
 }

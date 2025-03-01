@@ -1,18 +1,17 @@
 "use server";
 
-import {
-  FormCar,
-  Car,
-  createCar,
-  updateCar,
-  getCar,
-  deleteCar,
-} from "@/dynamo-db/cars.db";
 import { getServerSession } from "next-auth";
 import { authConfig } from "../../../next-auth.config";
 import { getUser } from "@/dynamo-db/user.db";
 import { z } from "zod";
 import { errorObject, ServerResponse } from "@/constants/api-constants";
+import {
+  createPotentialCarPurchase,
+  FormPotentialCarPurchase,
+  PotentialCarPurchase,
+  updatePotentialCarPurchase,
+  getPotentialCarPurchase,
+} from "@/dynamo-db/potentialCarPurchases.db";
 
 const carSchema = z.object({
   brand: z
@@ -80,7 +79,7 @@ const carSchema = z.object({
     .optional()
     .nullable(),
   status: z
-    .enum(["available", "reserved", "sold", "paused"])
+    .enum(["available", "reserved", "sold", "paused"], "Estado inválido")
     .optional()
     .nullable(),
   mainImageUrl: z
@@ -96,8 +95,8 @@ const carSchema = z.object({
     .nullable(),
 });
 
-export async function createCarAction(
-  formCar: FormCar
+export async function createPotentialCarPurchaseAction(
+  formCar: FormPotentialCarPurchase
 ): Promise<ServerResponse> {
   try {
     // ✅ Get session from NextAuth
@@ -127,11 +126,10 @@ export async function createCarAction(
     const now = String(Date.now());
 
     // ✅ Generate new car object with productId and userId
-    const newCar: Car = {
+    const newPurchase: PotentialCarPurchase = {
       ...formCar,
       productId: now,
       companyId: user.data.companyId,
-      status: "available",
       createdAt: now,
       updatedAt: now,
       userId,
@@ -140,64 +138,19 @@ export async function createCarAction(
 
     const sanitizedData = Object.fromEntries(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      Object.entries(newCar).filter(([_, value]) => value !== null)
-    ) as Car;
+      Object.entries(newPurchase).filter(([_, value]) => value !== null)
+    ) as PotentialCarPurchase;
 
     // ✅ Call createCar function to save to DynamoDB
-    return await createCar(sanitizedData);
+    return await createPotentialCarPurchase(sanitizedData);
   } catch {
     return errorObject;
   }
 }
 
-export async function updateCarImageAction(
+export async function updatePotentialCarPurchaseAction(
   productId: string,
-  imageUrl: string
-): Promise<ServerResponse> {
-  try {
-    // ✅ Get session from NextAuth
-    const session = await getServerSession(authConfig);
-
-    if (!session || !session.user.id) {
-      return { status: 401, message: "Unauthorized: User not logged in" };
-    }
-
-    const userId = session.user.id;
-    const user = await getUser({ userId });
-
-    if (!user || user.status !== 200 || !user.data || !user.data.companyId) {
-      return { status: 404, message: "User not found" };
-    }
-
-    const companyId = user.data.companyId;
-
-    const imageSchema = z.object({
-      mainImageUrl: z.string().url("La URL de la imagen no es válida"),
-    });
-
-    const validatedBody = imageSchema.safeParse({ mainImageUrl: imageUrl });
-    if (!validatedBody.success) {
-      return {
-        status: 400,
-        message: "Invalid input data",
-        data: validatedBody.error,
-      };
-    }
-    // ✅ Call updateCar function to update the image URL
-    const updateResponse = await updateCar(productId, companyId, {
-      mainImageUrl: imageUrl,
-    });
-
-    return updateResponse;
-  } catch (error) {
-    console.error("[updateCarImageAction] Error:", error);
-    return errorObject;
-  }
-}
-
-export async function updateCarAction(
-  productId: string,
-  body: Partial<Car>
+  body: Partial<PotentialCarPurchase>
 ): Promise<ServerResponse> {
   try {
     // ✅ Get session from NextAuth
@@ -232,7 +185,11 @@ export async function updateCarAction(
     );
 
     // ✅ Call updateCar function to update the image URL
-    const updateResponse = await updateCar(productId, companyId, sanitizedData);
+    const updateResponse = await updatePotentialCarPurchase(
+      productId,
+      companyId,
+      sanitizedData
+    );
 
     return updateResponse;
   } catch (error) {
@@ -241,43 +198,9 @@ export async function updateCarAction(
   }
 }
 
-export async function getCarAction(productId: string): Promise<ServerResponse> {
-  try {
-    // ✅ Get session from NextAuth
-    const session = await getServerSession(authConfig);
-
-    if (!session || !session.user.id) {
-      return { status: 401, message: "Unauthorized: User not logged in" };
-    }
-
-    const userId = session.user.id; // Get userId from JWT
-    const user = await getUser({ userId });
-
-    if (!user || user.status !== 200 || !user.data || !user.data.companyId) {
-      return { status: 404, message: "User or company not found" };
-    }
-
-    const companyId = user.data.companyId;
-
-    // ✅ Fetch car from DynamoDB by companyId + productId (Composite Key)
-    const response = await getCar(companyId, productId);
-
-    if (!response) {
-      return { status: 404, message: "Car not found" };
-    }
-
-    return { status: 200, data: response.data };
-  } catch (error) {
-    console.error("[getCarAction] Error:", error);
-    return {
-      status: 500,
-      message: "An error occurred while retrieving the car",
-    };
-  }
-}
-
-export async function deleteCarAction(
-  productId: string
+export async function updatePotentiaCarPurchaseImageAction(
+  productId: string,
+  imageUrl: string
 ): Promise<ServerResponse> {
   try {
     // ✅ Get session from NextAuth
@@ -296,12 +219,67 @@ export async function deleteCarAction(
 
     const companyId = user.data.companyId;
 
-    // ✅ Call deleteCar function to remove the car
-    const deleteResponse = await deleteCar(productId, companyId);
+    const imageSchema = z.object({
+      mainImageUrl: z.string().url("La URL de la imagen no es válida"),
+    });
 
-    return deleteResponse;
+    const validatedBody = imageSchema.safeParse({ mainImageUrl: imageUrl });
+    if (!validatedBody.success) {
+      return {
+        status: 400,
+        message: "Invalid input data",
+        data: validatedBody.error,
+      };
+    }
+    // ✅ Call updateCar function to update the image URL
+    const updateResponse = await updatePotentialCarPurchase(
+      productId,
+      companyId,
+      {
+        mainImageUrl: imageUrl,
+      }
+    );
+
+    return updateResponse;
   } catch (error) {
-    console.error("[deleteCarAction] Error:", error);
+    console.error("[updateCarImageAction] Error:", error);
     return errorObject;
+  }
+}
+
+export async function getPotentialCarPurchaseAction(
+  productId: string
+): Promise<ServerResponse> {
+  try {
+    // ✅ Get session from NextAuth
+    const session = await getServerSession(authConfig);
+
+    if (!session || !session.user.id) {
+      return { status: 401, message: "Unauthorized: User not logged in" };
+    }
+
+    const userId = session.user.id; // Get userId from JWT
+    const user = await getUser({ userId });
+
+    if (!user || user.status !== 200 || !user.data || !user.data.companyId) {
+      return { status: 404, message: "User or company not found" };
+    }
+
+    const companyId = user.data.companyId;
+
+    // ✅ Fetch car from DynamoDB by companyId + productId (Composite Key)
+    const response = await getPotentialCarPurchase(companyId, productId);
+
+    if (!response) {
+      return { status: 404, message: "Car not found" };
+    }
+
+    return { status: 200, data: response.data };
+  } catch (error) {
+    console.error("[getCarAction] Error:", error);
+    return {
+      status: 500,
+      message: "An error occurred while retrieving the car",
+    };
   }
 }
