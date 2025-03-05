@@ -6,12 +6,13 @@ import { getUser } from "@/dynamo-db/user.db";
 import { z } from "zod";
 import { errorObject, ServerResponse } from "@/constants/api-constants";
 import {
-  createPotentialCarPurchase,
-  FormPotentialCarPurchase,
-  PotentialCarPurchase,
-  updatePotentialCarPurchase,
-  getPotentialCarPurchase,
-} from "@/dynamo-db/potentialCarPurchases.db";
+  createPurchase,
+  FormPurchase,
+  Purchase,
+  updatePurchase,
+  getPurchase,
+  deletePurchase,
+} from "@/dynamo-db/purchases.db";
 
 const carSchema = z.object({
   brand: z
@@ -95,8 +96,8 @@ const carSchema = z.object({
     .nullable(),
 });
 
-export async function createPotentialCarPurchaseAction(
-  formCar: FormPotentialCarPurchase
+export async function createPurchaseAction(
+  formCar: FormPurchase
 ): Promise<ServerResponse> {
   try {
     // ✅ Get session from NextAuth
@@ -126,7 +127,7 @@ export async function createPotentialCarPurchaseAction(
     const now = String(Date.now());
 
     // ✅ Generate new car object with productId and userId
-    const newPurchase: PotentialCarPurchase = {
+    const newPurchase: Purchase = {
       ...formCar,
       productId: now,
       companyId: user.data.companyId,
@@ -139,18 +140,18 @@ export async function createPotentialCarPurchaseAction(
     const sanitizedData = Object.fromEntries(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       Object.entries(newPurchase).filter(([_, value]) => value !== null)
-    ) as PotentialCarPurchase;
+    ) as Purchase;
 
     // ✅ Call createCar function to save to DynamoDB
-    return await createPotentialCarPurchase(sanitizedData);
+    return await createPurchase(sanitizedData);
   } catch {
     return errorObject;
   }
 }
 
-export async function updatePotentialCarPurchaseAction(
+export async function updatePurchaseAction(
   productId: string,
-  body: Partial<PotentialCarPurchase>
+  body: Partial<Purchase>
 ): Promise<ServerResponse> {
   try {
     // ✅ Get session from NextAuth
@@ -185,7 +186,7 @@ export async function updatePotentialCarPurchaseAction(
     );
 
     // ✅ Call updateCar function to update the image URL
-    const updateResponse = await updatePotentialCarPurchase(
+    const updateResponse = await updatePurchase(
       productId,
       companyId,
       sanitizedData
@@ -232,13 +233,9 @@ export async function updatePotentiaCarPurchaseImageAction(
       };
     }
     // ✅ Call updateCar function to update the image URL
-    const updateResponse = await updatePotentialCarPurchase(
-      productId,
-      companyId,
-      {
-        mainImageUrl: imageUrl,
-      }
-    );
+    const updateResponse = await updatePurchase(productId, companyId, {
+      mainImageUrl: imageUrl,
+    });
 
     return updateResponse;
   } catch (error) {
@@ -247,7 +244,7 @@ export async function updatePotentiaCarPurchaseImageAction(
   }
 }
 
-export async function getPotentialCarPurchaseAction(
+export async function getPurchaseAction(
   productId: string
 ): Promise<ServerResponse> {
   try {
@@ -268,7 +265,7 @@ export async function getPotentialCarPurchaseAction(
     const companyId = user.data.companyId;
 
     // ✅ Fetch car from DynamoDB by companyId + productId (Composite Key)
-    const response = await getPotentialCarPurchase(companyId, productId);
+    const response = await getPurchase(companyId, productId);
 
     if (!response) {
       return { status: 404, message: "Car not found" };
@@ -281,5 +278,35 @@ export async function getPotentialCarPurchaseAction(
       status: 500,
       message: "An error occurred while retrieving the car",
     };
+  }
+}
+
+export async function deletePurchaseAction(
+  productId: string
+): Promise<ServerResponse> {
+  try {
+    // ✅ Get session from NextAuth
+    const session = await getServerSession(authConfig);
+
+    if (!session || !session.user.id) {
+      return { status: 401, message: "Unauthorized: User not logged in" };
+    }
+
+    const userId = session.user.id;
+    const user = await getUser({ userId });
+
+    if (!user || user.status !== 200 || !user.data || !user.data.companyId) {
+      return { status: 404, message: "User not found" };
+    }
+
+    const companyId = user.data.companyId;
+
+    // ✅ Call deleteCar function to remove the car
+    const deleteResponse = await deletePurchase(productId, companyId);
+
+    return deleteResponse;
+  } catch (error) {
+    console.error("[deletePurchase] Error:", error);
+    return errorObject;
   }
 }

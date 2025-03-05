@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { potentialCarsPurchaseAtom } from "@/jotai/potential-cars-atom.jotai";
+import { purchaseAtom } from "@/jotai/purchases-atom.jotai";
 import { useAtomValue } from "jotai";
 import { CircleDollarSign } from "lucide-react";
 
@@ -32,13 +32,13 @@ const InformationCard: React.FC<CardData> = ({
 };
 
 export const PurchasesInformationCards: React.FC = () => {
-  const { potentialCarPurchases } = useAtomValue(potentialCarsPurchaseAtom);
+  const { Purchases } = useAtomValue(purchaseAtom);
 
   const cardData: CardData[] = [
     {
       title: "Total Posibles Compras",
       icon: <CircleDollarSign className="h-4 w-4" />,
-      value: potentialCarPurchases.length.toString(),
+      value: Purchases.length.toString(),
       description: "+Todos las potenciales compras en la base de datos",
     },
     // {

@@ -25,8 +25,7 @@ import { useRouter } from "next/navigation";
 
 const EditCarModal = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { editingCarId, shouldRefreshRouter } =
-    useAtomValue(commonComponentAtom);
+  const { currentElementId } = useAtomValue(commonComponentAtom);
 
   const { toast } = useToast();
   const router = useRouter();
@@ -37,7 +36,7 @@ const EditCarModal = () => {
   });
 
   const onSubmit = async (data: FormCar) => {
-    if (!editingCarId) return;
+    if (!currentElementId) return;
     const newCar: FormCar = {
       ...data,
       price: Number(data.price),
@@ -46,7 +45,7 @@ const EditCarModal = () => {
     try {
       setLoading(true);
 
-      const res = await updateCarAction(editingCarId, newCar);
+      const res = await updateCarAction(currentElementId, newCar);
       if (res.status === 200) {
         router.refresh();
         resetCommonComponentAtom();
@@ -75,10 +74,10 @@ const EditCarModal = () => {
   };
 
   const getCar = async () => {
-    if (!editingCarId) return;
+    if (!currentElementId) return;
     setLoading(true);
     try {
-      const { data } = await getCarAction(editingCarId);
+      const { data } = await getCarAction(currentElementId);
       if (data) {
         const newDefaultValues: FormCar = {
           brand: data.brand,
@@ -115,7 +114,7 @@ const EditCarModal = () => {
   useEffect(() => {
     getCar();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editingCarId]);
+  }, [currentElementId]);
 
   return (
     <Modal

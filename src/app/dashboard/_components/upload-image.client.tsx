@@ -15,13 +15,13 @@ import { RefreshCcw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StockCarImage } from "@/dynamo-db/product-images.db";
 import { editCarByProductId } from "@/jotai/cars-atom.jotai";
-import { updatePotentiaCarPurchaseImageAction } from "@/service/actions/potentialCarPurchase.actions";
+import { updatePotentiaCarPurchaseImageAction } from "@/service/actions/purchases.actions";
 
 type UploadImageProps = {
   productId: string;
   onUpload?: (i: any) => void;
   isMainImage?: boolean;
-  isMainPotentialCarImage?: boolean;
+  isMainPurchaseImage?: boolean;
   onImageDelete?: () => void;
   currentImage?: Partial<StockCarImage>;
 };
@@ -30,7 +30,7 @@ const UploadImage: React.FC<UploadImageProps> = ({
   productId,
   onUpload,
   isMainImage,
-  isMainPotentialCarImage,
+  isMainPurchaseImage,
   onImageDelete,
   currentImage,
 }) => {
@@ -58,7 +58,7 @@ const UploadImage: React.FC<UploadImageProps> = ({
             setError("Error al cargar la imagen");
           }
         }
-        if (isMainPotentialCarImage) {
+        if (isMainPurchaseImage) {
           const res = await updatePotentiaCarPurchaseImageAction(
             productId,
             result.data.imageUrl
@@ -70,7 +70,7 @@ const UploadImage: React.FC<UploadImageProps> = ({
           }
         }
 
-        if (!isMainImage && !isMainPotentialCarImage) {
+        if (!isMainImage && !isMainPurchaseImage) {
           const res = await createStockIamgeAction({
             productId,
             imageUrl: result.data.imageUrl,

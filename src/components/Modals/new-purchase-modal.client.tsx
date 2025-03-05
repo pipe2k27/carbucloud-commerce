@@ -13,16 +13,16 @@ import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { StockCarImage } from "@/dynamo-db/product-images.db";
 import {
-  potentialCarFormdefaultValues,
-  potentialCarPurchasaeFormFields,
-  potentialCarPurchaseSchema,
-} from "./potential-car-purchase-form-utils";
+  purchaseFormdefaultValues,
+  purchasaeFormFields,
+  PurchaseSchema,
+} from "./purchase-form-utils";
 import {
-  addOnePotentialCarToAtom,
-  editPotentialCarByProductId,
-} from "@/jotai/potential-cars-atom.jotai";
-import { createPotentialCarPurchaseAction } from "@/service/actions/potentialCarPurchase.actions";
-import { FormPotentialCarPurchase } from "@/dynamo-db/potentialCarPurchases.db";
+  addOnePurchaseToAtom,
+  editPurchaseByProductId,
+} from "@/jotai/purchases-atom.jotai";
+import { createPurchaseAction } from "@/service/actions/purchases.actions";
+import { FormPurchase } from "@/dynamo-db/purchases.db";
 import UploadImage from "@/app/dashboard/_components/upload-image.client";
 
 const NewPurchaseModal = () => {
@@ -36,22 +36,22 @@ const NewPurchaseModal = () => {
   const { toast } = useToast();
 
   const { control, handleSubmit, watch } = useForm<FormCar>({
-    defaultValues: potentialCarFormdefaultValues,
-    resolver: zodResolver(potentialCarPurchaseSchema), // ✅ Apply Zod validation
+    defaultValues: purchaseFormdefaultValues,
+    resolver: zodResolver(PurchaseSchema), // ✅ Apply Zod validation
   });
 
-  const onSubmit = async (data: FormPotentialCarPurchase) => {
-    const newCar: FormPotentialCarPurchase = {
+  const onSubmit = async (data: FormPurchase) => {
+    const newCar: FormPurchase = {
       ...data,
       km: Number(data.km),
     };
     try {
       setLoading(true);
 
-      const res = await createPotentialCarPurchaseAction(newCar);
+      const res = await createPurchaseAction(newCar);
       if (res.status === 200) {
         setCurrentCar(res.data);
-        addOnePotentialCarToAtom(res.data);
+        addOnePurchaseToAtom(res.data);
         setCurrentSection(2);
       } else {
         toast({
@@ -100,7 +100,7 @@ const NewPurchaseModal = () => {
     if (!currentCar) return;
     const newCar: Car = { ...currentCar, mainImageUrl: imageUrl };
     setCurrentCar(newCar);
-    editPotentialCarByProductId(currentCar.productId, {
+    editPurchaseByProductId(currentCar.productId, {
       mainImageUrl: imageUrl,
     });
   };
@@ -125,7 +125,7 @@ const NewPurchaseModal = () => {
           control={control}
           dualColumn
           watch={watch}
-          fields={potentialCarPurchasaeFormFields}
+          fields={purchasaeFormFields}
         />
       )}
       {section === 2 && currentCar && (
@@ -134,7 +134,7 @@ const NewPurchaseModal = () => {
             <FormLabel label="Imagen Principal:" required />
             <div className="grid-cols-3 grid">
               <UploadImage
-                isMainPotentialCarImage
+                isMainPurchaseImage
                 productId={currentCar.productId}
                 currentImage={
                   currentCar?.mainImageUrl

@@ -6,9 +6,9 @@ import {
 
 import { z } from "zod";
 import { Field } from "../Form/automatic-form.client";
-import { FormPotentialCarPurchase } from "@/dynamo-db/potentialCarPurchases.db";
+import { FormPurchase } from "@/dynamo-db/purchases.db";
 
-export const potentialCarPurchaseSchema = z.object({
+export const PurchaseSchema = z.object({
   brand: z.string().trim().max(50, "La marca no puede superar 50 caracteres"),
   model: z
     .string()
@@ -45,7 +45,7 @@ export const potentialCarPurchaseSchema = z.object({
     .max(50, "La transmisión no puede superar 50 caracteres"),
 });
 
-export const potentialCarPurchasaeFormFields: Field[] = [
+export const purchasaeFormFields: Field[] = [
   {
     name: "brand",
     label: "Marca",
@@ -103,7 +103,7 @@ export const potentialCarPurchasaeFormFields: Field[] = [
   },
 ];
 
-export const potentialCarFormdefaultValues: FormPotentialCarPurchase = {
+export const purchaseFormdefaultValues: FormPurchase = {
   brand: "",
   model: "",
   year: "",

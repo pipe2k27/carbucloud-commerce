@@ -16,39 +16,39 @@ import { useToast } from "@/hooks/use-toast";
 import { useAtomValue } from "jotai";
 import { errorToast } from "@/constants/api-constants";
 import {
-  getPotentialCarPurchaseAction,
-  updatePotentialCarPurchaseAction,
-} from "@/service/actions/potentialCarPurchase.actions";
-import { FormPotentialCarPurchase } from "@/dynamo-db/potentialCarPurchases.db";
+  getPurchaseAction,
+  updatePurchaseAction,
+} from "@/service/actions/purchases.actions";
+import { FormPurchase } from "@/dynamo-db/purchases.db";
 import {
-  potentialCarFormdefaultValues,
-  potentialCarPurchasaeFormFields,
-  potentialCarPurchaseSchema,
-} from "./potential-car-purchase-form-utils";
-import { editPotentialCarByProductId } from "@/jotai/potential-cars-atom.jotai";
+  purchaseFormdefaultValues,
+  purchasaeFormFields,
+  PurchaseSchema,
+} from "./purchase-form-utils";
+import { editPurchaseByProductId } from "@/jotai/purchases-atom.jotai";
 
 const EditPurchaseModal = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { editingCarId } = useAtomValue(commonComponentAtom);
+  const { currentElementId } = useAtomValue(commonComponentAtom);
 
   const { toast } = useToast();
 
   const { control, handleSubmit, reset, watch } = useForm<FormCar>({
-    defaultValues: potentialCarFormdefaultValues,
-    resolver: zodResolver(potentialCarPurchaseSchema), // ✅ Apply Zod validation
+    defaultValues: purchaseFormdefaultValues,
+    resolver: zodResolver(PurchaseSchema), // ✅ Apply Zod validation
   });
 
-  const onSubmit = async (data: FormPotentialCarPurchase) => {
-    if (!editingCarId) return;
-    const newCar: FormPotentialCarPurchase = {
+  const onSubmit = async (data: FormPurchase) => {
+    if (!currentElementId) return;
+    const newCar: FormPurchase = {
       ...data,
     };
     try {
       setLoading(true);
 
-      const res = await updatePotentialCarPurchaseAction(editingCarId, newCar);
+      const res = await updatePurchaseAction(currentElementId, newCar);
       if (res.status === 200) {
-        editPotentialCarByProductId(editingCarId, newCar);
+        editPurchaseByProductId(currentElementId, newCar);
         resetCommonComponentAtom();
       } else {
         toast({
@@ -74,13 +74,13 @@ const EditPurchaseModal = () => {
     handleSubmit(onSubmit)();
   };
 
-  const getCar = async () => {
-    if (!editingCarId) return;
+  const getPurchase = async () => {
+    if (!currentElementId) return;
     setLoading(true);
     try {
-      const { data } = await getPotentialCarPurchaseAction(editingCarId);
+      const { data } = await getPurchaseAction(currentElementId);
       if (data) {
-        const newDefaultValues: FormPotentialCarPurchase = {
+        const newDefaultValues: FormPurchase = {
           brand: data.brand,
           model: data.model,
           year: data.year,
@@ -105,9 +105,9 @@ const EditPurchaseModal = () => {
   };
 
   useEffect(() => {
-    getCar();
+    getPurchase();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editingCarId]);
+  }, [currentElementId]);
 
   return (
     <Modal
@@ -132,7 +132,7 @@ const EditPurchaseModal = () => {
           dualColumn
           watch={watch}
           control={control}
-          fields={potentialCarPurchasaeFormFields}
+          fields={purchasaeFormFields}
         />
       )}
     </Modal>

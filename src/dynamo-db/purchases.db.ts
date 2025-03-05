@@ -8,7 +8,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { Car } from "./cars.db";
 
-export type FormPotentialCarPurchase = Pick<
+export type FormPurchase = Pick<
   Car,
   | "brand"
   | "model"
@@ -21,7 +21,7 @@ export type FormPotentialCarPurchase = Pick<
   | "description"
 >;
 
-export type PotentialCarPurchase = Pick<
+export type Purchase = Pick<
   Car,
   | "productId"
   | "companyId"
@@ -53,13 +53,11 @@ export const dynamoDbClient = new DynamoDBClient({
 });
 
 // ✅ Create a new potential car purchase (PUT)
-export async function createPotentialCarPurchase(
-  potentialCar: PotentialCarPurchase
-) {
+export async function createPurchase(purchase: Purchase) {
   try {
     const putCommand = new PutCommand({
       TableName: TABLE_NAME,
-      Item: potentialCar,
+      Item: purchase,
     });
 
     await dynamoDbClient.send(putCommand);
@@ -67,10 +65,10 @@ export async function createPotentialCarPurchase(
     return {
       status: 200,
       message: "Potential car purchase added successfully",
-      data: potentialCar,
+      data: purchase,
     };
   } catch (error) {
-    console.error("[createPotentialCarPurchase] Error:", error);
+    console.error("[createPurchase] Error:", error);
     return {
       status: 500,
       message: "An error occurred while creating the potential car purchase",
@@ -79,10 +77,10 @@ export async function createPotentialCarPurchase(
 }
 
 // ✅ Update an existing potential car purchase
-export async function updatePotentialCarPurchase(
+export async function updatePurchase(
   productId: string,
   companyId: string,
-  updates: Partial<PotentialCarPurchase>
+  updates: Partial<Purchase>
 ) {
   try {
     // Step 1: Fetch the existing potential car purchase
@@ -110,23 +108,20 @@ export async function updatePotentialCarPurchase(
 
     return {
       status: 200,
-      message: "Potential car purchase updated successfully",
+      message: " car purchase updated successfully",
       data: updatedCar,
     };
   } catch (error) {
-    console.error("[updatePotentialCarPurchase] Error:", error);
+    console.error("[updatePurchase] Error:", error);
     return {
       status: 500,
-      message: "An error occurred while updating the potential car purchase",
+      message: "An error occurred while updating the  car purchase",
     };
   }
 }
 
 // ✅ Delete a potential car purchase (DELETE)
-export async function deletePotentialCarPurchase(
-  productId: string,
-  companyId: string
-) {
+export async function deletePurchase(productId: string, companyId: string) {
   try {
     const deleteCommand = new DeleteCommand({
       TableName: TABLE_NAME,
@@ -140,7 +135,7 @@ export async function deletePotentialCarPurchase(
       message: "Potential car purchase deleted successfully",
     };
   } catch (error) {
-    console.error("[deletePotentialCarPurchase] Error:", error);
+    console.error("[deletePurchase] Error:", error);
     return {
       status: 500,
       message: "An error occurred while deleting the potential car purchase",
@@ -149,9 +144,7 @@ export async function deletePotentialCarPurchase(
 }
 
 // ✅ Get all potential car purchases for a given companyId (QUERY)
-export async function getPotentialCarPurchasesByCompanyId(
-  companyId: string
-): Promise<any> {
+export async function getPurchasesByCompanyId(companyId: string): Promise<any> {
   try {
     const queryCommand = new QueryCommand({
       TableName: TABLE_NAME,
@@ -165,7 +158,7 @@ export async function getPotentialCarPurchasesByCompanyId(
 
     return { status: 200, data: response.Items || [] };
   } catch (error) {
-    console.error("[getPotentialCarPurchasesByCompanyId] Error:", error);
+    console.error("[getPurchasesByCompanyId] Error:", error);
     return {
       status: 500,
       message: "An error occurred while retrieving potential car purchases",
@@ -174,7 +167,7 @@ export async function getPotentialCarPurchasesByCompanyId(
 }
 
 // ✅ Get a specific potential car purchase by productId and companyId
-export async function getPotentialCarPurchase(
+export async function getPurchase(
   companyId: string,
   productId: string
 ): Promise<any> {
@@ -195,7 +188,7 @@ export async function getPotentialCarPurchase(
 
     return { status: 200, data: response.Item };
   } catch (error) {
-    console.error("[getPotentialCarPurchase] Error:", error);
+    console.error("[getPurchase] Error:", error);
     return errorObject;
   }
 }

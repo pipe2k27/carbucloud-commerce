@@ -4,12 +4,13 @@ const store = getDefaultStore();
 
 type CommonComponentAtomType = {
   showNewCarModal: boolean;
-  editingCarId?: string;
+  currentElementId?: string;
   showEditCarModal: boolean;
   showEditCarImagesModal: boolean;
   showNewCarPurchaseModal: boolean;
   showEditPurchaseModal: boolean;
   shouldRefreshRouter: boolean;
+  showEditPurchaseImages: boolean;
   confirmModal: {
     show: boolean;
     title?: string;
@@ -24,8 +25,9 @@ export const initialCommonComponentState: CommonComponentAtomType = {
   showEditCarImagesModal: false,
   showNewCarPurchaseModal: false,
   showEditPurchaseModal: false,
-  editingCarId: undefined,
+  currentElementId: undefined,
   shouldRefreshRouter: false,
+  showEditPurchaseImages: false,
   confirmModal: {
     show: false,
   },

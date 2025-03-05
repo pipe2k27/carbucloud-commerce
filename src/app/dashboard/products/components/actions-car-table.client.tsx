@@ -44,7 +44,7 @@ export function ActionsCarTable({ row }: { row: Car }) {
           "Ha habido un error de eliminando el producto, intentelo más tarde.",
       });
       setTimeout(() => {
-        window.location.reload();
+        router.refresh();
       }, 500);
     }
   };
@@ -72,7 +72,7 @@ export function ActionsCarTable({ row }: { row: Car }) {
           onClick={() => {
             setCommonComponentAtom({
               showEditCarModal: true,
-              editingCarId: row.productId,
+              currentElementId: row.productId,
               shouldRefreshRouter: true,
             });
           }}
@@ -83,7 +83,7 @@ export function ActionsCarTable({ row }: { row: Car }) {
           onClick={() => {
             setCommonComponentAtom({
               showEditCarImagesModal: true,
-              editingCarId: row.productId,
+              currentElementId: row.productId,
             });
           }}
         >

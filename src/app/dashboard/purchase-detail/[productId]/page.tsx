@@ -1,16 +1,16 @@
-import { getCarAction } from "@/service/actions/cars.actions";
 import { notFound } from "next/navigation";
-import ProductDetail from "./components/product-detail.client";
+import PurchaseDetail from "./components/purchase-detail.client";
 import { getStockImagesByProductIdAction } from "@/service/actions/images.actions";
+import { getPurchaseAction } from "@/service/actions/purchases.actions";
 
 interface Props {
   params: { productId: string };
 }
 
-export default async function ProductDetailPage({ params }: Props) {
+export default async function PurchaseDetailPage({ params }: Props) {
   const { productId } = params;
 
-  const response = await getCarAction(productId);
+  const response = await getPurchaseAction(productId);
   const imagesResponse = await getStockImagesByProductIdAction(productId);
   if (response.status !== 200 || !response.data) {
     return notFound(); // Show 404 if product is not found
@@ -21,5 +21,5 @@ export default async function ProductDetailPage({ params }: Props) {
 
   const images = imagesResponse.data.map((img: any) => img.imageUrl);
 
-  if (images) return <ProductDetail data={response.data} images={images} />;
+  if (images) return <PurchaseDetail data={response.data} images={images} />;
 }

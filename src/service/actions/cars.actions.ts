@@ -94,6 +94,24 @@ const carSchema = z.object({
     .max(50, "El modelo no puede superar 50 caracteres")
     .optional()
     .nullable(),
+  ownershipType: z
+    .string()
+    .trim()
+    .max(50, "El modelo no puede superar 50 caracteres")
+    .optional()
+    .nullable(),
+  ownerName: z
+    .string()
+    .trim()
+    .max(50, "El modelo no puede superar 50 caracteres")
+    .optional()
+    .nullable(),
+  ownerPhone: z
+    .string()
+    .trim()
+    .max(50, "El modelo no puede superar 50 caracteres")
+    .optional()
+    .nullable(),
 });
 
 export async function createCarAction(
