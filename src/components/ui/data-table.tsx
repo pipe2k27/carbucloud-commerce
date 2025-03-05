@@ -50,7 +50,7 @@ export function DataTable<TData, TValue>({
   const filteredData = useMemo(() => {
     if (!searchQuery) return data;
     return data.filter((row) =>
-      Object.values(row).some((value) =>
+      Object.values(row as Record<string, unknown>).some((value) =>
         String(value).toLowerCase().includes(searchQuery.toLowerCase())
       )
     );

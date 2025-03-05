@@ -3,12 +3,15 @@ import PurchaseDetail from "./components/purchase-detail.client";
 import { getStockImagesByProductIdAction } from "@/service/actions/images.actions";
 import { getPurchaseAction } from "@/service/actions/purchases.actions";
 
-interface Props {
-  params: { productId: string };
-}
+type Params = Promise<{ productId: string }>;
 
-export default async function PurchaseDetailPage({ params }: Props) {
-  const { productId } = params;
+type Props = {
+  params: Params;
+};
+
+const PurchaseDetailPage: React.FC<Props> = async ({ params }) => {
+  const pageparams = await params;
+  const { productId } = pageparams;
 
   const response = await getPurchaseAction(productId);
   const imagesResponse = await getStockImagesByProductIdAction(productId);
@@ -22,4 +25,7 @@ export default async function PurchaseDetailPage({ params }: Props) {
   const images = imagesResponse.data.map((img: any) => img.imageUrl);
 
   if (images) return <PurchaseDetail data={response.data} images={images} />;
-}
+  return notFound();
+};
+
+export default PurchaseDetailPage;

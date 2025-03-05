@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Car } from "lucide-react";
 // import { Tooltip } from "@/components/ui/tooltip"; // Ensure you have a Tooltip component from ShadCN UI or similar
 import { cn } from "@/lib/utils"; // Ensure you have a utility for conditional class names (optional)
@@ -56,7 +57,7 @@ const CarHoverImage: React.FC<HoverCarProps> = ({ imageUrl }) => {
       {isHovered && (
         <Portal>
           <div
-            onMouseEnter={(e) => setIsHovered(false)}
+            onMouseEnter={() => setIsHovered(false)}
             style={{
               transition: "all 0.1s ease-in",
               top: position?.y ? position.y - 248 : 100, // Offset by 10px below the mouse
@@ -72,10 +73,12 @@ const CarHoverImage: React.FC<HoverCarProps> = ({ imageUrl }) => {
               } `
             )}
           >
-            <img
+            <Image
               src={imageUrl}
               alt="Car Preview"
               className="rounded-2xl object-cover w-full h-full"
+              layout="fill"
+              objectFit="cover"
             />
           </div>
         </Portal>

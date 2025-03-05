@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   ArrowLeft,
 } from "lucide-react";
-import Image from "next/image";
 import { Car } from "@/dynamo-db/cars.db";
 import { useRouter } from "next/navigation";
 import { setCommonComponentAtom } from "@/jotai/common-components-atom.jotai";

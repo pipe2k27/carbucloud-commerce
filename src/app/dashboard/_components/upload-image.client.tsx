@@ -14,7 +14,6 @@ import { updateCarImageAction } from "@/service/actions/cars.actions";
 import { RefreshCcw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StockCarImage } from "@/dynamo-db/product-images.db";
-import { editCarByProductId } from "@/jotai/cars-atom.jotai";
 import { updatePotentiaCarPurchaseImageAction } from "@/service/actions/purchases.actions";
 
 type UploadImageProps = {

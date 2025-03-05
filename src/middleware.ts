@@ -22,7 +22,9 @@ const userCheck = async (jwt: JWT): Promise<User | false> => {
   return user.data as User;
 };
 
-export async function middleware(req) {
+import { NextRequest } from "next/server";
+
+export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   if (!token) {

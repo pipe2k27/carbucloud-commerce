@@ -6,9 +6,7 @@ import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
-export default function UserUnverifiedPage({
-  className,
-}: React.ComponentPropsWithoutRef<"div">) {
+export default function UserUnverifiedPage({ className }: any) {
   const { data: session } = useSession();
 
   if (!session) {
