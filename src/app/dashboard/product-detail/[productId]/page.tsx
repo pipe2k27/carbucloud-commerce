@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getCarAction } from "@/service/actions/cars.actions";
 import { notFound } from "next/navigation";
 import ProductDetail from "./components/product-detail.client";

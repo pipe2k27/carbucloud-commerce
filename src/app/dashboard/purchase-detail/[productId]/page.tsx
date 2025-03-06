@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { notFound } from "next/navigation";
 import PurchaseDetail from "./components/purchase-detail.client";
 import { getStockImagesByProductIdAction } from "@/service/actions/images.actions";
