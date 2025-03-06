@@ -80,7 +80,7 @@ const carSchema = z.object({
     .optional()
     .nullable(),
   status: z
-    .enum(["available", "reserved", "sold", "paused"])
+    .enum(["pending", "revision", "rejected", "buying"])
     .optional()
     .nullable(),
   mainImageUrl: z

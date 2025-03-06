@@ -8,6 +8,8 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { Car } from "./cars.db";
 
+export type PurchaseStatusType = "pending" | "revision" | "rejected" | "buying";
+
 export type FormPurchase = Pick<
   Car,
   | "brand"
@@ -19,7 +21,9 @@ export type FormPurchase = Pick<
   | "ownerPhone"
   | "currency"
   | "description"
->;
+> & {
+  status: PurchaseStatusType;
+};
 
 export type Purchase = Pick<
   Car,
@@ -39,7 +43,9 @@ export type Purchase = Pick<
   | "updatedAt"
   | "description"
   | "mainImageUrl"
->;
+> & {
+  status: PurchaseStatusType;
+};
 
 const TABLE_NAME = "potential-car-purchases-tier1";
 

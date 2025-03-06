@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Car, CarStatusType } from "@/dynamo-db/cars.db";
 import {
   CheckCircle2Icon,
   ChevronDown,
-  CircleDollarSign,
-  Clock,
-  PauseCircle,
+  HourglassIcon,
+  SearchIcon,
+  TimerReset,
 } from "lucide-react";
 
 import {
@@ -17,50 +16,54 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { updateCarAction } from "@/service/actions/cars.actions";
-import { editCarByProductId } from "@/jotai/cars-atom.jotai";
+import { Purchase, PurchaseStatusType } from "@/dynamo-db/purchases.db";
+import { updatePurchaseAction } from "@/service/actions/purchases.actions";
+import { editPurchaseByProductId } from "@/jotai/purchases-atom.jotai";
 
 interface StatusBadgeProps {
-  status: CarStatusType;
-  row: Car;
+  status: PurchaseStatusType;
+  row: Purchase;
 }
 
 const statusConfig: Record<
-  CarStatusType,
+  PurchaseStatusType,
   { label: string; icon: any; color: string }
 > = {
-  available: {
-    label: "Disponible",
-    icon: CheckCircle2Icon,
+  pending: {
+    label: "Pendiente",
+    icon: HourglassIcon,
     color: "text-primary",
   },
-  reserved: {
-    label: "Reservado",
-    icon: Clock,
-    color: "text-gray-500",
+  rejected: {
+    label: "Rechazado",
+    icon: TimerReset,
+    color: "text-red-500",
   },
-  sold: {
-    label: "Vendido",
-    icon: CircleDollarSign,
+  revision: {
+    label: "En revisión",
+    icon: SearchIcon,
+    color: "text-yellow-500",
+  },
+  buying: {
+    label: "Comprando",
+    icon: CheckCircle2Icon,
     color: "text-green-500",
-  },
-  paused: {
-    label: "Pausado",
-    icon: PauseCircle,
-    color: "text-muted",
   },
 };
 
-export const CarStatus: React.FC<StatusBadgeProps> = ({ status, row }) => {
-  const [currentStatus, setCurrentStatus] = useState<CarStatusType>(status);
+export const PurchaseStatus: React.FC<StatusBadgeProps> = ({ status, row }) => {
+  const [currentStatus, setCurrentStatus] =
+    useState<PurchaseStatusType>(status);
 
-  const handleStatusChange = async (newStatus: CarStatusType) => {
+  const handleStatusChange = async (newStatus: PurchaseStatusType) => {
     setCurrentStatus(newStatus);
     if (newStatus !== currentStatus) {
-      const res = await updateCarAction(row.productId, { status: newStatus });
-      editCarByProductId(row.productId, { status: newStatus });
+      const res = await updatePurchaseAction(row.productId, {
+        status: newStatus,
+      });
+      editPurchaseByProductId(row.productId, { status: newStatus });
       if (res.status !== 200) {
-        alert("Error al actualizar el estado del vehículo");
+        alert("Error al actualizar el estado de la compra");
         setCurrentStatus(currentStatus);
       }
     }
@@ -95,7 +98,7 @@ export const CarStatus: React.FC<StatusBadgeProps> = ({ status, row }) => {
           ([key, { label, icon: StatusIcon, color }]) => (
             <DropdownMenuItem
               key={key}
-              onClick={() => handleStatusChange(key as CarStatusType)}
+              onClick={() => handleStatusChange(key as PurchaseStatusType)}
               className={`flex items-center gap-2 ${color}`}
             >
               <StatusIcon className="w-4 h-4" />

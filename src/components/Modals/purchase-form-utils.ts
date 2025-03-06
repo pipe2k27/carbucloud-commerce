@@ -113,4 +113,5 @@ export const purchaseFormdefaultValues: FormPurchase = {
   km: 0,
   ownerName: "",
   ownerPhone: "",
+  status: "pending",
 };

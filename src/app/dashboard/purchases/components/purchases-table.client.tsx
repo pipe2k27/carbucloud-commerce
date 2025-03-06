@@ -5,12 +5,13 @@ import CarHoverImage from "./purchase-hover-image";
 import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 // import { ActionsCarTable } from "./actions-car-table.client";
-import { Purchase } from "@/dynamo-db/purchases.db";
+import { Purchase, PurchaseStatusType } from "@/dynamo-db/purchases.db";
 import { purchaseAtom, setPurchaseState } from "@/jotai/purchases-atom.jotai";
 import { PurchaseActionsTable } from "./purchase-actions-table.client";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
+import { PurchaseStatus } from "./purchase-status.client";
 
 // Define the column definitions for the used cars table
 
@@ -78,6 +79,19 @@ export default function PurchasesTable({
       accessorKey: "year",
       header: "Año",
       size: 5, // 10% of the table width
+    },
+    {
+      accessorKey: "status",
+      header: "Estado",
+      size: 13, // 15% of the table width
+      cell: ({ getValue, row }) => {
+        return (
+          <PurchaseStatus
+            status={getValue() as PurchaseStatusType}
+            row={row.original}
+          />
+        );
+      },
     },
     {
       accessorKey: "km",

@@ -7,7 +7,7 @@ import Modal from "./modal.client";
 import FormLabel from "../Form/form-label.client";
 import { useState } from "react";
 import { resetCommonComponentAtom } from "@/jotai/common-components-atom.jotai";
-import { Car, FormCar } from "@/dynamo-db/cars.db";
+import { Car } from "@/dynamo-db/cars.db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -35,7 +35,7 @@ const NewPurchaseModal = () => {
 
   const { toast } = useToast();
 
-  const { control, handleSubmit, watch } = useForm<FormCar>({
+  const { control, handleSubmit, watch } = useForm<FormPurchase>({
     defaultValues: purchaseFormdefaultValues,
     resolver: zodResolver(PurchaseSchema), // ✅ Apply Zod validation
   });
@@ -44,6 +44,7 @@ const NewPurchaseModal = () => {
     const newCar: FormPurchase = {
       ...data,
       km: Number(data.km),
+      status: "pending",
     };
     try {
       setLoading(true);

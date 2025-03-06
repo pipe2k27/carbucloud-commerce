@@ -9,7 +9,6 @@ import {
   commonComponentAtom,
   resetCommonComponentAtom,
 } from "@/jotai/common-components-atom.jotai";
-import { FormCar } from "@/dynamo-db/cars.db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -33,7 +32,7 @@ const EditPurchaseModal = () => {
 
   const { toast } = useToast();
 
-  const { control, handleSubmit, reset, watch } = useForm<FormCar>({
+  const { control, handleSubmit, reset, watch } = useForm<FormPurchase>({
     defaultValues: purchaseFormdefaultValues,
     resolver: zodResolver(PurchaseSchema), // ✅ Apply Zod validation
   });
@@ -90,6 +89,7 @@ const EditPurchaseModal = () => {
           buyingPrice: data.buyingPrice ? String(data.buyingPrice) : "0",
           ownerName: data.ownerName || "",
           ownerPhone: data.ownerPhone || "",
+          status: data.status,
         };
         reset(newDefaultValues);
       } else {
