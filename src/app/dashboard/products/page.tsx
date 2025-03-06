@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Metadata } from "next";
 import CarsTable from "./components/cars-table.client";
 import ProductsSummary from "./components/products-summary";

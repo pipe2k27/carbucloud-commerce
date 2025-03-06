@@ -42,7 +42,7 @@ const statusConfig: Record<
   revision: {
     label: "En revisión",
     icon: SearchIcon,
-    color: "text-yellow-500",
+    color: "text-yellow-300",
   },
   buying: {
     label: "Comprando",
