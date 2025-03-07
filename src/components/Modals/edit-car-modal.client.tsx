@@ -41,6 +41,7 @@ const EditCarModal = () => {
       ...data,
       price: Number(data.price),
       km: Number(data.km),
+      buyingPrice: Number(data.buyingPrice),
     };
     try {
       setLoading(true);
@@ -89,11 +90,11 @@ const EditCarModal = () => {
           currency: data.currency,
           price: String(data.price),
           description: data.description,
-          internalNotes: data.internalNotes,
+          internalNotes: data.internalNotes || "",
           km: String(data.km),
           status: data.status,
           traction: data.traction || "4x2",
-          buyingPrice: data.buyingPrice ? String(data.buyingPrice) : "0",
+          buyingPrice: data.buyingPrice,
           ownershipType: data.ownershipType || "",
           ownerName: data.ownerName || "",
           ownerPhone: data.ownerPhone || "",

@@ -113,13 +113,22 @@ export default function PurchasesTable({
     },
     {
       accessorKey: "buyingPrice",
-      header: "Costo",
-      cell: ({ getValue }) => (
-        <div className="text-primary font-semibold">
-          U$D {(getValue() as number)?.toLocaleString()}
-        </div>
-      ), // Format price with commas
-      size: 10, // 15% of the table width
+      header: "Precio",
+      cell: ({ getValue, row }) => {
+        if (row.original.currency === "ARS") {
+          return (
+            <div className="text-primary font-semibold">
+              ARS ${(getValue() as number)?.toLocaleString()}
+            </div>
+          );
+        }
+        return (
+          <div className="text-primary font-semibold">
+            U$D {(getValue() as number)?.toLocaleString()}
+          </div>
+        );
+      },
+      size: 12, // 15% of the table width
     },
     {
       id: "actions",

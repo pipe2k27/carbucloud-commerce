@@ -45,6 +45,7 @@ const NewPurchaseModal = () => {
       ...data,
       km: Number(data.km),
       status: "pending",
+      buyingPrice: Number(data.buyingPrice),
     };
     try {
       setLoading(true);

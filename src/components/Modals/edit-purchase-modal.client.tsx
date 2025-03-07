@@ -41,6 +41,8 @@ const EditPurchaseModal = () => {
     if (!currentElementId) return;
     const newCar: FormPurchase = {
       ...data,
+      buyingPrice: Number(data.buyingPrice),
+      km: Number(data.km),
     };
     try {
       setLoading(true);
@@ -86,10 +88,15 @@ const EditPurchaseModal = () => {
           currency: data.currency,
           description: data.description,
           km: String(data.km),
-          buyingPrice: data.buyingPrice ? String(data.buyingPrice) : "0",
+          buyingPrice: data.buyingPrice,
           ownerName: data.ownerName || "",
           ownerPhone: data.ownerPhone || "",
           status: data.status,
+          carType: data.carType,
+          transmission: data.transmission,
+          engine: data.engine || "",
+          traction: data.traction || "4x2",
+          internalNotes: data.internalNotes || "",
         };
         reset(newDefaultValues);
       } else {

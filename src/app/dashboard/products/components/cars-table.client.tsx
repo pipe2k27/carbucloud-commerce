@@ -105,11 +105,20 @@ export default function CarsTable({ cars }: { cars: Car[] }) {
     {
       accessorKey: "price",
       header: "Precio",
-      cell: ({ getValue }) => (
-        <div className="text-primary font-semibold">
-          U$D {(getValue() as number)?.toLocaleString()}
-        </div>
-      ), // Format price with commas
+      cell: ({ getValue, row }) => {
+        if (row.original.currency === "ARS") {
+          return (
+            <div className="text-primary font-semibold">
+              ARS ${(getValue() as number)?.toLocaleString()}
+            </div>
+          );
+        }
+        return (
+          <div className="text-primary font-semibold">
+            U$D {(getValue() as number)?.toLocaleString()}
+          </div>
+        );
+      },
       size: 12, // 15% of the table width
     },
     {

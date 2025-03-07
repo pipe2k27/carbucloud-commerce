@@ -88,8 +88,12 @@ export default function PurchaseDetail({ data, images }: Props) {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <DetailItem label="Año" value={purchase.year} />
+            <DetailItem label="Tipo" value={purchase.carType} />
+            <DetailItem label="Transmisión" value={purchase.transmission} />
+            <DetailItem label="Motor" value={purchase.engine} />
+            <DetailItem label="Tracción" value={purchase.traction} />
             <DetailItem label="Kilometraje" value={`${purchase.km} km`} />
-            <DetailItem label="Nombre del Dueño:" value={purchase.ownerName} />
+            <DetailItem label="Estado" value={purchase.status} />
             <DetailItem
               label="Teléfono del Dueño"
               value={purchase.ownerPhone}
@@ -104,6 +108,7 @@ export default function PurchaseDetail({ data, images }: Props) {
           </div>
           <div className="w-full h-[1px] bg-gray-300 mt-6" />
           <DetailText label="Descripción" value={purchase.description} />
+          <DetailText label="Notas Internas" value={purchase.internalNotes} />\
         </CardContent>
       </Card>
     </div>

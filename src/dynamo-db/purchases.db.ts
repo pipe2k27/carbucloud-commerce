@@ -6,44 +6,18 @@ import {
   DeleteCommand,
   QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { Car } from "./cars.db";
+import { Car, FormCar } from "./cars.db";
 
 export type PurchaseStatusType = "pending" | "revision" | "rejected" | "buying";
 
-export type FormPurchase = Pick<
-  Car,
-  | "brand"
-  | "model"
-  | "year"
-  | "km"
-  | "buyingPrice"
-  | "ownerName"
-  | "ownerPhone"
-  | "currency"
-  | "description"
+export type FormPurchase = Omit<
+  FormCar,
+  "status" | "ownershipType" | "price"
 > & {
   status: PurchaseStatusType;
 };
 
-export type Purchase = Pick<
-  Car,
-  | "productId"
-  | "companyId"
-  | "brand"
-  | "model"
-  | "year"
-  | "km"
-  | "buyingPrice"
-  | "ownerName"
-  | "ownerPhone"
-  | "currency"
-  | "createdAt"
-  | "userId"
-  | "createdBy"
-  | "updatedAt"
-  | "description"
-  | "mainImageUrl"
-> & {
+export type Purchase = Omit<Car, "status" | "ownershipType" | "price"> & {
   status: PurchaseStatusType;
 };
 

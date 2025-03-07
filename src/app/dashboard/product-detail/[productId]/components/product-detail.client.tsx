@@ -107,8 +107,8 @@ export default function ProductDetail({ data, images }: Props) {
             />
           </div>
           <div className="w-full h-[1px] bg-gray-300 mt-6" />
-          <DetailText label="Notas Internas" value={car.internalNotes} />
           <DetailText label="Descripción" value={car.description} />
+          <DetailText label="Notas Internas" value={car.internalNotes} />
         </CardContent>
       </Card>
     </div>

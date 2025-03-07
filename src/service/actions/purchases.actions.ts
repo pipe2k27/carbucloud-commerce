@@ -57,11 +57,6 @@ const carSchema = z.object({
     .max(3, "La moneda debe ser un código de 3 letras")
     .optional()
     .nullable(),
-  price: z
-    .number()
-    .min(0, "El precio no puede ser negativo")
-    .optional()
-    .nullable(),
   description: z
     .string()
     .trim()
@@ -89,6 +84,18 @@ const carSchema = z.object({
     .optional()
     .nullable(),
   productId: z
+    .string()
+    .trim()
+    .max(50, "El modelo no puede superar 50 caracteres")
+    .optional()
+    .nullable(),
+  ownerName: z
+    .string()
+    .trim()
+    .max(50, "El modelo no puede superar 50 caracteres")
+    .optional()
+    .nullable(),
+  ownerPhone: z
     .string()
     .trim()
     .max(50, "El modelo no puede superar 50 caracteres")
