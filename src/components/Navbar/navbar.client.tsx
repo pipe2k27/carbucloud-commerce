@@ -25,7 +25,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="flex items-center bg-card justify-between px-6 py-4">
+      <nav className="flex items-center bg-card justify-between px-6 py-4 z-50 relative shadow-sm">
         {/* Logo */}
         <div className="text-lg logo-title flex text-primary font-bold">
           <Cloud className="mr-1" /> CarbuCloud

@@ -2,30 +2,29 @@
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { useAtomValue } from "jotai";
-import { carsAtom, setCarsState } from "@/jotai/cars-atom.jotai";
-import { Car, CarStatusType } from "@/dynamo-db/cars.db";
 import { useEffect, useState } from "react";
-import { ActionsCarTable } from "./actions-car-table.client";
-import { CarStatus } from "./car-status.client";
+import { ActionsCarTable } from "./actions-sales-table.client";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import PictureIcon from "@/components/ui/picture-icon";
-import { Car as LucideCar } from "lucide-react";
+import { TrendingUpIcon } from "lucide-react";
+import { Sale } from "@/dynamo-db/sales.db";
+import { salesAtom, setSalesState } from "@/jotai/sales-atom.jotai";
 
-// Define the column definitions for the used cars table
+// Define the column definitions for the used sales table
 
-export default function CarsTable({ cars }: { cars: Car[] }) {
-  const { filteredCars } = useAtomValue(carsAtom);
+export default function SalesTable({ sales }: { sales: Sale[] }) {
+  const { filteredSales } = useAtomValue(salesAtom);
   const [showPictures, setShowPictures] = useState<boolean>(false);
 
   useEffect(() => {
-    if (cars.length) {
-      setCarsState({ filteredCars: cars, cars });
+    if (sales.length) {
+      setSalesState({ filteredSales: sales, sales });
     }
-  }, [cars]);
+  }, [sales]);
 
-  const initialColumns: ColumnDef<Car>[] = [
+  const initialColumns: ColumnDef<Sale>[] = [
     {
       accessorKey: "mainImageUrl",
       size: 1,
@@ -55,7 +54,7 @@ export default function CarsTable({ cars }: { cars: Car[] }) {
       cell: ({ getValue, row }) => (
         <div className="flex gap-2 items-center">
           <PictureIcon
-            icon={<LucideCar />}
+            icon={<TrendingUpIcon />}
             imageUrl={
               row?.original?.mainImageUrl || // Access another field from the row
               "https://http2.mlstatic.com/D_NQ_NP_2X_909044-MLA81304104973_122024-F.webp"
@@ -64,12 +63,12 @@ export default function CarsTable({ cars }: { cars: Car[] }) {
           {getValue() as string}
         </div>
       ),
-      size: 15, // 20% of the table width
+      size: 5, // 20% of the table width
     },
     {
       accessorKey: "model",
       header: "Modelo",
-      size: 15, // 15% of the table width
+      size: 10, // 15% of the table width
     },
     {
       accessorKey: "year",
@@ -77,36 +76,16 @@ export default function CarsTable({ cars }: { cars: Car[] }) {
       size: 5, // 10% of the table width
     },
     {
-      accessorKey: "status",
-      header: "Estado",
-      size: 13, // 15% of the table width
-      cell: ({ getValue, row }) => {
-        return (
-          <CarStatus status={getValue() as CarStatusType} row={row.original} />
-        );
-      },
-    },
-    {
-      accessorKey: "km",
-      header: "KM",
+      accessorKey: "createdAt",
+      header: "Fecha de Venta",
       size: 10, // 15% of the table width
-      cell: ({ getValue }) => (
-        <div>{(getValue() as number)?.toLocaleString()} KM</div>
-      ),
+      // cell: ({ getValue }) => (
+      //   <div>{(getValue() as number)?.toLocaleString()} KM</div>
+      // ),
     },
     {
-      accessorKey: "transmission",
-      header: "Transmisión",
-      size: 10, // 15% of the table width
-    },
-    {
-      accessorKey: "carType",
-      header: "Tipo",
-      size: 10, // 15% of the table width
-    },
-    {
-      accessorKey: "price",
-      header: "Precio",
+      accessorKey: "soldPrice",
+      header: "Precio de Venta",
       cell: ({ getValue, row }) => {
         if (row.original.currency === "ARS") {
           return (
@@ -117,6 +96,49 @@ export default function CarsTable({ cars }: { cars: Car[] }) {
         }
         return (
           <div className="text-primary font-semibold">
+            U$D {(getValue() as number)?.toLocaleString()}
+          </div>
+        );
+      },
+      size: 12, // 15% of the table width
+    },
+    {
+      accessorKey: "buyingPrice",
+      header: "Precio de Compra",
+      cell: ({ getValue, row }) => {
+        if (row.original.currency === "ARS") {
+          return (
+            <div className="text-red-400 font-semibold">
+              ARS ${(getValue() as number)?.toLocaleString()}
+            </div>
+          );
+        }
+        return (
+          <div className="text-red-400  font-semibold">
+            U$D {(getValue() as number)?.toLocaleString()}
+          </div>
+        );
+      },
+      size: 12, // 15% of the table width
+    },
+    {
+      accessorKey: "saleCost",
+      header: "Costos / Comisiones",
+      cell: ({ getValue }) => {
+        return (
+          <div className="text-red-400  font-semibold">
+            U$D {(getValue() as number)?.toLocaleString()}
+          </div>
+        );
+      },
+      size: 12, // 15% of the table width
+    },
+    {
+      accessorKey: "profit",
+      header: "Ganancia",
+      cell: ({ getValue }) => {
+        return (
+          <div className="text-primary  font-semibold">
             U$D {(getValue() as number)?.toLocaleString()}
           </div>
         );
@@ -152,7 +174,11 @@ export default function CarsTable({ cars }: { cars: Car[] }) {
         <Label htmlFor="airplane-mode">Mostrar Fotos</Label>
       </div>
       <div className="py-10" suppressHydrationWarning>
-        <DataTable columns={columns} data={filteredCars || []} />
+        <DataTable
+          columns={columns}
+          data={filteredSales || []}
+          initialSort={[]}
+        />
       </div>
     </>
   );

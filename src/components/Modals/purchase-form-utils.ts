@@ -12,7 +12,11 @@ import { FormPurchase } from "@/dynamo-db/purchases.db";
 import { tractionOptions } from "@/dynamo-db/cars.db";
 
 export const PurchaseSchema = z.object({
-  brand: z.string().trim().max(50, "La marca no puede superar 50 caracteres"),
+  brand: z
+    .string()
+    .trim()
+    .max(50, "La marca no puede superar 50 caracteres")
+    .min(1, "Por favor complete este campo"),
   model: z
     .string()
     .trim()
@@ -42,11 +46,12 @@ export const PurchaseSchema = z.object({
     .trim()
     .min(1, "Por favor complete este campo")
     .max(3, "La moneda debe ser un código de 3 letras"),
-  buyingPrice: z.coerce.number().min(0, "El precio debe ser positivo"), // ✅ Ensures price is a number
+  buyingPrice: z.coerce.number().min(-2, "El precio debe ser positivo"), // ✅ Ensures price is a number
   km: z.coerce
     .number()
     .min(0, "El kilometraje no puede ser negativo")
-    .max(30000000, "El kilometraje no puede ser tan alto"), // ✅ Ensures km is a number
+    .max(30000000, "El kilometraje no puede ser tan alto")
+    .refine((value) => !isNaN(value), { message: "Este campo es obligatorio" }), // ✅ Ensures km is a number
   description: z
     .string()
     .trim()
@@ -186,3 +191,47 @@ export const purchaseFormdefaultValues: FormPurchase = {
   status: "pending",
   traction: "4x2",
 };
+
+export const ownershipToPurchaseOptions = [
+  { value: "own", label: "Producto Propio (La empresa compra el vehículo)" },
+  {
+    value: "other",
+    label: "Producto de un Tercero (se venderá en consignación)",
+  },
+];
+
+export const purchaseToStockSchema = z.object({
+  currency: z
+    .string()
+    .trim()
+    .min(1, "Por favor complete este campo")
+    .max(3, "La moneda debe ser un código de 3 letras"),
+  price: z.coerce.number().min(1, "El precio debe ser positivo"),
+  buyingPrice: z.coerce.number().min(0, "El precio debe ser positivo"),
+  ownershipType: z
+    .string()
+    .trim()
+    .min(1, "Por favor complete este campo")
+    .max(50, "No puede superar 50 caracteres"),
+});
+
+export const purchaseToStockFormFields: Field[] = [
+  {
+    name: "currency",
+    label: "Moneda:",
+    type: "options",
+    options: currencyOptions,
+  },
+  {
+    name: "buyingPrice",
+    label: "Precio de compra (o consignación):",
+    type: "number",
+  },
+  { name: "price", label: "Precio de Venta:", type: "number" },
+  {
+    name: "ownershipType",
+    label: "Dueño del vehículo:",
+    type: "options",
+    options: ownershipToPurchaseOptions,
+  },
+];

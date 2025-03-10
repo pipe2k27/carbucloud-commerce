@@ -13,6 +13,8 @@ import { authConfig } from "../../../next-auth.config";
 import { getUser } from "@/dynamo-db/user.db";
 import { z } from "zod";
 import { errorObject, ServerResponse } from "@/constants/api-constants";
+import { Sale } from "@/dynamo-db/sales.db";
+import { convertCarToSale } from "@/dynamo-db/transactions.db";
 
 const carSchema = z.object({
   brand: z
@@ -320,6 +322,110 @@ export async function deleteCarAction(
     return deleteResponse;
   } catch (error) {
     console.error("[deleteCarAction] Error:", error);
+    return errorObject;
+  }
+}
+
+// ✅ Schema to validate sale data
+const saleDataSchema = z.object({
+  soldPrice: z.number().min(0, "El precio de venta no puede ser negativo"),
+  saleCost: z.number().min(0, "Los costos no pueden ser negativa"),
+  seller: z.string().trim().max(100),
+  saleDate: z.string().optional(),
+});
+
+// ✅ Function to fetch latest "Dólar Blue" exchange rate
+const fetchDolarBlueRate = async (): Promise<number | null> => {
+  try {
+    const response = await fetch("https://dolarapi.com/v1/dolares/blue");
+    if (!response.ok) {
+      throw new Error("Failed to fetch Dólar Blue exchange rate");
+    }
+    const data = await response.json();
+    const ventaRate = Number(data?.venta);
+    return isNaN(ventaRate) ? null : ventaRate;
+  } catch (error) {
+    console.error("[fetchDolarBlueRate] Error:", error);
+    return null;
+  }
+};
+
+// ✅ Convert Car to Sale with Dólar Blue Rate
+export async function convertCarToSaleAction(
+  car: Car,
+  saleData: Partial<Sale>
+): Promise<ServerResponse> {
+  try {
+    // ✅ Get session from NextAuth
+    const session = await getServerSession(authConfig);
+    if (!session || !session.user.id) {
+      return { status: 401, message: "Unauthorized: User not logged in" };
+    }
+
+    const userId = session.user.id;
+    const user = await getUser({ userId });
+
+    if (!user || user.status !== 200 || !user.data?.companyId) {
+      return { status: 404, message: "User not found" };
+    }
+
+    // ✅ Validate sale data
+    const validatedSale = saleDataSchema.safeParse(saleData);
+    if (!validatedSale.success) {
+      return {
+        status: 400,
+        message: "Invalid sale data",
+        data: validatedSale.error,
+      };
+    }
+
+    // ✅ Fetch latest "Dólar Blue" exchange rate
+    const dolarBlueRate = await fetchDolarBlueRate();
+    if (!dolarBlueRate) {
+      return {
+        status: 400,
+        message: "Failed to retrieve Dólar Blue exchange rate",
+      };
+    }
+
+    const now = new Date().toISOString();
+
+    const prices: any = {
+      price: Number(car.price),
+      soldPrice: Number(saleData.soldPrice),
+      buyingPrice: Number(car.buyingPrice),
+      saleCost: Number(saleData.saleCost),
+    };
+
+    if (saleData.currency === "ARS") {
+      prices.soldPrice = Math.round(prices.soldPrice / dolarBlueRate);
+      prices.saleCost = Math.round(prices.saleCost / dolarBlueRate);
+    }
+
+    if (car.currency === "ARS") {
+      prices.price = Math.round(prices.price / dolarBlueRate);
+      prices.buyingPrice = Math.round(prices.buyingPrice / dolarBlueRate);
+    }
+
+    prices.profit = prices.soldPrice - prices.saleCost - prices.buyingPrice;
+
+    // ✅ Generate sale object with price converted to Dólar Blue
+    const sale: Sale = {
+      ...car,
+      ...saleData,
+      ...prices,
+      createdAt: now,
+      updatedAt: now,
+      userId,
+      createdBy: user.data.name || "Desconocido",
+      status: "sold",
+      currency: "USD",
+    } as Sale;
+
+    // ✅ Call transaction function to delete car & create sale
+    return await convertCarToSale(sale);
+  } catch (error) {
+    console.error("[convertCarToSaleAction] Error:", error);
     return errorObject;
   }
 }

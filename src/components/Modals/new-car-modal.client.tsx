@@ -41,6 +41,7 @@ const NewCarModal = () => {
       ...data,
       status: "available",
       price: Number(data.price),
+      buyingPrice: Number(data.buyingPrice),
       km: Number(data.km),
     };
     try {

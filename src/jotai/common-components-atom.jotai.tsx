@@ -11,6 +11,8 @@ type CommonComponentAtomType = {
   showEditPurchaseModal: boolean;
   shouldRefreshRouter: boolean;
   showEditPurchaseImages: boolean;
+  showPurchaseToStockModal: boolean;
+  showCarToSaleModal: boolean;
   confirmModal: {
     show: boolean;
     title?: string;
@@ -28,6 +30,8 @@ export const initialCommonComponentState: CommonComponentAtomType = {
   currentElementId: undefined,
   shouldRefreshRouter: false,
   showEditPurchaseImages: false,
+  showPurchaseToStockModal: false,
+  showCarToSaleModal: false,
   confirmModal: {
     show: false,
   },

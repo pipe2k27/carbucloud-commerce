@@ -7,6 +7,7 @@ import {
   Image,
   Trash2,
   PlusCircle,
+  TrendingUp,
 } from "lucide-react";
 
 import {
@@ -88,6 +89,16 @@ export function ActionsCarTable({ row }: { row: Car }) {
           }}
         >
           <Image size={18} className="mr-2" /> Cargar o modificar imágenes
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            setCommonComponentAtom({
+              showCarToSaleModal: true,
+              currentElementId: row.productId,
+            });
+          }}
+        >
+          <TrendingUp size={18} className="mr-2" /> Pasar a Vendidos
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem

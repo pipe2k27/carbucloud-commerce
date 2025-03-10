@@ -1,39 +1,39 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, ReactNode } from "react";
 import Image from "next/image";
-// import { Tooltip } from "@/components/ui/tooltip"; // Ensure you have a Tooltip component from ShadCN UI or similar
-import { cn } from "@/lib/utils"; // Ensure you have a utility for conditional class names (optional)
 import { createPortal } from "react-dom";
-import { CircleDollarSign } from "lucide-react";
+import { cn } from "@/lib/utils"; // Ensure you have a utility for conditional class names (optional)
 
-interface HoverCarProps {
-  imageUrl: string; // URL of the image to display
+interface HoverImageProps {
+  imageUrl: string;
+  className?: string; // Accepts any string as a class name
+  icon: ReactNode; // Accepts any ReactNode as the icon
 }
 
 interface PortalProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const Portal: React.FC<PortalProps> = ({ children }) => {
-  // Ensure the root div exists
   const rootElement = document.getElementById("__next") || document.body;
-
-  // Render children into the root element
   return createPortal(children, rootElement);
 };
 
-const CarHoverImage: React.FC<HoverCarProps> = ({ imageUrl }) => {
+const PictureIcon: React.FC<HoverImageProps> = ({
+  imageUrl,
+  icon,
+  className,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-
   const [position, setPosition] = useState<{ x: number; y: number } | null>(
     null
   );
 
   useEffect(() => {
     if (isHovered) {
-      const timeout = setTimeout(() => setIsVisible(true), 100); // Delay to trigger transition
+      const timeout = setTimeout(() => setIsVisible(true), 100);
       return () => clearTimeout(timeout);
     } else {
       setIsVisible(false);
@@ -52,7 +52,12 @@ const CarHoverImage: React.FC<HoverCarProps> = ({ imageUrl }) => {
       onMouseEnter={(e) => handleMouseEnter(e)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <CircleDollarSign className="cursor-pointer text-primary hover:opacity-50" />
+      {/* Ensure the provided icon keeps the fixed class */}
+      <div className="cursor-pointer text-primary hover:opacity-50">
+        {React.cloneElement(icon as React.ReactElement<any>, {
+          className: `cursor-pointer text-primary hover:opacity-50 ${className}`,
+        })}
+      </div>
 
       {isHovered && (
         <Portal>
@@ -60,7 +65,7 @@ const CarHoverImage: React.FC<HoverCarProps> = ({ imageUrl }) => {
             onMouseEnter={() => setIsHovered(false)}
             style={{
               transition: "all 0.1s ease-in",
-              top: position?.y ? position.y - 248 : 100, // Offset by 10px below the mouse
+              top: position?.y ? position.y - 248 : 100,
               left: position?.x ? position.x - 130 : 100,
               borderWidth: 2,
             }}
@@ -87,4 +92,4 @@ const CarHoverImage: React.FC<HoverCarProps> = ({ imageUrl }) => {
   );
 };
 
-export default CarHoverImage;
+export default PictureIcon;

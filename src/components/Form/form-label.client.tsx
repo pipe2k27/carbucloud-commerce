@@ -5,7 +5,7 @@ type Props = {
   required?: boolean;
 };
 
-const FormLabel: React.FC<Props> = ({ label, required }) => {
+const FormLabel: React.FC<Props> = ({ label }) => {
   return (
     <div
       className="mb-1 flex items-center
@@ -23,9 +23,9 @@ const FormLabel: React.FC<Props> = ({ label, required }) => {
       </svg> */}
       <label>
         {label}
-        {!required && (
+        {/* {!required && (
           <span className="ml-1 text-xs italic text-gray-600">*Opcional</span>
-        )}
+        )} */}
       </label>
     </div>
   );

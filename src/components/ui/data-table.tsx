@@ -27,6 +27,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -76,6 +81,8 @@ export function DataTable<TData, TValue>({
 
   const pageIndex = table.getState().pagination.pageIndex;
   const pageCount = table.getPageCount();
+
+  const disabledTooltips = new Set(["brand", "status", "actions"]);
 
   return (
     <>
@@ -131,10 +138,44 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+                    <TableCell
+                      key={cell.id}
+                      className="relative max-w-[200px] truncate overflow-hidden"
+                    >
+                      {/* <Tooltip>
+                        <TooltipTrigger className="w-full block truncate">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TooltipTrigger>
+                        <TooltipContent className="p-2 bg-card text-xs text-card-foreground shadow-md rounded-md">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TooltipContent>
+                      </Tooltip> */}
+                      {!disabledTooltips.has(cell.column.id) ? (
+                        <Tooltip>
+                          <TooltipTrigger className="w-full block truncate text-left">
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TooltipTrigger>
+                          <TooltipContent className="p-2 bg-card text-xs text-card-foreground shadow-md rounded-md">
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )
                       )}
                     </TableCell>
                   ))}

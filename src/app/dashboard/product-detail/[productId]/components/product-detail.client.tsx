@@ -6,10 +6,10 @@ import {
   Pencil,
   Image as ImageIcon,
   Car as CarIcon,
-  CheckCircle2,
   ArrowLeft,
+  CircleArrowRight,
 } from "lucide-react";
-import { Car } from "@/dynamo-db/cars.db";
+import { Car, ownershipOptions } from "@/dynamo-db/cars.db";
 import { useRouter } from "next/navigation";
 import { setCommonComponentAtom } from "@/jotai/common-components-atom.jotai";
 import { useEffect, useState } from "react";
@@ -46,8 +46,8 @@ export default function ProductDetail({ data, images }: Props) {
       </div>
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold flex items-center">
-          <CarIcon className="mr-2 scale-x-[-1] text-primary w-8 h-8" />
-          {car.brand} {car.model}
+          <CircleArrowRight className="mr-2 text-primary w-6 h-6" />
+          Detalles del Vehículo
         </h1>
         <div className="flex space-x-2">
           <Button
@@ -83,8 +83,8 @@ export default function ProductDetail({ data, images }: Props) {
         <CardContent className="md:w-2/3 p-4">
           <div className="text-lg font-bold mb-4 flex items-center">
             {" "}
-            <CheckCircle2 className="mr-2 text-primary w-5 h-5" />
-            Detalles del Vehículo
+            <CarIcon className="mr-2  scale-x-[-1] text-primary w-6 h-6" />
+            {car.brand} {car.model}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <DetailItem label="Año" value={car.year} />
@@ -100,11 +100,24 @@ export default function ProductDetail({ data, images }: Props) {
               className="text-primary"
             />
             <DetailItem
+              label="Dueño"
+              value={
+                ownershipOptions.find((e) => e.value === car.ownershipType)
+                  ?.label || "Sin Especificar"
+              }
+            />
+            <DetailItem
               label="Precio de compra"
               value={`${car.currency} $${
                 car.buyingPrice?.toLocaleString("es") || 0
               }`}
             />
+            {car.ownershipType === "other" && car.ownerName && (
+              <DetailItem label="Nombre del dueño" value={car.ownerName} />
+            )}
+            {car.ownershipType === "other" && car.ownerPhone && (
+              <DetailItem label="Telefono del dueño" value={car.ownerPhone} />
+            )}
           </div>
           <div className="w-full h-[1px] bg-gray-300 mt-6" />
           <DetailText label="Descripción" value={car.description} />

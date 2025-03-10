@@ -1,7 +1,6 @@
 "use client";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import CarHoverImage from "./purchase-hover-image";
 import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 // import { ActionsCarTable } from "./actions-car-table.client";
@@ -12,6 +11,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { PurchaseStatus } from "./purchase-status.client";
+import PictureIcon from "@/components/ui/picture-icon";
+import { PackagePlus } from "lucide-react";
 
 // Define the column definitions for the used cars table
 
@@ -59,7 +60,9 @@ export default function PurchasesTable({
       header: "Marca",
       cell: ({ getValue, row }) => (
         <div className="flex gap-2 items-center">
-          <CarHoverImage
+          <PictureIcon
+            className="w-5 h-5"
+            icon={<PackagePlus />}
             imageUrl={
               row?.original?.mainImageUrl || // Access another field from the row
               "https://http2.mlstatic.com/D_NQ_NP_2X_909044-MLA81304104973_122024-F.webp"
@@ -147,7 +150,7 @@ export default function PurchasesTable({
   );
 
   return (
-    <div className="container py-10" suppressHydrationWarning>
+    <div className="py-10" suppressHydrationWarning>
       <div className="flex items-center space-x-2 translate-y-[50px] w-[300px]">
         <Switch
           id="airplane-mode"

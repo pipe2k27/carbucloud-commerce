@@ -3,6 +3,7 @@
 import * as React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { SessionProvider } from "next-auth/react";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 
 export function ThemeProvider({
   children,
@@ -10,7 +11,9 @@ export function ThemeProvider({
 }: React.ComponentProps<typeof NextThemesProvider>) {
   return (
     <SessionProvider>
-      <NextThemesProvider {...props}>{children}</NextThemesProvider>
+      <NextThemesProvider {...props}>
+        <TooltipProvider>{children}</TooltipProvider>
+      </NextThemesProvider>
     </SessionProvider>
   );
 }

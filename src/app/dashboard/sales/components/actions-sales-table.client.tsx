@@ -1,14 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 "use client";
 
-import {
-  MoreHorizontal,
-  Pencil,
-  Image,
-  Trash2,
-  PlusCircle,
-  TrendingUp,
-} from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, PlusCircle } from "lucide-react";
 
 import {
   DropdownMenuItem,
@@ -22,21 +15,21 @@ import {
   resetCommonComponentAtom,
   setCommonComponentAtom,
 } from "@/jotai/common-components-atom.jotai";
+import { Car } from "@/dynamo-db/cars.db";
 import { useRouter } from "next/navigation";
-import { Purchase } from "@/dynamo-db/purchases.db";
-import { deleteOnePurchaseFromAtom } from "@/jotai/purchases-atom.jotai";
 import { useToast } from "@/hooks/use-toast";
-import { deletePurchaseAction } from "@/service/actions/purchases.actions";
+import { deleteOneSaleFromAtom } from "@/jotai/sales-atom.jotai";
+import { deleteSaleAction } from "@/service/actions/sales.actions";
 
-export function PurchaseActionsTable({ row }: { row: Purchase }) {
+export function ActionsCarTable({ row }: { row: Car }) {
   const router = useRouter();
 
   const { toast } = useToast();
 
-  const deletePurchase = async () => {
-    deleteOnePurchaseFromAtom(row.productId);
+  const deleteCar = async () => {
+    deleteOneSaleFromAtom(row.productId);
     resetCommonComponentAtom();
-    const res = await deletePurchaseAction(row.productId);
+    const res = await deleteSaleAction(row.productId);
     if (res.status !== 200) {
       toast({
         variant: "destructive",
@@ -64,40 +57,21 @@ export function PurchaseActionsTable({ row }: { row: Purchase }) {
       <DropdownMenuContent align="end" className="w-[260px]">
         <DropdownMenuItem
           onClick={() => {
-            router.push(`/dashboard/purchase-detail/${row.productId}`);
+            router.push(`/dashboard/sale-detail/${row.productId}`);
           }}
         >
           <PlusCircle size={18} className="mr-2" /> Ver detalles
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => {
-            setCommonComponentAtom({
-              showEditPurchaseModal: true,
-              currentElementId: row.productId,
-            });
-          }}
+        // onClick={() => {
+        //   setCommonComponentAtom({
+        //     showEditCarModal: true,
+        //     currentElementId: row.productId,
+        //     shouldRefreshRouter: true,
+        //   });
+        // }}
         >
           <Pencil size={18} className="mr-2" /> Editar datos del producto
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => {
-            setCommonComponentAtom({
-              showEditPurchaseImages: true,
-              currentElementId: row.productId,
-            });
-          }}
-        >
-          <Image size={18} className="mr-2" /> Cargar o modificar imágenes
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => {
-            setCommonComponentAtom({
-              showPurchaseToStockModal: true,
-              currentElementId: row.productId,
-            });
-          }}
-        >
-          <TrendingUp size={18} className="mr-2" /> Convertir en stock
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -105,10 +79,10 @@ export function PurchaseActionsTable({ row }: { row: Purchase }) {
             setCommonComponentAtom({
               confirmModal: {
                 show: true,
-                title: "Eliminar Posible Compra",
-                description: `¿Está seguro que desea eliminar la compra: ${row.brand} ${row.model} ${row.year}?`,
+                title: "Eliminar producto",
+                description: `¿Está seguro que desea eliminar la venta ${row.brand} ${row.model} ${row.year}?`,
                 onConfirm: () => {
-                  deletePurchase();
+                  deleteCar();
                 },
               },
             });

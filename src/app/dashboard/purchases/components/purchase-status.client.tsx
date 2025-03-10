@@ -7,6 +7,7 @@ import {
   HourglassIcon,
   SearchIcon,
   TimerReset,
+  TrendingUp,
 } from "lucide-react";
 
 import {
@@ -19,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Purchase, PurchaseStatusType } from "@/dynamo-db/purchases.db";
 import { updatePurchaseAction } from "@/service/actions/purchases.actions";
 import { editPurchaseByProductId } from "@/jotai/purchases-atom.jotai";
+import { setCommonComponentAtom } from "@/jotai/common-components-atom.jotai";
 
 interface StatusBadgeProps {
   status: PurchaseStatusType;
@@ -45,7 +47,12 @@ const statusConfig: Record<
     color: "text-yellow-300",
   },
   buying: {
-    label: "Comprando",
+    label: "Por Comprar",
+    icon: TrendingUp,
+    color: "text-primary",
+  },
+  bought: {
+    label: "Comprado",
     icon: CheckCircle2Icon,
     color: "text-green-500",
   },
@@ -56,6 +63,14 @@ export const PurchaseStatus: React.FC<StatusBadgeProps> = ({ status, row }) => {
     useState<PurchaseStatusType>(status);
 
   const handleStatusChange = async (newStatus: PurchaseStatusType) => {
+    if (newStatus === "bought") {
+      setCommonComponentAtom({
+        currentElementId: row.productId,
+        showPurchaseToStockModal: true,
+      });
+      return;
+    }
+
     setCurrentStatus(newStatus);
     if (newStatus !== currentStatus) {
       const res = await updatePurchaseAction(row.productId, {

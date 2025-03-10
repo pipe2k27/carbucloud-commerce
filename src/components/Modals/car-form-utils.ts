@@ -14,7 +14,11 @@ import { z } from "zod";
 import { Field } from "../Form/automatic-form.client";
 
 export const carSchema = z.object({
-  brand: z.string().trim().max(50, "La marca no puede superar 50 caracteres"),
+  brand: z
+    .string()
+    .trim()
+    .min(1, "Por favor complete este campo")
+    .max(50, "La marca no puede superar 50 caracteres"),
   model: z
     .string()
     .trim()
@@ -210,3 +214,42 @@ export const carFormdefaultValues: FormCar = {
   ownerName: "",
   ownerPhone: "",
 };
+
+export const carToSaleSchema = z.object({
+  currency: z
+    .string()
+    .trim()
+    .min(1, "Por favor complete este campo")
+    .max(3, "La moneda debe ser un código de 3 letras"),
+  seller: z
+    .string()
+    .trim()
+    .min(1, "Por favor complete este campo")
+    .max(100, "Maximo 100 letras"),
+  soldPrice: z.coerce.number().min(1, "El precio debe ser positivo"),
+  saleCost: z.coerce.number().min(0, "El precio debe ser positivo"),
+});
+
+export const carToSaleFormFields: Field[] = [
+  {
+    name: "currency",
+    label: "Moneda (se convertirá a dolares al pasar a ventas):",
+    type: "options",
+    options: currencyOptions,
+  },
+  {
+    name: "soldPrice",
+    label: "Precio de Venta:",
+    type: "number",
+  },
+  {
+    name: "saleCost",
+    label: "Costos de venta / comisiones totales:",
+    type: "number",
+  },
+  {
+    name: "seller",
+    label: "Vendido por:",
+    type: "text",
+  },
+];

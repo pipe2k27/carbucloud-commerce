@@ -27,7 +27,8 @@ const FormNumber: React.FC<Props> = ({
 
   // Helper function to format a number with thousand separators in Spanish
   const formatWithSeparator = (value: string) => {
-    const numericValue = value.replace(/\D/g, ""); // Remove all non-numeric characters
+    if (!value) return "0";
+    const numericValue = String(value).replace(/\D/g, ""); // Remove all non-numeric characters
     return new Intl.NumberFormat("es-ES").format(Number(numericValue) || 0);
   };
 

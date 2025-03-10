@@ -13,6 +13,8 @@ import {
   getPurchase,
   deletePurchase,
 } from "@/dynamo-db/purchases.db";
+import { Car } from "@/dynamo-db/cars.db";
+import { convertPurchaseToStock } from "@/dynamo-db/transactions.db";
 
 const carSchema = z.object({
   brand: z
@@ -314,6 +316,48 @@ export async function deletePurchaseAction(
     return deleteResponse;
   } catch (error) {
     console.error("[deletePurchase] Error:", error);
+    return errorObject;
+  }
+}
+
+export async function convertPurchaseToStockAction(
+  car: Car
+): Promise<ServerResponse> {
+  try {
+    // ✅ Get session from NextAuth
+    const session = await getServerSession(authConfig);
+
+    if (!session || !session.user.id) {
+      return { status: 401, message: "Unauthorized: User not logged in" };
+    }
+
+    const userId = session.user.id; // Get userId from JWT
+
+    const user = await getUser({ userId });
+
+    if (!user || user.status !== 200 || !user.data || !user.data.companyId) {
+      return { status: 404, message: "User not found" };
+    }
+
+    const now = String(Date.now());
+
+    // ✅ Generate new car object with productId and userId
+    const newCar: Car = {
+      ...car,
+      createdAt: now,
+      updatedAt: now,
+      userId,
+      createdBy: user.data.name || "Desconocido",
+    };
+
+    const sanitizedData = Object.fromEntries(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      Object.entries(newCar).filter(([_, value]) => value !== null)
+    ) as Car;
+
+    // ✅ Call createCar function to save to DynamoDB
+    return await convertPurchaseToStock(sanitizedData);
+  } catch {
     return errorObject;
   }
 }

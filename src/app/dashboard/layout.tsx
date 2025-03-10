@@ -6,12 +6,17 @@ export const metadata: Metadata = {
 };
 
 import { ReactNode } from "react";
+import StepTabs from "@/components/StepsTabs/step-tabs.client";
 
 export default function DashboardPage({ children }: { children: ReactNode }) {
   return (
-    <div className="grid grid-cols-[300px_1fr] gap-4">
+    <div className="grid grid-cols-[60px_1fr] gap-4">
       <Sidebar />
-      <>{children}</>
+      <div />
+      <div>
+        <StepTabs />
+        {children}
+      </div>
     </div>
   );
 }

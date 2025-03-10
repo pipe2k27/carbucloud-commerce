@@ -8,7 +8,12 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { Car, FormCar } from "./cars.db";
 
-export type PurchaseStatusType = "pending" | "revision" | "rejected" | "buying";
+export type PurchaseStatusType =
+  | "pending"
+  | "revision"
+  | "rejected"
+  | "buying"
+  | "bought";
 
 export type FormPurchase = Omit<
   FormCar,

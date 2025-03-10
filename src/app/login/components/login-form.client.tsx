@@ -11,7 +11,7 @@ export function LoginForm({
   const { data: session } = useSession();
 
   if (session) {
-    redirect("/dashboard/products");
+    redirect("/dashboard/purchases");
   }
 
   return (
