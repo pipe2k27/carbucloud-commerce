@@ -13,6 +13,7 @@ import Image from "next/image";
 import { PurchaseStatus } from "./purchase-status.client";
 import PictureIcon from "@/components/ui/picture-icon";
 import { PackagePlus } from "lucide-react";
+import { dateStringToddmmyyyy } from "@/utils/dateUtils";
 
 // Define the column definitions for the used cars table
 
@@ -82,6 +83,17 @@ export default function PurchasesTable({
       accessorKey: "year",
       header: "Año",
       size: 5, // 10% of the table width
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Ingreso",
+
+      size: 10, // 15% of the table width
+      cell: ({ getValue }) => (
+        <div className="text-muted-foreground font-semibold">
+          {dateStringToddmmyyyy(String(getValue() as number))}
+        </div>
+      ),
     },
     {
       accessorKey: "status",
@@ -160,7 +172,7 @@ export default function PurchasesTable({
         />
         <Label htmlFor="airplane-mode">Mostrar Fotos</Label>
       </div>
-      <DataTable columns={columns} data={Purchases || []} initialSort={[]} />
+      <DataTable columns={columns} data={Purchases || []} />
     </div>
   );
 }

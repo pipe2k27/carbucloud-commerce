@@ -44,8 +44,8 @@ export function DataTable<TData, TValue>({
   data,
   initialSort = [
     {
-      id: "status",
-      desc: false,
+      id: "createdAt",
+      desc: true,
     },
   ],
 }: DataTableProps<TData, TValue>) {

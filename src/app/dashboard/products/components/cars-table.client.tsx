@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import PictureIcon from "@/components/ui/picture-icon";
 import { Car as LucideCar } from "lucide-react";
+import { dateStringToddmmyyyy } from "@/utils/dateUtils";
 
 // Define the column definitions for the used cars table
 
@@ -77,6 +78,16 @@ export default function CarsTable({ cars }: { cars: Car[] }) {
       size: 5, // 10% of the table width
     },
     {
+      accessorKey: "createdAt",
+      header: "Ingreso",
+      size: 10, // 15% of the table width
+      cell: ({ getValue }) => (
+        <div className="text-muted-foreground font-semibold">
+          {dateStringToddmmyyyy(String(getValue() as number))}
+        </div>
+      ),
+    },
+    {
       accessorKey: "status",
       header: "Estado",
       size: 13, // 15% of the table width
@@ -95,15 +106,16 @@ export default function CarsTable({ cars }: { cars: Car[] }) {
       ),
     },
     {
+      id: "transmission",
       accessorKey: "transmission",
       header: "Transmisión",
       size: 10, // 15% of the table width
     },
-    {
-      accessorKey: "carType",
-      header: "Tipo",
-      size: 10, // 15% of the table width
-    },
+    // {
+    //   accessorKey: "carType",
+    //   header: "Tipo",
+    //   size: 10, // 15% of the table width
+    // },
     {
       accessorKey: "price",
       header: "Precio",
@@ -135,10 +147,29 @@ export default function CarsTable({ cars }: { cars: Car[] }) {
     },
   ];
 
+  const handleResize = () => {
+    const screenWidth = window.innerWidth;
+    const newColumns = initialColumns
+      .filter((col) => {
+        if (col.id === "transmission" && screenWidth < 1300) {
+          return false;
+        }
+        return true;
+      })
+      .filter((col: any) => col.accessorKey !== "mainImageUrl" || showPictures);
+    return newColumns;
+  };
+
+  const [filteredColumns, setFilteredColumns] = useState(handleResize());
+
+  useEffect(() => {
+    setFilteredColumns(handleResize());
+  }, [showPictures]);
+
   // Conditionally filter the columns
-  const columns = initialColumns.filter(
-    (col: any) => col.accessorKey !== "mainImageUrl" || showPictures
-  );
+  // const columns = initialColumns.filter(
+  //   (col: any) => col.accessorKey !== "mainImageUrl" || showPictures
+  // );
 
   return (
     <>
@@ -152,7 +183,7 @@ export default function CarsTable({ cars }: { cars: Car[] }) {
         <Label htmlFor="airplane-mode">Mostrar Fotos</Label>
       </div>
       <div className="py-10" suppressHydrationWarning>
-        <DataTable columns={columns} data={filteredCars || []} />
+        <DataTable columns={filteredColumns} data={filteredCars || []} />
       </div>
     </>
   );

@@ -30,7 +30,7 @@ export default function CarsTabs() {
             Todos
           </TabsTrigger>
           <TabsTrigger value="analytics" onClick={() => onFilter("available")}>
-            Activos
+            Disponibles
           </TabsTrigger>
           <TabsTrigger value="reports" onClick={() => onFilter("reserved")}>
             Reservados

@@ -11,6 +11,7 @@ import PictureIcon from "@/components/ui/picture-icon";
 import { TrendingUpIcon } from "lucide-react";
 import { Sale } from "@/dynamo-db/sales.db";
 import { salesAtom, setSalesState } from "@/jotai/sales-atom.jotai";
+import { dateStringToddmmyyyy } from "@/utils/dateUtils";
 
 // Define the column definitions for the used sales table
 
@@ -78,10 +79,13 @@ export default function SalesTable({ sales }: { sales: Sale[] }) {
     {
       accessorKey: "createdAt",
       header: "Fecha de Venta",
+
       size: 10, // 15% of the table width
-      // cell: ({ getValue }) => (
-      //   <div>{(getValue() as number)?.toLocaleString()} KM</div>
-      // ),
+      cell: ({ getValue }) => (
+        <div className="text-muted-foreground font-semibold">
+          {dateStringToddmmyyyy(String(getValue() as number))}
+        </div>
+      ),
     },
     {
       accessorKey: "soldPrice",
@@ -174,11 +178,7 @@ export default function SalesTable({ sales }: { sales: Sale[] }) {
         <Label htmlFor="airplane-mode">Mostrar Fotos</Label>
       </div>
       <div className="py-10" suppressHydrationWarning>
-        <DataTable
-          columns={columns}
-          data={filteredSales || []}
-          initialSort={[]}
-        />
+        <DataTable columns={columns} data={filteredSales || []} />
       </div>
     </>
   );

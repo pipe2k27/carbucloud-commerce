@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { InformationCards } from "./Information-cards.client";
 import { setCommonComponentAtom } from "@/jotai/common-components-atom.jotai";
 import { ShoppingBag } from "lucide-react";
+import * as Sentry from "@sentry/nextjs";
 
 export default function ProductsSummary() {
   return (
@@ -14,8 +15,20 @@ export default function ProductsSummary() {
 
         <div className="flex items-center space-x-2">
           <Button
-            onClick={() => {
+            onClick={async () => {
               setCommonComponentAtom({ showNewCarModal: true });
+              await Sentry.startSpan(
+                {
+                  name: "click aca",
+                  op: "test",
+                },
+                async () => {
+                  const res = await fetch("/api/milanesa");
+                  if (!res.ok) {
+                    throw new Error("cacona");
+                  }
+                }
+              );
             }}
           >
             + Nuevo Producto

@@ -388,7 +388,7 @@ export async function convertCarToSaleAction(
       };
     }
 
-    const now = new Date().toISOString();
+    const now = String(Date.now());
 
     const prices: any = {
       price: Number(car.price),

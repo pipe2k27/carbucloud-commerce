@@ -71,7 +71,7 @@ export function ActionsCarTable({ row }: { row: Car }) {
         //   });
         // }}
         >
-          <Pencil size={18} className="mr-2" /> Editar datos del producto
+          <Pencil size={18} className="mr-2" /> Editar datos de la venta
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -89,7 +89,7 @@ export function ActionsCarTable({ row }: { row: Car }) {
           }}
           className="text-red-500"
         >
-          <Trash2 size={18} className="mr-2" /> Eliminar producto
+          <Trash2 size={18} className="mr-2" /> Eliminar venta
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

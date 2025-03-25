@@ -42,7 +42,7 @@ export const PurchasesInformationCards: React.FC = () => {
       description: "+Todos las potenciales compras en la base de datos",
     },
     // {
-    //   title: "Productos Activos",
+    //   title: "Productos Disponibles",
     //   icon: <CheckCircle2 className="h-4 w-4" />,
     //   value: cars
     //     .filter((car: any) => car.status === "available")
