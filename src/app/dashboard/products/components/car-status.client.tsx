@@ -26,7 +26,7 @@ interface StatusBadgeProps {
   row: Car;
 }
 
-const statusConfig: Record<
+export const statusConfig: Record<
   CarStatusType,
   { label: string; icon: any; color: string }
 > = {

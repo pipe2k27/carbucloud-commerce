@@ -14,6 +14,8 @@ import { setCommonComponentAtom } from "@/jotai/common-components-atom.jotai";
 import { useEffect, useState } from "react";
 import ImageCarousel from "@/components/ui/image-carousel";
 import { Purchase } from "@/dynamo-db/purchases.db";
+import { dateStringToddmmyyyy } from "@/utils/dateUtils";
+import { statusConfig } from "@/app/dashboard/purchases/components/purchase-status.client";
 
 interface Props {
   data: Purchase;
@@ -24,15 +26,21 @@ export default function PurchaseDetail({ data, images }: Props) {
   const [purchase, setPurchase] = useState<Purchase | null>(null);
   const router = useRouter();
 
+  const [currentImages, setCurrentImages] = useState<string[]>();
+
   useEffect(() => {
     setPurchase(data);
+    const mainImage =
+      data.mainImageUrl ||
+      "https://public-images-carbucloud.s3.us-east-2.amazonaws.com/uploads/1739235783900-D_NQ_NP_2X_698744-MLA82189741523_012025-F.JPEG";
+    const newImages = [mainImage, ...images];
+    setTimeout(() => {
+      setCurrentImages([...newImages]);
+    }, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   if (!purchase) return <></>;
-
-  const mainImage =
-    purchase.mainImageUrl ||
-    "https://public-images-carbucloud.s3.us-east-2.amazonaws.com/uploads/1739235783900-D_NQ_NP_2X_698744-MLA82189741523_012025-F.JPEG";
 
   return (
     <div className="max-w-[1300px] w-[90%] mx-auto p-6">
@@ -54,7 +62,7 @@ export default function PurchaseDetail({ data, images }: Props) {
             variant="outline"
             onClick={() => {
               setCommonComponentAtom({
-                showEditCarModal: true,
+                showEditPurchaseModal: true,
                 currentElementId: purchase.productId,
                 shouldRefreshRouter: true,
               });
@@ -66,7 +74,7 @@ export default function PurchaseDetail({ data, images }: Props) {
             variant="outline"
             onClick={() => {
               setCommonComponentAtom({
-                showEditCarImagesModal: true,
+                showEditPurchaseImages: true,
                 currentElementId: purchase.productId,
                 shouldRefreshRouter: true,
               });
@@ -78,7 +86,7 @@ export default function PurchaseDetail({ data, images }: Props) {
       </div>
       <Card className="flex flex-col md:flex-row">
         <CardContent className="pt-6 flex flex-col items-center">
-          <ImageCarousel images={[mainImage, ...images]} />
+          {currentImages && <ImageCarousel images={currentImages} />}
         </CardContent>
         <CardContent className="md:w-2/3 p-4">
           <div className="text-lg font-bold mb-4 flex items-center">
@@ -94,6 +102,19 @@ export default function PurchaseDetail({ data, images }: Props) {
             <DetailItem label="Tracción" value={purchase.traction} />
             <DetailItem label="Kilometraje" value={`${purchase.km} km`} />
             <DetailItem label="Estado" value={purchase.status} />
+            <DetailItem
+              label="Fecha de Ingreso:"
+              value={dateStringToddmmyyyy(String(purchase.createdAt))}
+              className="text-muted-foreground"
+            />
+            <DetailItem
+              icon={statusConfig[purchase.status]?.icon}
+              label="Estado"
+              value={statusConfig[purchase.status]?.label}
+              className={
+                statusConfig[purchase.status]?.color || "text-gray-500"
+              }
+            />
             <DetailItem
               label="Teléfono del Dueño"
               value={purchase.ownerPhone}
@@ -119,12 +140,19 @@ interface DetailItemProps {
   label: string;
   value: string | number;
   className?: string;
+  icon?: React.ElementType;
 }
 
-const DetailItem = ({ label, value, className }: DetailItemProps) => (
+const DetailItem = ({
+  label,
+  value,
+  className,
+  icon: StatusIcon,
+}: DetailItemProps) => (
   <div>
     <p className="text-[12px] text-gray-500">{label}</p>
-    <p className={`text-sm font-semibold ${className}`}>
+    <p className={`text-sm font-semibold ${className} flex items-center`}>
+      {StatusIcon && <StatusIcon className="w-4 h-4 mr-1" />}
       {value || "Sin Especificar"}
     </p>
   </div>

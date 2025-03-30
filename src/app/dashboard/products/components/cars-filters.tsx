@@ -35,9 +35,9 @@ export default function CarsTabs() {
           <TabsTrigger value="reports" onClick={() => onFilter("reserved")}>
             Reservados
           </TabsTrigger>
-          <TabsTrigger value="sold" onClick={() => onFilter("sold")}>
+          {/* <TabsTrigger value="sold" onClick={() => onFilter("sold")}>
             Vendidos
-          </TabsTrigger>
+          </TabsTrigger> */}
           <TabsTrigger value="notifications" onClick={() => onFilter("paused")}>
             Pausados
           </TabsTrigger>

@@ -14,6 +14,8 @@ import { useRouter } from "next/navigation";
 import { setCommonComponentAtom } from "@/jotai/common-components-atom.jotai";
 import { useEffect, useState } from "react";
 import ImageCarousel from "@/components/ui/image-carousel";
+import { dateStringToddmmyyyy } from "@/utils/dateUtils";
+import { statusConfig } from "@/app/dashboard/products/components/car-status.client";
 
 interface Props {
   data: Car;
@@ -24,15 +26,22 @@ export default function ProductDetail({ data, images }: Props) {
   const [car, setCar] = useState<Car | null>(null);
   const router = useRouter();
 
+  const [currentImages, setCurrentImages] = useState<string[]>();
+
   useEffect(() => {
     setCar(data);
+    setCurrentImages(undefined);
+    const mainImage =
+      data?.mainImageUrl ||
+      "https://public-images-carbucloud.s3.us-east-2.amazonaws.com/uploads/1739235783900-D_NQ_NP_2X_698744-MLA82189741523_012025-F.JPEG";
+    const newImages = [mainImage, ...images];
+    setTimeout(() => {
+      setCurrentImages([...newImages]);
+    }, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   if (!car) return <></>;
-
-  const mainImage =
-    car.mainImageUrl ||
-    "https://public-images-carbucloud.s3.us-east-2.amazonaws.com/uploads/1739235783900-D_NQ_NP_2X_698744-MLA82189741523_012025-F.JPEG";
 
   return (
     <div className="max-w-[1300px] w-[90%] mx-auto p-6">
@@ -78,7 +87,7 @@ export default function ProductDetail({ data, images }: Props) {
       </div>
       <Card className="flex flex-col md:flex-row">
         <CardContent className="pt-6 flex flex-col items-center">
-          <ImageCarousel images={[mainImage, ...images]} />
+          {currentImages && <ImageCarousel images={currentImages} />}
         </CardContent>
         <CardContent className="md:w-2/3 p-4">
           <div className="text-lg font-bold mb-4 flex items-center">
@@ -93,7 +102,17 @@ export default function ProductDetail({ data, images }: Props) {
             <DetailItem label="Motor" value={car.engine} />
             <DetailItem label="Tracción" value={car.traction} />
             <DetailItem label="Kilometraje" value={`${car.km} km`} />
-            <DetailItem label="Estado" value={car.status} />
+            <DetailItem
+              icon={statusConfig[car.status]?.icon}
+              label="Estado"
+              value={statusConfig[car.status]?.label}
+              className={statusConfig[car.status]?.color || "text-gray-500"}
+            />
+            <DetailItem
+              label="Fecha de Ingreso:"
+              value={dateStringToddmmyyyy(String(car.createdAt))}
+              className="text-muted-foreground"
+            />
             <DetailItem
               label="Precio"
               value={`${car.currency} $${car.price?.toLocaleString("es") || 0}`}
@@ -132,12 +151,19 @@ interface DetailItemProps {
   label: string;
   value: string | number;
   className?: string;
+  icon?: React.ElementType;
 }
 
-const DetailItem = ({ label, value, className }: DetailItemProps) => (
+const DetailItem = ({
+  label,
+  value,
+  className,
+  icon: StatusIcon,
+}: DetailItemProps) => (
   <div>
     <p className="text-[12px] text-gray-500">{label}</p>
-    <p className={`text-sm font-semibold ${className}`}>
+    <p className={`text-sm font-semibold ${className} flex items-center`}>
+      {StatusIcon && <StatusIcon className="w-4 h-4 mr-1" />}
       {value || "Sin Especificar"}
     </p>
   </div>

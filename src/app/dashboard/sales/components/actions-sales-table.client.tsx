@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 "use client";
 
-import { MoreHorizontal, Pencil, Trash2, PlusCircle } from "lucide-react";
+import { MoreHorizontal, Trash2, PlusCircle } from "lucide-react";
 
 import {
   DropdownMenuItem,
@@ -62,7 +62,7 @@ export function ActionsCarTable({ row }: { row: Car }) {
         >
           <PlusCircle size={18} className="mr-2" /> Ver detalles
         </DropdownMenuItem>
-        <DropdownMenuItem
+        {/* <DropdownMenuItem
         // onClick={() => {
         //   setCommonComponentAtom({
         //     showEditCarModal: true,
@@ -72,7 +72,7 @@ export function ActionsCarTable({ row }: { row: Car }) {
         // }}
         >
           <Pencil size={18} className="mr-2" /> Editar datos de la venta
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => {

@@ -1,20 +1,13 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  Pencil,
-  Image as ImageIcon,
-  Car as CarIcon,
-  ArrowLeft,
-  CircleArrowRight,
-} from "lucide-react";
-import { ownershipOptions } from "@/dynamo-db/cars.db";
+import { Car as CarIcon, ArrowLeft, CircleArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { setCommonComponentAtom } from "@/jotai/common-components-atom.jotai";
 import { useEffect, useState } from "react";
 import ImageCarousel from "@/components/ui/image-carousel";
 import { Sale } from "@/dynamo-db/sales.db";
+import { dateStringToddmmyyyy } from "@/utils/dateUtils";
+import { statusConfig } from "@/app/dashboard/products/components/car-status.client";
 
 interface Props {
   data: Sale;
@@ -50,7 +43,7 @@ export default function SaleDetail({ data, images }: Props) {
           <CircleArrowRight className="mr-2 text-primary w-6 h-6" />
           Detalles de la venta
         </h1>
-        <div className="flex space-x-2">
+        {/* <div className="flex space-x-2">
           <Button
             variant="outline"
             onClick={() => {
@@ -75,7 +68,7 @@ export default function SaleDetail({ data, images }: Props) {
           >
             <ImageIcon className="w-4 h-4 mr-2" /> Editar Imágenes
           </Button>
-        </div>
+        </div> */}
       </div>
       <Card className="flex flex-col md:flex-row">
         <CardContent className="pt-6 flex flex-col items-center">
@@ -94,7 +87,17 @@ export default function SaleDetail({ data, images }: Props) {
             <DetailItem label="Motor" value={sale.engine} />
             <DetailItem label="Tracción" value={sale.traction} />
             <DetailItem label="Kilometraje" value={`${sale.km} km`} />
-            <DetailItem label="Estado" value={sale.status} />
+            <DetailItem
+              label="Estado"
+              icon={statusConfig[sale.status]?.icon}
+              value={statusConfig[sale.status]?.label}
+              className={statusConfig[sale.status]?.color || "text-gray-500"}
+            />{" "}
+            <DetailItem
+              label="Fecha de Ingreso:"
+              value={dateStringToddmmyyyy(String(sale.createdAt))}
+              className="text-muted-foreground"
+            />
             <DetailItem
               label="Precio de venta:"
               value={`${sale.currency} $${
@@ -123,13 +126,7 @@ export default function SaleDetail({ data, images }: Props) {
               }`}
               className="text-primary"
             />
-            <DetailItem
-              label="Dueño"
-              value={
-                ownershipOptions.find((e) => e.value === sale.ownershipType)
-                  ?.label || "Sin Especificar"
-              }
-            />
+            <DetailItem label="Vendido por:" value={sale.seller} />
             <DetailItem
               label="Precio de compra"
               value={`${sale.currency} $${
@@ -156,12 +153,19 @@ interface DetailItemProps {
   label: string;
   value: string | number;
   className?: string;
+  icon?: React.ElementType;
 }
 
-const DetailItem = ({ label, value, className }: DetailItemProps) => (
+const DetailItem = ({
+  label,
+  value,
+  className,
+  icon: StatusIcon,
+}: DetailItemProps) => (
   <div>
     <p className="text-[12px] text-gray-500">{label}</p>
-    <p className={`text-sm font-semibold ${className}`}>
+    <p className={`text-sm font-semibold ${className} flex items-center`}>
+      {StatusIcon && <StatusIcon className="w-4 h-4 mr-1" />}
       {value || "Sin Especificar"}
     </p>
   </div>

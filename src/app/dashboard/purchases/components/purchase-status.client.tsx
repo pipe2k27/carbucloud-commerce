@@ -27,14 +27,14 @@ interface StatusBadgeProps {
   row: Purchase;
 }
 
-const statusConfig: Record<
+export const statusConfig: Record<
   PurchaseStatusType,
   { label: string; icon: any; color: string }
 > = {
   pending: {
     label: "Pendiente",
     icon: HourglassIcon,
-    color: "text-primary",
+    color: "text-purple-400",
   },
   rejected: {
     label: "Rechazado",

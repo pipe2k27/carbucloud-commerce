@@ -94,10 +94,10 @@ const UploadImage: React.FC<UploadImageProps> = ({
   const handleImageUpload = (file: File) => {
     Resizer.imageFileResizer(
       file,
-      800,
-      800,
-      "JPEG",
-      80,
+      750,
+      750,
+      "WEBP",
+      90,
       0,
       (uri) => {
         setIsSubmitting(true);
@@ -165,7 +165,10 @@ const UploadImage: React.FC<UploadImageProps> = ({
             : "border-dashed border-gray-400 opacity-50 hover:opacity-1  hover:border-blue-500"
         } rounded-md flex items-center justify-center cursor-pointer`}
       >
-        <input {...getInputProps()} disabled={!isMainImage && !!currentImage} />
+        <input
+          {...getInputProps()}
+          disabled={!isMainImage && !isMainPurchaseImage && !!currentImage}
+        />
         {isSubmitting && (
           <div className="relative inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
             <Spinner size={24} />
@@ -192,9 +195,19 @@ const UploadImage: React.FC<UploadImageProps> = ({
           variant="outline"
           size="icon"
           className="absolute bottom-1 right-1"
-          onClick={isMainImage ? () => open() : () => deleteImage()}
+          onClick={
+            isMainImage || isMainPurchaseImage
+              ? () => {
+                  open();
+                }
+              : () => deleteImage()
+          }
         >
-          {isMainImage ? <RefreshCcw /> : <Trash2 className="text-red-200" />}
+          {isMainImage || isMainPurchaseImage ? (
+            <RefreshCcw />
+          ) : (
+            <Trash2 className="text-red-200" />
+          )}
         </Button>
       )}
     </div>
