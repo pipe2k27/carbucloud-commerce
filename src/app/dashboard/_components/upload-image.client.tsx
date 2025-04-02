@@ -94,8 +94,8 @@ const UploadImage: React.FC<UploadImageProps> = ({
   const handleImageUpload = (file: File) => {
     Resizer.imageFileResizer(
       file,
-      750,
-      750,
+      950,
+      950,
       "WEBP",
       90,
       0,

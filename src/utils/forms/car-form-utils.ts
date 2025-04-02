@@ -5,18 +5,20 @@ import {
   currencyOptions,
   transmisionTypes,
 } from "@/constants/car-constants";
-
+import {
+  FormCar,
+  ownershipOptions,
+  tractionOptions,
+} from "@/dynamo-db/cars.db";
 import { z } from "zod";
-import { Field } from "../Form/automatic-form.client";
-import { FormPurchase } from "@/dynamo-db/purchases.db";
-import { tractionOptions } from "@/dynamo-db/cars.db";
+import { Field } from "../../components/Form/automatic-form.client";
 
-export const PurchaseSchema = z.object({
+export const carSchema = z.object({
   brand: z
     .string()
     .trim()
-    .max(50, "La marca no puede superar 50 caracteres")
-    .min(1, "Por favor complete este campo"),
+    .min(1, "Por favor complete este campo")
+    .max(50, "La marca no puede superar 50 caracteres"),
   model: z
     .string()
     .trim()
@@ -46,12 +48,12 @@ export const PurchaseSchema = z.object({
     .trim()
     .min(1, "Por favor complete este campo")
     .max(3, "La moneda debe ser un código de 3 letras"),
-  buyingPrice: z.coerce.number().min(-2, "El precio debe ser positivo"), // ✅ Ensures price is a number
+  price: z.coerce.number().min(1, "El precio debe ser positivo"), // ✅ Ensures price is a number
+  buyingPrice: z.coerce.number().min(0, "El precio debe ser positivo"), // ✅ Ensures price is a number
   km: z.coerce
     .number()
     .min(0, "El kilometraje no puede ser negativo")
-    .max(30000000, "El kilometraje no puede ser tan alto")
-    .refine((value) => !isNaN(value), { message: "Este campo es obligatorio" }), // ✅ Ensures km is a number
+    .max(30000000, "El kilometraje no puede ser tan alto"), // ✅ Ensures km is a number
   description: z
     .string()
     .trim()
@@ -67,6 +69,11 @@ export const PurchaseSchema = z.object({
     .trim()
     .min(1, "Por favor complete este campo")
     .max(50, "La transmisión no puede superar 50 caracteres"),
+  ownershipType: z
+    .string()
+    .trim()
+    .min(1, "Por favor complete este campo")
+    .max(50, "La transmisión no puede superar 50 caracteres"),
   ownerName: z
     .string()
     .trim()
@@ -77,7 +84,7 @@ export const PurchaseSchema = z.object({
     .max(50, "La transmisión no puede superar 50 caracteres"),
 });
 
-export const purchasaeFormFields: Field[] = [
+export const carFormFields: Field[] = [
   {
     name: "brand",
     label: "Marca",
@@ -113,7 +120,6 @@ export const purchasaeFormFields: Field[] = [
       label: brand,
     })),
   },
-
   {
     name: "transmission",
     label: "Transmisión",
@@ -144,6 +150,7 @@ export const purchasaeFormFields: Field[] = [
     type: "options",
     options: currencyOptions,
   },
+  { name: "price", label: "Precio", type: "number", required: true },
   {
     name: "buyingPrice",
     label: "Precio de compra (costo)",
@@ -151,16 +158,30 @@ export const purchasaeFormFields: Field[] = [
     required: true,
   },
   {
+    name: "ownershipType",
+    label: "Dueño del producto",
+    type: "options",
+    options: ownershipOptions,
+  },
+  {
     name: "ownerName",
     label: "Nombre del Dueño:",
     type: "text",
     required: false,
+    depndency: {
+      field: "ownershipType",
+      value: "other",
+    },
   },
   {
     name: "ownerPhone",
     label: "Teléfono del dueño:",
     type: "text",
     required: false,
+    depndency: {
+      field: "ownershipType",
+      value: "other",
+    },
   },
   {
     name: "description",
@@ -174,7 +195,7 @@ export const purchasaeFormFields: Field[] = [
   },
 ];
 
-export const purchaseFormdefaultValues: FormPurchase = {
+export const carFormdefaultValues: FormCar = {
   brand: "",
   model: "",
   year: "",
@@ -182,56 +203,53 @@ export const purchaseFormdefaultValues: FormPurchase = {
   transmission: "",
   engine: "",
   currency: "",
+  price: 0,
   buyingPrice: 0,
   description: "",
   internalNotes: "",
   km: 0,
+  traction: "4x2",
+  status: "available",
+  ownershipType: "",
   ownerName: "",
   ownerPhone: "",
-  status: "pending",
-  traction: "4x2",
 };
 
-export const ownershipToPurchaseOptions = [
-  { value: "own", label: "Producto Propio (La empresa compra el vehículo)" },
-  {
-    value: "other",
-    label: "Producto de un Tercero (se venderá en consignación)",
-  },
-];
-
-export const purchaseToStockSchema = z.object({
+export const carToSaleSchema = z.object({
   currency: z
     .string()
     .trim()
     .min(1, "Por favor complete este campo")
     .max(3, "La moneda debe ser un código de 3 letras"),
-  price: z.coerce.number().min(1, "El precio debe ser positivo"),
-  buyingPrice: z.coerce.number().min(0, "El precio debe ser positivo"),
-  ownershipType: z
+  seller: z
     .string()
     .trim()
     .min(1, "Por favor complete este campo")
-    .max(50, "No puede superar 50 caracteres"),
+    .max(100, "Maximo 100 letras"),
+  soldPrice: z.coerce.number().min(1, "El precio debe ser positivo"),
+  saleCost: z.coerce.number().min(0, "El precio debe ser positivo"),
 });
 
-export const purchaseToStockFormFields: Field[] = [
+export const carToSaleFormFields: Field[] = [
   {
     name: "currency",
-    label: "Moneda:",
+    label: "Moneda (se convertirá a dolares al pasar a ventas):",
     type: "options",
     options: currencyOptions,
   },
   {
-    name: "buyingPrice",
-    label: "Precio de compra (o consignación):",
+    name: "soldPrice",
+    label: "Precio de Venta:",
     type: "number",
   },
-  { name: "price", label: "Precio de Venta:", type: "number" },
   {
-    name: "ownershipType",
-    label: "Dueño del vehículo:",
-    type: "options",
-    options: ownershipToPurchaseOptions,
+    name: "saleCost",
+    label: "Costos de venta / comisiones totales:",
+    type: "number",
+  },
+  {
+    name: "seller",
+    label: "Vendido por:",
+    type: "text",
   },
 ];

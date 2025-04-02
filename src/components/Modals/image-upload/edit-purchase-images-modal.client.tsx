@@ -1,29 +1,28 @@
 "use client";
 
-import { Button } from "../ui/button";
-import Modal from "./modal.client";
-import FormLabel from "../Form/form-label.client";
+import { Button } from "../../ui/button";
+import Modal from "../modal.client";
+import FormLabel from "../../Form/form-label.client";
 import { useEffect, useState } from "react";
 import {
   commonComponentAtom,
   resetCommonComponentAtom,
 } from "@/jotai/common-components-atom.jotai";
 import { useAtomValue } from "jotai";
-import { getCarAction } from "@/service/actions/cars.actions";
 import { errorToast } from "@/constants/api-constants";
 import { useToast } from "@/hooks/use-toast";
-import { Car } from "@/dynamo-db/cars.db";
 import { Loader2 } from "lucide-react";
 import { getStockImagesByProductIdAction } from "@/service/actions/images.actions";
 import { StockCarImage } from "@/dynamo-db/product-images.db";
-import { editCarByProductId } from "@/jotai/cars-atom.jotai";
 import UploadImage from "@/app/dashboard/_components/upload-image.client";
 import { useRouter } from "next/navigation";
+import { getPurchaseAction } from "@/service/actions/purchases.actions";
+import { Purchase } from "@/dynamo-db/purchases.db";
 
-const EditCarImagesModal = () => {
+const EditPurchaseImagesModal = () => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [currentCar, setCurrentCar] = useState<Car | null>(null);
-  const [currentCarImages, setCurrentCarImages] = useState<
+  const [currentPurchase, setCurrentPurchase] = useState<Purchase | null>(null);
+  const [currentPurchaseImages, setCurrentPurchaseImages] = useState<
     null | StockCarImage[]
   >(null);
   const [hasUpdates, setHasUpdates] = useState<boolean>(false);
@@ -33,12 +32,12 @@ const EditCarImagesModal = () => {
 
   const router = useRouter();
 
-  const getCar = async () => {
+  const getPurchase = async () => {
     if (!currentElementId) return;
     try {
-      const { data } = await getCarAction(currentElementId);
+      const { data } = await getPurchaseAction(currentElementId);
       if (data) {
-        setCurrentCar(data);
+        setCurrentPurchase(data);
       } else {
         toast(errorToast);
         resetCommonComponentAtom();
@@ -51,16 +50,16 @@ const EditCarImagesModal = () => {
     }
   };
 
-  const getCarImages = async () => {
+  const getPurchaseImages = async () => {
     if (!currentElementId) return;
     try {
       const { data, status } = await getStockImagesByProductIdAction(
         currentElementId
       );
       if (status === 200 && data && data.length > 0) {
-        setCurrentCarImages(data);
+        setCurrentPurchaseImages(data);
       } else if (status === 200) {
-        setCurrentCarImages([]);
+        setCurrentPurchaseImages([]);
       } else {
         toast(errorToast);
         resetCommonComponentAtom();
@@ -74,16 +73,16 @@ const EditCarImagesModal = () => {
   };
 
   useEffect(() => {
-    getCar();
-    getCarImages();
+    getPurchase();
+    getPurchaseImages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentElementId]);
 
   const onDelete = (index: number) => {
     setLoading(true);
-    if (!currentCarImages) return;
-    const newImages = currentCarImages.filter((_, i) => i !== index);
-    setCurrentCarImages([...newImages]);
+    if (!currentPurchaseImages) return;
+    const newImages = currentPurchaseImages.filter((_, i) => i !== index);
+    setCurrentPurchaseImages([...newImages]);
     setTimeout(() => {
       setLoading(false);
     }, 700);
@@ -91,26 +90,28 @@ const EditCarImagesModal = () => {
 
   const onUpload = (image: StockCarImage) => {
     setHasUpdates(true);
-    const newImages = currentCarImages ? [...currentCarImages, image] : [image];
-    setCurrentCarImages(newImages);
+    const newImages = currentPurchaseImages
+      ? [...currentPurchaseImages, image]
+      : [image];
+    setCurrentPurchaseImages(newImages);
   };
 
   const onUploadMain = (imageUrl: string) => {
     setHasUpdates(true);
-    if (!currentCar) return;
-    const newCar: Car = { ...currentCar, mainImageUrl: imageUrl };
-    setCurrentCar(newCar);
-    editCarByProductId(currentCar.productId, {
+    if (!currentPurchase) return;
+    const newPurchase: Purchase = {
+      ...currentPurchase,
       mainImageUrl: imageUrl,
-    });
+    };
+    setCurrentPurchase(newPurchase);
   };
 
-  if (loading || !currentCar || !currentCarImages) {
+  if (loading || !currentPurchase || !currentPurchaseImages) {
     return (
       <Modal
         isOpen
-        title="Editar Imagenes de la potencial compra"
-        description="Agrega o edita las imagenes de la potencial compra"
+        title="Editar Imagenes"
+        description="Agrega o edita las imagenes del producto"
         footer={
           <Button
             onClick={() => {
@@ -136,6 +137,12 @@ const EditCarImagesModal = () => {
       isOpen
       title="Editar Imagenes"
       description="Agrega o edita las imagenes del producto"
+      onClose={() => {
+        if (hasUpdates) {
+          router.refresh();
+        }
+        resetCommonComponentAtom();
+      }}
       footer={
         <Button
           onClick={() => {
@@ -154,11 +161,11 @@ const EditCarImagesModal = () => {
           <FormLabel label="Imagen Principal:" required />
           <div className="grid-cols-3 grid">
             <UploadImage
-              isMainImage
-              productId={currentCar.productId}
+              isMainPurchaseImage
+              productId={currentPurchase.productId}
               currentImage={
-                currentCar?.mainImageUrl
-                  ? { imageUrl: currentCar?.mainImageUrl }
+                currentPurchase?.mainImageUrl
+                  ? { imageUrl: currentPurchase?.mainImageUrl }
                   : undefined
               }
               onUpload={(url: string) => {
@@ -172,7 +179,7 @@ const EditCarImagesModal = () => {
           *Hasta 9 imágenes
         </div>
         <div className="grid-cols-3 grid">
-          {currentCarImages?.map((image, index) => {
+          {currentPurchaseImages?.map((image, index) => {
             // if (index > 8) return null;
             return (
               <UploadImage
@@ -181,7 +188,7 @@ const EditCarImagesModal = () => {
                   onUpload(im);
                 }}
                 currentImage={image}
-                productId={currentCar.productId}
+                productId={currentPurchase.productId}
                 onImageDelete={() => {
                   onDelete(index);
                 }}
@@ -192,7 +199,7 @@ const EditCarImagesModal = () => {
             onUpload={(im: StockCarImage) => {
               onUpload(im);
             }}
-            productId={currentCar.productId}
+            productId={currentPurchase.productId}
           />
         </div>
       </>
@@ -200,4 +207,4 @@ const EditCarImagesModal = () => {
   );
 };
 
-export default EditCarImagesModal;
+export default EditPurchaseImagesModal;

@@ -1,9 +1,6 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import AutomaticForm from "../Form/automatic-form.client";
-import { Button } from "../ui/button";
-import Modal from "./modal.client";
 import { useEffect, useState } from "react";
 import {
   commonComponentAtom,
@@ -16,13 +13,19 @@ import { useAtomValue } from "jotai";
 import { errorToast } from "@/constants/api-constants";
 import { Car } from "@/dynamo-db/cars.db";
 import { useRouter } from "next/navigation";
-import { carToSaleFormFields, carToSaleSchema } from "./car-form-utils";
 import {
   convertCarToSaleAction,
   getCarAction,
 } from "@/service/actions/cars.actions";
 import { Sale } from "@/dynamo-db/sales.db";
 import { deleteOneCarFromAtom } from "@/jotai/cars-atom.jotai";
+import {
+  carToSaleFormFields,
+  carToSaleSchema,
+} from "@/utils/forms/car-form-utils";
+import Modal from "../modal.client";
+import { Button } from "@/components/ui/button";
+import AutomaticForm from "@/components/Form/automatic-form.client";
 
 type FormData = {
   currency: string;

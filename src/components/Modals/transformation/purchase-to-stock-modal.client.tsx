@@ -1,9 +1,6 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import AutomaticForm from "../Form/automatic-form.client";
-import { Button } from "../ui/button";
-import Modal from "./modal.client";
 import { useEffect, useState } from "react";
 import {
   commonComponentAtom,
@@ -15,41 +12,60 @@ import { useToast } from "@/hooks/use-toast";
 import { useAtomValue } from "jotai";
 import { errorToast } from "@/constants/api-constants";
 import {
+  convertPurchaseToStockAction,
   getPurchaseAction,
-  updatePurchaseAction,
 } from "@/service/actions/purchases.actions";
-import { FormPurchase } from "@/dynamo-db/purchases.db";
+import { Purchase } from "@/dynamo-db/purchases.db";
+import { Car } from "@/dynamo-db/cars.db";
+import { useRouter } from "next/navigation";
+import { deleteOnePurchaseFromAtom } from "@/jotai/purchases-atom.jotai";
 import {
-  purchaseFormdefaultValues,
-  purchasaeFormFields,
-  PurchaseSchema,
-} from "./purchase-form-utils";
-import { editPurchaseByProductId } from "@/jotai/purchases-atom.jotai";
+  purchaseToStockFormFields,
+  purchaseToStockSchema,
+} from "@/utils/forms/purchase-form-utils";
+import Modal from "../modal.client";
+import { Button } from "@/components/ui/button";
+import AutomaticForm from "@/components/Form/automatic-form.client";
 
-const EditPurchaseModal = () => {
+type FormData = {
+  currency: string;
+  price: string;
+  buyingPrice: string;
+  ownershipType: string;
+};
+
+const PurchaseToStockModal = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const { currentElementId } = useAtomValue(commonComponentAtom);
+  const [currentPurchase, setCurrentPurchase] = useState<Purchase | null>(null);
 
   const { toast } = useToast();
 
-  const { control, handleSubmit, reset, watch } = useForm<FormPurchase>({
-    defaultValues: purchaseFormdefaultValues,
-    resolver: zodResolver(PurchaseSchema), // ✅ Apply Zod validation
+  const router = useRouter();
+
+  const { control, handleSubmit, watch } = useForm<FormData>({
+    resolver: zodResolver(purchaseToStockSchema), // ✅ Apply Zod validation
   });
 
-  const onSubmit = async (data: FormPurchase) => {
-    if (!currentElementId) return;
-    const newCar: FormPurchase = {
-      ...data,
+  const onSubmit = async (data: FormData) => {
+    if (!currentElementId || !currentPurchase) return;
+    const newCar: Car = {
+      ...currentPurchase,
+      price: Number(data.price),
       buyingPrice: Number(data.buyingPrice),
-      km: Number(data.km),
+      ownershipType: data.ownershipType,
+      currency: data.currency,
+      status: "available",
     };
     try {
       setLoading(true);
 
-      const res = await updatePurchaseAction(currentElementId, newCar);
+      const res = await convertPurchaseToStockAction(newCar);
       if (res.status === 200) {
-        editPurchaseByProductId(currentElementId, newCar);
+        deleteOnePurchaseFromAtom(currentElementId);
+        setTimeout(() => {
+          router.refresh();
+        }, 300);
         resetCommonComponentAtom();
       } else {
         toast({
@@ -81,24 +97,7 @@ const EditPurchaseModal = () => {
     try {
       const { data } = await getPurchaseAction(currentElementId);
       if (data) {
-        const newDefaultValues: FormPurchase = {
-          brand: data.brand,
-          model: data.model,
-          year: data.year,
-          currency: data.currency,
-          description: data.description,
-          km: String(data.km),
-          buyingPrice: data.buyingPrice,
-          ownerName: data.ownerName || "",
-          ownerPhone: data.ownerPhone || "",
-          status: data.status,
-          carType: data.carType,
-          transmission: data.transmission,
-          engine: data.engine || "",
-          traction: data.traction || "4x2",
-          internalNotes: data.internalNotes || "",
-        };
-        reset(newDefaultValues);
+        setCurrentPurchase(data);
       } else {
         toast(errorToast);
         resetCommonComponentAtom();
@@ -119,13 +118,12 @@ const EditPurchaseModal = () => {
   return (
     <Modal
       isOpen
-      title="Editar datos del Vehiculo"
-      description="Edite los campos que desee modificar"
-      className={`max-w-[1200px] w-[80vw]`}
+      title="Convertir en vehiculo en stock"
+      description="Se moverá a productos en stock y aparecerá en la página web"
       footer={
         <Button onClick={handleNext} disabled={loading}>
           {loading && <Loader2 className="animate-spin" />}
-          Siguiente
+          Convertir
         </Button>
       }
     >
@@ -136,14 +134,13 @@ const EditPurchaseModal = () => {
       )}
       {!loading && (
         <AutomaticForm
-          dualColumn
           watch={watch}
           control={control}
-          fields={purchasaeFormFields}
+          fields={purchaseToStockFormFields}
         />
       )}
     </Modal>
   );
 };
 
-export default EditPurchaseModal;
+export default PurchaseToStockModal;

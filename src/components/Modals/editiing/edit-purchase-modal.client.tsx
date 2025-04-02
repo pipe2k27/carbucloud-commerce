@@ -1,54 +1,55 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import AutomaticForm from "../Form/automatic-form.client";
-import { Button } from "../ui/button";
-import Modal from "./modal.client";
 import { useEffect, useState } from "react";
 import {
   commonComponentAtom,
   resetCommonComponentAtom,
 } from "@/jotai/common-components-atom.jotai";
-import { FormCar } from "@/dynamo-db/cars.db";
-import { getCarAction, updateCarAction } from "@/service/actions/cars.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAtomValue } from "jotai";
 import { errorToast } from "@/constants/api-constants";
 import {
-  carFormdefaultValues,
-  carFormFields,
-  carSchema,
-} from "./car-form-utils";
-import { useRouter } from "next/navigation";
+  getPurchaseAction,
+  updatePurchaseAction,
+} from "@/service/actions/purchases.actions";
+import { FormPurchase } from "@/dynamo-db/purchases.db";
+import { editPurchaseByProductId } from "@/jotai/purchases-atom.jotai";
+import {
+  purchasaeFormFields,
+  purchaseFormdefaultValues,
+  PurchaseSchema,
+} from "@/utils/forms/purchase-form-utils";
+import Modal from "../modal.client";
+import { Button } from "@/components/ui/button";
+import AutomaticForm from "@/components/Form/automatic-form.client";
 
-const EditCarModal = () => {
+const EditPurchaseModal = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const { currentElementId } = useAtomValue(commonComponentAtom);
 
   const { toast } = useToast();
-  const router = useRouter();
 
-  const { control, handleSubmit, reset, watch } = useForm<FormCar>({
-    defaultValues: carFormdefaultValues,
-    resolver: zodResolver(carSchema), // ✅ Apply Zod validation
+  const { control, handleSubmit, reset, watch } = useForm<FormPurchase>({
+    defaultValues: purchaseFormdefaultValues,
+    resolver: zodResolver(PurchaseSchema), // ✅ Apply Zod validation
   });
 
-  const onSubmit = async (data: FormCar) => {
+  const onSubmit = async (data: FormPurchase) => {
     if (!currentElementId) return;
-    const newCar: FormCar = {
+    const newCar: FormPurchase = {
       ...data,
-      price: Number(data.price),
-      km: Number(data.km),
       buyingPrice: Number(data.buyingPrice),
+      km: Number(data.km),
     };
     try {
       setLoading(true);
 
-      const res = await updateCarAction(currentElementId, newCar);
+      const res = await updatePurchaseAction(currentElementId, newCar);
       if (res.status === 200) {
-        router.refresh();
+        editPurchaseByProductId(currentElementId, newCar);
         resetCommonComponentAtom();
       } else {
         toast({
@@ -74,30 +75,28 @@ const EditCarModal = () => {
     handleSubmit(onSubmit)();
   };
 
-  const getCar = async () => {
+  const getPurchase = async () => {
     if (!currentElementId) return;
     setLoading(true);
     try {
-      const { data } = await getCarAction(currentElementId);
+      const { data } = await getPurchaseAction(currentElementId);
       if (data) {
-        const newDefaultValues: FormCar = {
+        const newDefaultValues: FormPurchase = {
           brand: data.brand,
           model: data.model,
           year: data.year,
-          carType: data.carType,
-          transmission: data.transmission,
-          engine: data.engine,
           currency: data.currency,
-          price: String(data.price),
           description: data.description,
-          internalNotes: data.internalNotes || "",
           km: String(data.km),
-          status: data.status,
-          traction: data.traction || "4x2",
           buyingPrice: data.buyingPrice,
-          ownershipType: data.ownershipType || "",
           ownerName: data.ownerName || "",
           ownerPhone: data.ownerPhone || "",
+          status: data.status,
+          carType: data.carType,
+          transmission: data.transmission,
+          engine: data.engine || "",
+          traction: data.traction || "4x2",
+          internalNotes: data.internalNotes || "",
         };
         reset(newDefaultValues);
       } else {
@@ -113,7 +112,7 @@ const EditCarModal = () => {
   };
 
   useEffect(() => {
-    getCar();
+    getPurchase();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentElementId]);
 
@@ -124,7 +123,7 @@ const EditCarModal = () => {
       description="Edite los campos que desee modificar"
       className={`max-w-[1200px] w-[80vw]`}
       footer={
-        <Button onClick={handleNext} disabled={loading} className="mt-4">
+        <Button onClick={handleNext} disabled={loading}>
           {loading && <Loader2 className="animate-spin" />}
           Siguiente
         </Button>
@@ -140,11 +139,11 @@ const EditCarModal = () => {
           dualColumn
           watch={watch}
           control={control}
-          fields={carFormFields}
+          fields={purchasaeFormFields}
         />
       )}
     </Modal>
   );
 };
 
-export default EditCarModal;
+export default EditPurchaseModal;

@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "../ui/button";
-import Modal from "./modal.client";
+import { Button } from "../../ui/button";
+import Modal from "../modal.client";
 import {
   commonComponentAtom,
   resetCommonComponentAtom,

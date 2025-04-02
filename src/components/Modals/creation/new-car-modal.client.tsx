@@ -1,31 +1,28 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import AutomaticForm from "../Form/automatic-form.client";
-import { Button } from "../ui/button";
-import Modal from "./modal.client";
-import FormLabel from "../Form/form-label.client";
+import AutomaticForm from "../../Form/automatic-form.client";
+import { Button } from "../../ui/button";
+import Modal from "../modal.client";
+import FormLabel from "../../Form/form-label.client";
 import { useState } from "react";
 import { resetCommonComponentAtom } from "@/jotai/common-components-atom.jotai";
-import { Car } from "@/dynamo-db/cars.db";
+import { addOneCarToAtom, editCarByProductId } from "@/jotai/cars-atom.jotai";
+import { Car, FormCar } from "@/dynamo-db/cars.db";
+import { createCarAction } from "@/service/actions/cars.actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { StockCarImage } from "@/dynamo-db/product-images.db";
-import {
-  purchaseFormdefaultValues,
-  purchasaeFormFields,
-  PurchaseSchema,
-} from "./purchase-form-utils";
-import {
-  addOnePurchaseToAtom,
-  editPurchaseByProductId,
-} from "@/jotai/purchases-atom.jotai";
-import { createPurchaseAction } from "@/service/actions/purchases.actions";
-import { FormPurchase } from "@/dynamo-db/purchases.db";
-import UploadImage from "@/app/dashboard/_components/upload-image.client";
 
-const NewPurchaseModal = () => {
+import UploadImage from "@/app/dashboard/_components/upload-image.client";
+import {
+  carFormdefaultValues,
+  carFormFields,
+  carSchema,
+} from "@/utils/forms/car-form-utils";
+
+const NewCarModal = () => {
   const [section, setCurrentSection] = useState<1 | 2>(1);
   const [currentCarImages, setCurrentCarImages] = useState<
     null | StockCarImage[]
@@ -35,25 +32,26 @@ const NewPurchaseModal = () => {
 
   const { toast } = useToast();
 
-  const { control, handleSubmit, watch } = useForm<FormPurchase>({
-    defaultValues: purchaseFormdefaultValues,
-    resolver: zodResolver(PurchaseSchema), // ✅ Apply Zod validation
+  const { control, handleSubmit, watch } = useForm<FormCar>({
+    defaultValues: carFormdefaultValues,
+    resolver: zodResolver(carSchema), // ✅ Apply Zod validation
   });
 
-  const onSubmit = async (data: FormPurchase) => {
-    const newCar: FormPurchase = {
+  const onSubmit = async (data: FormCar) => {
+    const newCar: FormCar = {
       ...data,
-      km: Number(data.km),
-      status: "pending",
+      status: "available",
+      price: Number(data.price),
       buyingPrice: Number(data.buyingPrice),
+      km: Number(data.km),
     };
     try {
       setLoading(true);
 
-      const res = await createPurchaseAction(newCar);
+      const res = await createCarAction(newCar);
       if (res.status === 200) {
         setCurrentCar(res.data);
-        addOnePurchaseToAtom(res.data);
+        addOneCarToAtom(res.data);
         setCurrentSection(2);
       } else {
         toast({
@@ -98,11 +96,11 @@ const NewPurchaseModal = () => {
     setCurrentCarImages(newImages);
   };
 
-  const onUploadMain = (imageUrl: string) => {
+  const onUploadMain = async (imageUrl: string) => {
     if (!currentCar) return;
     const newCar: Car = { ...currentCar, mainImageUrl: imageUrl };
     setCurrentCar(newCar);
-    editPurchaseByProductId(currentCar.productId, {
+    editCarByProductId(currentCar.productId, {
       mainImageUrl: imageUrl,
     });
   };
@@ -110,8 +108,8 @@ const NewPurchaseModal = () => {
   return (
     <Modal
       isOpen
-      title="Vehiculo a comprar"
-      description="Complete los campos para agregar un nuevo vehículo"
+      title="Nuevo Vehiculo"
+      description="Complete los campos para agregar un nuevo auto"
       footer={
         <Button onClick={handleNext} disabled={loading} className="mt-4">
           {loading && <Loader2 className="animate-spin" />}
@@ -127,7 +125,7 @@ const NewPurchaseModal = () => {
           control={control}
           dualColumn
           watch={watch}
-          fields={purchasaeFormFields}
+          fields={carFormFields}
         />
       )}
       {section === 2 && currentCar && (
@@ -136,7 +134,7 @@ const NewPurchaseModal = () => {
             <FormLabel label="Imagen Principal:" required />
             <div className="grid-cols-3 grid">
               <UploadImage
-                isMainPurchaseImage
+                isMainImage
                 productId={currentCar.productId}
                 currentImage={
                   currentCar?.mainImageUrl
@@ -183,4 +181,4 @@ const NewPurchaseModal = () => {
   );
 };
 
-export default NewPurchaseModal;
+export default NewCarModal;

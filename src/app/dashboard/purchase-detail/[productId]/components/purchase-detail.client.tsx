@@ -30,8 +30,9 @@ export default function PurchaseDetail({ data, images }: Props) {
 
   useEffect(() => {
     setPurchase(data);
+    setCurrentImages(undefined);
     const mainImage =
-      data.mainImageUrl ||
+      data?.mainImageUrl ||
       "https://public-images-carbucloud.s3.us-east-2.amazonaws.com/uploads/1739235783900-D_NQ_NP_2X_698744-MLA82189741523_012025-F.JPEG";
     const newImages = [mainImage, ...images];
     setTimeout(() => {
@@ -46,7 +47,7 @@ export default function PurchaseDetail({ data, images }: Props) {
     <div className="max-w-[1300px] w-[90%] mx-auto p-6">
       <div
         onClick={() => {
-          router.push("/dashboard/products");
+          router.push("/dashboard/purchases");
         }}
         className="mb-4 cursor-pointer flex items-center"
       >
