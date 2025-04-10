@@ -29,7 +29,7 @@ export default function ImageCarousel({ images }: Props) {
     <CardContent className="pt-6 flex flex-col items-center">
       {/* Main Image */}
       {selectedImage && (
-        <div className="relative w-[300px] h-[300px] max-w-[20vw] max-h-[20vw]">
+        <div className="relative w-[700px] h-[700px] max-w-[88vw] max-h-[88vw] lg:max-w-[46vw] lg:max-h-[46vw]">
           <Image
             src={selectedImage}
             alt="Selected Product Image"
@@ -41,7 +41,7 @@ export default function ImageCarousel({ images }: Props) {
 
       {/* Thumbnails with Navigation */}
       {images.length > 1 && (
-        <div className="relative flex items-center mt-4 w-[300px] max-w-[20vw]">
+        <div className="relative flex items-center mt-4 w-[300px] max-w-[100vw]">
           {/* Left Arrow */}
           <button
             onClick={handlePrev}

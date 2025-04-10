@@ -224,7 +224,7 @@ export const purchaseToStockFormFields: Field[] = [
   },
   {
     name: "buyingPrice",
-    label: "Precio de compra (si es en pesos se convertirá a dolar blue):",
+    label: "Precio de compra (al que compramos el vehiculo):",
     type: "number",
   },
   {

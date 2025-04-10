@@ -10,30 +10,37 @@ import {
   SheetHeader,
   SheetTitle,
 } from "../ui/sheet";
-import { usePathname } from "next/navigation";
 import { ModeToggle } from "../ui/mode-toggle";
-import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const pathname = usePathname();
-
-  const shouldRenderNavbar = pathname !== "/login";
-
-  if (!shouldRenderNavbar) return null;
+  const router = useRouter();
 
   return (
     <>
       <nav className="flex items-center bg-card justify-between px-6 py-4 z-50 relative shadow-sm">
         {/* Logo */}
-        <div className="text-lg logo-title flex text-primary font-bold">
+        <div
+          className="text-lg logo-title flex text-primary font-bold"
+          onClick={() => router.push("/")}
+        >
           <Cloud className="mr-1" /> CarbuCloud
         </div>
 
         {/* Desktop Links */}
         <div className="hidden place-items-center md:flex space-x-6">
-          <div onClick={() => signOut()}> Log Out </div>
+          <div
+            className="hover:text-muted-foreground cursor-pointer"
+            onClick={() => {
+              router.push("/explore");
+            }}
+          >
+            Explorar
+          </div>
+          <div>Vender</div>
+          <div>Contacto</div> <div>Nosotros</div>
           <div className="">
             <ModeToggle />
           </div>
@@ -53,10 +60,16 @@ export default function Navbar() {
             </SheetHeader>
 
             <div className="flex flex-col mt-4 space-y-4">
-              <a
-                className="text-gray-600 hover:text-gray-800"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
+              <a className="text-gray-600 hover:text-gray-800">
+                Log Out / Salir
+              </a>
+              <a className="text-gray-600 hover:text-gray-800">
+                Log Out / Salir
+              </a>{" "}
+              <a className="text-gray-600 hover:text-gray-800">
+                Log Out / Salir
+              </a>{" "}
+              <a className="text-gray-600 hover:text-gray-800">
                 Log Out / Salir
               </a>
             </div>

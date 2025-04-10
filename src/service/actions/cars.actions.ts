@@ -264,23 +264,23 @@ export async function updateCarAction(
 export async function getCarAction(productId: string): Promise<ServerResponse> {
   try {
     // ✅ Get session from NextAuth
-    const session = await getServerSession(authConfig);
+    // const session = await getServerSession(authConfig);
 
-    if (!session || !session.user.id) {
-      return { status: 401, message: "Unauthorized: User not logged in" };
-    }
+    // if (!session || !session.user.id) {
+    //   return { status: 401, message: "Unauthorized: User not logged in" };
+    // // }
 
-    const userId = session.user.id; // Get userId from JWT
-    const user = await getUser({ userId });
+    // const userId = session.user.id; // Get userId from JWT
+    // const user = await getUser({ userId });
 
-    if (!user || user.status !== 200 || !user.data || !user.data.companyId) {
-      return { status: 404, message: "User or company not found" };
-    }
+    // if (!user || user.status !== 200 || !user.data || !user.data.companyId) {
+    //   return { status: 404, message: "User or company not found" };
+    // }
 
-    const companyId = user.data.companyId;
+    // const companyId = user.data.companyId;
 
     // ✅ Fetch car from DynamoDB by companyId + productId (Composite Key)
-    const response = await getCar(companyId, productId);
+    const response = await getCar("0001", productId);
 
     if (!response) {
       return { status: 404, message: "Car not found" };
@@ -335,7 +335,7 @@ const saleDataSchema = z.object({
 });
 
 // ✅ Function to fetch latest "Dólar Blue" exchange rate
-const fetchDolarBlueRate = async (): Promise<number | null> => {
+export const fetchDolarBlueRate = async (): Promise<number | null> => {
   try {
     const response = await fetch("https://dolarapi.com/v1/dolares/blue");
     if (!response.ok) {
