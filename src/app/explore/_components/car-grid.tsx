@@ -11,7 +11,7 @@ export default function CarGrid({ cars }: { cars: Car[] }) {
   return (
     <div className="block lg:grid lg:grid-cols-[300px_auto]">
       <CarGridFilters cars={cars} setFilteredCars={setFilteredCars} />
-      {cars.length > 0 ? (
+      {filteredCars.length > 0 ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 gap-y-9">
           {filteredCars.map((car, index) => (
             <div key={index} className="flex justify-center">

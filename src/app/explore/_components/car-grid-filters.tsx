@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Car } from "@/dynamo-db/cars.db";
+import { Wand2 } from "lucide-react";
 
 // Filter form type
 type FilterForm = {
@@ -33,13 +34,16 @@ type Props = {
   setFilteredCars: (cars: Car[]) => void;
 };
 
+const FILTER_STORAGE_KEY = "car-filters";
+const TWO_HOURS = 2 * 60 * 60 * 1000;
+
 export const CarGridFilters = ({ cars, setFilteredCars }: Props) => {
-  const { control, watch, setValue } = useForm<FilterForm>({
+  const { control, watch, setValue, reset, getValues } = useForm<FilterForm>({
     defaultValues: {
       km: [0, 200000],
       year: [1990, new Date().getFullYear()],
       status: [],
-      brand: "",
+      brand: "all",
       transmission: [],
       priceMin: "",
       priceMax: "",
@@ -69,6 +73,38 @@ export const CarGridFilters = ({ cars, setFilteredCars }: Props) => {
     [cars]
   );
 
+  // Load filters from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(FILTER_STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Date.now() - parsed.timestamp < TWO_HOURS) {
+        reset(parsed.values);
+      } else {
+        localStorage.removeItem(FILTER_STORAGE_KEY);
+      }
+    }
+  }, [reset]);
+
+  // Save filters to localStorage when any value changes
+  useEffect(() => {
+    const values = getValues();
+    localStorage.setItem(
+      FILTER_STORAGE_KEY,
+      JSON.stringify({ values, timestamp: Date.now() })
+    );
+  }, [
+    kmRange,
+    yearRange,
+    selectedStatuses,
+    selectedTransmissions,
+    brand,
+    priceMin,
+    priceMax,
+    currency,
+    getValues,
+  ]);
+
   useEffect(() => {
     const results = cars.filter((car) => {
       const km = typeof car.km === "string" ? parseInt(car.km) : car.km;
@@ -83,8 +119,10 @@ export const CarGridFilters = ({ cars, setFilteredCars }: Props) => {
       const matchTransmission =
         selectedTransmissions.length === 0 ||
         selectedTransmissions.includes(car.transmission);
-      const matchBrand = brand === "" || car.brand === brand;
-
+      let matchBrand = true;
+      if (brand !== "all") {
+        matchBrand = brand === "" || car.brand === brand;
+      }
       let matchPriceMin = true;
       let matchPriceMax = true;
       let matchCurrency = true;
@@ -133,6 +171,7 @@ export const CarGridFilters = ({ cars, setFilteredCars }: Props) => {
             brands={brands}
             statuses={statuses}
             transmissions={transmissions}
+            reset={reset}
           />
         </div>
 
@@ -157,6 +196,7 @@ export const CarGridFilters = ({ cars, setFilteredCars }: Props) => {
                 brands={brands}
                 statuses={statuses}
                 transmissions={transmissions}
+                reset={reset}
               />
             </SheetContent>
           </Sheet>
@@ -172,6 +212,7 @@ const FiltersPanel = ({
   setValue,
   brands,
   transmissions,
+  reset,
 }: any) => {
   const kmRange = watch("km");
   const yearRange = watch("year");
@@ -335,6 +376,9 @@ const FiltersPanel = ({
           ))}
         </div>
       </div>
+      <Button variant="secondary" className="w-full" onClick={() => reset()}>
+        Limpiar Filtros <Wand2 />
+      </Button>
     </div>
   );
 };

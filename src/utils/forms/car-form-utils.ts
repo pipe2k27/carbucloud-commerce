@@ -153,7 +153,7 @@ export const carFormFields: Field[] = [
   { name: "price", label: "Precio", type: "number", required: true },
   {
     name: "buyingPrice",
-    label: "Precio de compra (costo)",
+    label: "Precio de compra (Costo)",
     type: "number",
     required: true,
   },

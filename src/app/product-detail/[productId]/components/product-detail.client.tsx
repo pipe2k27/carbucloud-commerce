@@ -27,6 +27,10 @@ export default function ProductDetail({ data, images }: Props) {
   const [currentImages, setCurrentImages] = useState<string[]>();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     setCar(data);
     setCurrentImages(undefined);
     const mainImage =

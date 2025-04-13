@@ -29,7 +29,7 @@ export default function ImageCarousel({ images }: Props) {
     <CardContent className="pt-6 flex flex-col items-center">
       {/* Main Image */}
       {selectedImage && (
-        <div className="relative w-[700px] h-[700px] max-w-[88vw] max-h-[88vw] lg:max-w-[46vw] lg:max-h-[46vw]">
+        <div className="relative w-[550px] h-[550px] max-w-[88vw] max-h-[88vw] lg:max-w-[46vw] lg:max-h-[46vw]">
           <Image
             src={selectedImage}
             alt="Selected Product Image"

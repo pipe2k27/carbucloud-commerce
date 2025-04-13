@@ -146,7 +146,7 @@ export const purchasaeFormFields: Field[] = [
   },
   {
     name: "buyingPrice",
-    label: "Precio de compra (costo)",
+    label: "Precio de compra (Cuanto pide el dueño)",
     type: "number",
     required: true,
   },

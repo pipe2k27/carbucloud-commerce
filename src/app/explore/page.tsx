@@ -20,24 +20,7 @@ export default async function DashboardPage() {
       <p className="mb-8">Autos en stock</p>
 
       <Suspense fallback={<CarGridSkeleton />}>
-        <CarGrid
-          cars={[
-            ...cars,
-            ...cars,
-            ...cars,
-            ...cars,
-            ...cars,
-            ...cars,
-            ...cars,
-            ...cars,
-            ...cars,
-            ...cars,
-            ...cars,
-            ...cars,
-            ...cars,
-            ...cars,
-          ]}
-        />
+        <CarGrid cars={cars} />
       </Suspense>
     </div>
   );
