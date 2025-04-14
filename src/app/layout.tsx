@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/Providers/theme-provider.client";
 import Navbar from "@/components/Navbar/navbar.client";
 import { CommonComponentsProvider } from "@/components/Providers/common-components-provider.client";
 import { Toaster } from "@/components/ui/toaster";
+import Footer from "@/components/Footer/footer.client";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -27,9 +28,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          {children}
+          <div className="min-h-[83vh]">{children}</div>
           <Toaster />
           <CommonComponentsProvider />
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

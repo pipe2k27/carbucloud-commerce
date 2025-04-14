@@ -40,7 +40,7 @@ const TWO_HOURS = 2 * 60 * 60 * 1000;
 export const CarGridFilters = ({ cars, setFilteredCars }: Props) => {
   const { control, watch, setValue, reset, getValues } = useForm<FilterForm>({
     defaultValues: {
-      km: [0, 200000],
+      km: [0, 350000],
       year: [1990, new Date().getFullYear()],
       status: [],
       brand: "all",
@@ -376,7 +376,23 @@ const FiltersPanel = ({
           ))}
         </div>
       </div>
-      <Button variant="secondary" className="w-full" onClick={() => reset()}>
+      <Button
+        variant="secondary"
+        className="w-full"
+        onClick={() => {
+          localStorage.removeItem(FILTER_STORAGE_KEY);
+          reset({
+            km: [0, 350000],
+            year: [1990, new Date().getFullYear()],
+            status: [],
+            brand: "all",
+            transmission: [],
+            priceMin: "",
+            priceMax: "",
+            currency: "none",
+          });
+        }}
+      >
         Limpiar Filtros <Wand2 />
       </Button>
     </div>

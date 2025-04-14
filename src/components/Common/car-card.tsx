@@ -8,6 +8,7 @@ import { Car } from "@/dynamo-db/cars.db";
 import { MessageCircleWarning, Plus } from "lucide-react";
 import { CarStatusBadge } from "./car-status-badge";
 import { useRouter } from "next/navigation";
+import { openWhatsappModal } from "../Modals/transformation/new-contact-modal.client";
 
 export default function CarCard({ car }: { car: Car }) {
   const router = useRouter();
@@ -71,7 +72,13 @@ export default function CarCard({ car }: { car: Car }) {
           >
             Ver detalles <Plus size={16} className="ml-[-4px]" />
           </Button>
-          <Button variant="secondary" className="w-[48%]">
+          <Button
+            variant="secondary"
+            className="w-[48%]"
+            onClick={() => {
+              openWhatsappModal(car);
+            }}
+          >
             Consultar
             <MessageCircleWarning className="ml-[-2px] scale-110" />
           </Button>

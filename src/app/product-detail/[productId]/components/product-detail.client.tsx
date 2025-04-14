@@ -13,7 +13,8 @@ import { Car } from "@/dynamo-db/cars.db";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ImageCarousel from "@/components/ui/image-carousel";
-import { statusConfig } from "@/app/dashboard/products/components/car-status.client";
+import { statusConfig } from "@/components/Common/car-status-badge";
+import { openWhatsappModal } from "@/components/Modals/transformation/new-contact-modal.client";
 
 interface Props {
   data: Car;
@@ -130,12 +131,18 @@ export default function ProductDetail({ data, images }: Props) {
               // asChild
               className="w-[48%]"
               onClick={() => {
-                router.push(`/product-detail/${car.productId}`);
+                openWhatsappModal(car);
               }}
             >
               Agendar Visita <SearchCheckIcon size={20} className="ml-[-4px]" />
             </Button>
-            <Button variant="secondary" className="w-[48%]">
+            <Button
+              onClick={() => {
+                openWhatsappModal(car);
+              }}
+              variant="secondary"
+              className="w-[48%]"
+            >
               Consultar
               <MessageCircleWarning className="ml-[-2px] scale-110" />
             </Button>

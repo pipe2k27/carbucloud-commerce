@@ -39,8 +39,21 @@ export default function Navbar() {
           >
             Explorar
           </div>
-          <div>Vender</div>
-          <div>Contacto</div> <div>Nosotros</div>
+          <div className="hover:text-muted-foreground cursor-pointer">
+            Vender
+          </div>
+          <div
+            className="hover:text-muted-foreground cursor-pointer"
+            onClick={() => router.push("/contact")}
+          >
+            Contacto
+          </div>{" "}
+          <div
+            className="hover:text-muted-foreground cursor-pointer"
+            onClick={() => router.push("/about")}
+          >
+            Nosotros
+          </div>
           <div className="">
             <ModeToggle />
           </div>
@@ -60,18 +73,41 @@ export default function Navbar() {
             </SheetHeader>
 
             <div className="flex flex-col mt-4 space-y-4">
-              <a className="text-gray-600 hover:text-gray-800">
-                Log Out / Salir
+              <a
+                onClick={() => {
+                  router.push("/explore");
+                }}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                Explorar
               </a>
-              <a className="text-gray-600 hover:text-gray-800">
-                Log Out / Salir
-              </a>{" "}
-              <a className="text-gray-600 hover:text-gray-800">
-                Log Out / Salir
-              </a>{" "}
-              <a className="text-gray-600 hover:text-gray-800">
-                Log Out / Salir
+              <a
+                onClick={() => {
+                  router.push("/contact");
+                }}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                Contacto
               </a>
+              <a
+                onClick={() => {
+                  router.push("/about");
+                }}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                Nosotros
+              </a>
+              <a
+                onClick={() => {
+                  router.push("/");
+                }}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                Home
+              </a>
+              <div className="">
+                <ModeToggle />
+              </div>
             </div>
           </SheetContent>
         </Sheet>

@@ -1,18 +1,11 @@
+import { Car } from "@/dynamo-db/cars.db";
 import { atom, getDefaultStore } from "jotai";
 
 const store = getDefaultStore();
 
 type CommonComponentAtomType = {
-  showNewCarModal: boolean;
-  currentElementId?: string;
-  showEditCarModal: boolean;
-  showEditCarImagesModal: boolean;
-  showNewCarPurchaseModal: boolean;
-  showEditPurchaseModal: boolean;
-  shouldRefreshRouter: boolean;
-  showEditPurchaseImages: boolean;
-  showPurchaseToStockModal: boolean;
-  showCarToSaleModal: boolean;
+  currentCar?: Car;
+  showWhatsappModal: boolean;
   confirmModal: {
     show: boolean;
     title?: string;
@@ -22,16 +15,7 @@ type CommonComponentAtomType = {
 };
 
 export const initialCommonComponentState: CommonComponentAtomType = {
-  showNewCarModal: false,
-  showEditCarModal: false,
-  showEditCarImagesModal: false,
-  showNewCarPurchaseModal: false,
-  showEditPurchaseModal: false,
-  currentElementId: undefined,
-  shouldRefreshRouter: false,
-  showEditPurchaseImages: false,
-  showPurchaseToStockModal: false,
-  showCarToSaleModal: false,
+  showWhatsappModal: false,
   confirmModal: {
     show: false,
   },
