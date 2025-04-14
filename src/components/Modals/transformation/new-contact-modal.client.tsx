@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Car } from "@/dynamo-db/cars.db";
+import { createLeadAction } from "@/service/actions/leads.actions";
 
 export const openWhatsappModal = (car: Car) => {
   setCommonComponentAtom({
@@ -59,9 +60,16 @@ const WhatsappModal = () => {
     try {
       setLoading(true);
 
+      const carData = {
+        ...currentCar,
+        leadName: data.fullName,
+        phone: data.phone,
+        status: "new",
+      };
+
       // Simulate server-side save
-      await new Promise((res) => setTimeout(res, 800));
-      console.log(currentCar);
+      const lead = await createLeadAction(carData);
+      console.log("Lead created:", lead);
 
       const message = `Hola! Soy ${data.fullName} y me interesa un vehículo. Mi número es ${data.phone}`;
       const encodedMsg = encodeURIComponent(message);
