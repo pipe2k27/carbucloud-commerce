@@ -2,7 +2,8 @@ import { getWebElementsByCompanyId } from "@/dynamo-db/web-elements.db";
 import AboutUsContent from "./_components/about-content.client";
 
 export default async function AboutUsPage() {
-  const companyId = "0001";
+  const companyId = process.env.COMPANY_ID;
+  if (!companyId) return <></>;
   const response = (await getWebElementsByCompanyId(companyId)) as any;
 
   const webElements =

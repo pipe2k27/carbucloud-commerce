@@ -280,7 +280,11 @@ export async function getCarAction(productId: string): Promise<ServerResponse> {
     // const companyId = user.data.companyId;
 
     // ✅ Fetch car from DynamoDB by companyId + productId (Composite Key)
-    const response = await getCar("0001", productId);
+    const companyId = process.env.COMPANY_ID;
+    if (!companyId) {
+      return { status: 400, message: "Company ID not found" };
+    }
+    const response = await getCar(companyId, productId);
 
     if (!response) {
       return { status: 404, message: "Car not found" };

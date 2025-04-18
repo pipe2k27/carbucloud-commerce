@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { getWebElementsByCompanyId } from "@/dynamo-db/web-elements.db";
 
 export default async function HeroBanner() {
-  const companyId = "0001";
+  const companyId = process.env.COMPANY_ID;
+  if (!companyId) return <></>;
   const response = (await getWebElementsByCompanyId(companyId)) as any;
 
   const webElements =

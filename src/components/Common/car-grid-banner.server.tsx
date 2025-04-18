@@ -11,7 +11,9 @@ type Props = {
 };
 
 export default async function CarGridBanner({ label, description }: Props) {
-  const { data: cars } = await getCarsByCompanyId("0001");
+  const companyId = process.env.COMPANY_ID;
+  if (!companyId) return <></>;
+  const { data: cars } = await getCarsByCompanyId(companyId);
 
   return (
     <div className="container mx-auto px-4 py-8">

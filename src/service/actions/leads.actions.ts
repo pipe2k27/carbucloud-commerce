@@ -42,11 +42,19 @@ export async function createLeadAction(body: unknown): Promise<ServerResponse> {
 
     const now = String(Date.now());
 
+    const companyId = process.env.COMPANY_ID;
+    if (!companyId) {
+      return {
+        status: 500,
+        message: "Company ID not found",
+        data: null,
+      };
+    }
     return await createLead({
       ...sanitizedData,
       leadId: now,
       createdAt: now,
-      companyId: "0001",
+      companyId: companyId,
     });
   } catch (error) {
     console.error("[createLeadAction] Error:", error);

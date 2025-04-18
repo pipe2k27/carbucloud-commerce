@@ -12,7 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const { data: cars } = await getCarsByCompanyId("0001");
+  const companyId = process.env.COMPANY_ID;
+  if (!companyId) return <></>;
+  const { data: cars } = await getCarsByCompanyId(companyId);
 
   return (
     <div className="container mx-auto px-4 py-8">
