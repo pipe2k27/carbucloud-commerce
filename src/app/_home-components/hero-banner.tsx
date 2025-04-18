@@ -1,8 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getWebElementsByCompanyId } from "@/dynamo-db/web-elements.db";
 
-export default function HeroBanner() {
+export default async function HeroBanner() {
+  const companyId = "0001";
+  const response = (await getWebElementsByCompanyId(companyId)) as any;
+
+  const webElements =
+    response.status === 200 &&
+    Array.isArray(response.data) &&
+    response.data.length
+      ? response.data[0]
+      : {};
+
   return (
     <div className="relative rounded-xl overflow-hidden">
       <div className="absolute inset-0">
@@ -18,11 +29,11 @@ export default function HeroBanner() {
 
       <div className="relative py-20 px-6 md:py-32 md:px-12 max-w-3xl">
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-          Encontrá el auto usado ideal para vos
+          {webElements.title || "Encontrá el auto ideal para vos"}
         </h1>
         <p className="text-xl text-white/90 mb-8">
-          Las mejores ofertas en vehículos certificados. ¡Fácil, rápido y
-          seguro!
+          {webElements.subtitle ||
+            "Las mejores ofertas en vehículos certificados. ¡Fácil, rápido y seguro!"}
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Button asChild size="lg">
