@@ -19,7 +19,10 @@ export default async function HeroBanner() {
     <div className="relative rounded-xl overflow-hidden">
       <div className="absolute inset-0">
         <Image
-          src="https://public-images-carbucloud.s3.us-east-2.amazonaws.com/home/pexels-pixabay-164634.jpg"
+          src={
+            webElements.bannerImageUrl ||
+            "https://public-images-carbucloud.s3.us-east-2.amazonaws.com/home/pexels-pixabay-164634.jpg"
+          }
           alt="Foto de autos usados"
           width={1200}
           height={600}
