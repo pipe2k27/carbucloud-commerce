@@ -13,10 +13,13 @@ export type WebElementTier1 = {
 
   title?: string;
   subtitle?: string;
-  mainImageUrl?: string;
   aboutTitle?: string;
   aboutText?: string;
   updatedAt?: string;
+  bannerImageUrl?: string;
+  carrouselElement1?: string;
+  carrouselElement2?: string;
+  carrouselElement3?: string;
 };
 
 // ✅ Initialize DynamoDB Client
