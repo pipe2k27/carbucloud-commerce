@@ -149,7 +149,13 @@ export async function getCarsByCompanyId(companyId: string): Promise<any> {
 
     const response = await dynamoDbClient.send(queryCommand);
 
-    return { status: 200, data: response.Items || [] };
+    return {
+      status: 200,
+      data:
+        (response.Items as Car[] | undefined)?.filter(
+          (car: Car) => car.status !== "paused" && car.mainImageUrl
+        ) || [],
+    };
   } catch (error) {
     console.error("[getCarsByCompanyId] Error:", error);
     return { status: 500, message: "An error occurred while retrieving cars" };
