@@ -1,10 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-  GetCommand,
-  PutCommand,
-  QueryCommand,
-  DeleteCommand,
-} from "@aws-sdk/lib-dynamodb";
+import { GetCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 
 // 🔹 Define Web Element type
 export type WebElementTier1 = {
@@ -33,30 +28,6 @@ export const dynamoDbClient = new DynamoDBClient({
 
 const TABLE_NAME = "web-elements-tier1";
 
-// ✅ Create or Update a Web Element (PUT)
-export async function createOrUpdateWebElement(element: WebElementTier1) {
-  try {
-    const putCommand = new PutCommand({
-      TableName: TABLE_NAME,
-      Item: element,
-    });
-
-    await dynamoDbClient.send(putCommand);
-
-    return {
-      status: 200,
-      message: "Element saved successfully",
-      data: element,
-    };
-  } catch (error) {
-    console.error("[createOrUpdateWebElement] Error:", error);
-    return {
-      status: 500,
-      message: "An error occurred while saving the element",
-    };
-  }
-}
-
 // ✅ Get a single Web Element
 export async function getWebElement(companyId: string, elementId: string) {
   try {
@@ -80,29 +51,6 @@ export async function getWebElement(companyId: string, elementId: string) {
     return {
       status: 500,
       message: "An error occurred while retrieving the element",
-    };
-  }
-}
-
-// ✅ Delete a Web Element
-export async function deleteWebElement(companyId: string, elementId: string) {
-  try {
-    const deleteCommand = new DeleteCommand({
-      TableName: TABLE_NAME,
-      Key: {
-        companyId,
-        elementId,
-      },
-    });
-
-    await dynamoDbClient.send(deleteCommand);
-
-    return { status: 200, message: "Element deleted successfully" };
-  } catch (error) {
-    console.error("[deleteWebElement] Error:", error);
-    return {
-      status: 500,
-      message: "An error occurred while deleting the element",
     };
   }
 }
