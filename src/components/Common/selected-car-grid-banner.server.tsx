@@ -44,10 +44,10 @@ export default async function SelectedCarGridBanner({
         return true;
       }
     });
+  }
 
-    if (selectedCars.length < 3 && cars.length > 2) {
-      selectedCars = [...selectedCars, cars[0], cars[1], cars[2]];
-    }
+  if (selectedCars.length < 3 && cars.length > 2) {
+    selectedCars = [...selectedCars, cars[0], cars[1], cars[2]];
   }
 
   return (
