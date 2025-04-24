@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Suspense } from "react";
 import HeroBanner from "./_home-components/hero-banner";
 import MapLocation from "./_home-components/map-location";
