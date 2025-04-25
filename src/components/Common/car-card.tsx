@@ -25,6 +25,9 @@ export default function CarCard({ car }: { car: Car }) {
             alt={`${car.brand} ${car.model}`}
             fill
             className="object-cover rounded-lg"
+            onClick={() => {
+              router.push(`/product-detail/${car.productId}`);
+            }}
           />
         </div>
         <div className="p-4">
