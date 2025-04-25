@@ -10,7 +10,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "../ui/sheet";
-import { ModeToggle } from "../ui/mode-toggle";
+// import { ModeToggle } from "../ui/mode-toggle";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {
@@ -20,7 +20,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="flex items-center bg-card justify-between px-6 py-4 z-50 relative shadow-sm">
+      <nav className="flex border-b items-center bg-card justify-between px-6 py-4 z-50 relative shadow-sm">
         {/* Logo */}
         <div
           className="text-lg logo-title flex text-primary font-bold"
@@ -39,9 +39,9 @@ export default function Navbar() {
           >
             Explorar
           </div>
-          <div className="hover:text-muted-foreground cursor-pointer">
+          {/* <div className="hover:text-muted-foreground cursor-pointer">
             Vender
-          </div>
+          </div> */}
           <div
             className="hover:text-muted-foreground cursor-pointer"
             onClick={() => router.push("/contact")}
@@ -54,9 +54,9 @@ export default function Navbar() {
           >
             Nosotros
           </div>
-          <div className="">
+          {/* <div className="">
             <ModeToggle />
-          </div>
+          </div> */}
         </div>
 
         {/* Mobile Menu Trigger */}
@@ -105,9 +105,9 @@ export default function Navbar() {
               >
                 Home
               </a>
-              <div className="">
+              {/* <div className="">
                 <ModeToggle />
-              </div>
+              </div> */}
             </div>
           </SheetContent>
         </Sheet>

@@ -1,8 +1,10 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import {
+  getWebElementsByCompanyId,
+  WebElementTier1,
+} from "@/dynamo-db/web-elements.db";
 import {
   PhoneIcon,
   MailIcon,
@@ -11,7 +13,16 @@ import {
   SearchCheckIcon,
 } from "lucide-react";
 
-export default function ContactoPage() {
+export default async function ContactoPage() {
+  const companyId = process.env.COMPANY_ID;
+  if (!companyId) return <></>;
+  const data = (await getWebElementsByCompanyId(companyId)) as any;
+
+  const webElements =
+    data?.status === 200 && data?.data?.length
+      ? (data.data[0] as WebElementTier1)
+      : ({} as WebElementTier1);
+
   return (
     <div className="bg-background text-foreground py-20 px-4">
       <div className="max-w-2xl mx-auto text-center">
@@ -24,15 +35,20 @@ export default function ContactoPage() {
           <CardContent className="p-6 space-y-4">
             <div className="flex items-center gap-3">
               <MapPinIcon className="w-5 h-5 text-primary" />
-              <span>Av. Corrientes 1234, Buenos Aires, Argentina</span>
+              <span>
+                {webElements?.contactAddress ||
+                  "Av. Corrientes 1234, Buenos Aires, Argentina"}
+              </span>
             </div>
             <div className="flex items-center gap-3">
               <PhoneIcon className="w-5 h-5 text-primary" />
-              <span>+54 9 11 6822 0080</span>
+              <span>{webElements?.contactPhone || "+54 9 11 6822 0081"}</span>
             </div>
             <div className="flex items-center gap-3">
               <MailIcon className="w-5 h-5 text-primary" />
-              <span>contacto@automercado.com</span>
+              <span>
+                {webElements?.contactEmail || "contacto@automercado.com"}
+              </span>
             </div>
           </CardContent>
         </Card>

@@ -15,6 +15,11 @@ export type WebElementTier1 = {
   carrouselElement1?: string;
   carrouselElement2?: string;
   carrouselElement3?: string;
+  contactAddress?: string;
+  contactPhone?: string;
+  contactEmail?: string;
+  contactHours?: string;
+  theme?: string;
 };
 
 // ✅ Initialize DynamoDB Client
