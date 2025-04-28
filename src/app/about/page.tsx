@@ -6,6 +6,8 @@ export default async function AboutUsPage() {
   if (!companyId) return <></>;
   const response = (await getWebElementsByCompanyId(companyId)) as any;
 
+  const logoUrl = process.env.LOGO_URL;
+
   const webElements =
     response.status === 200 &&
     Array.isArray(response.data) &&
@@ -13,5 +15,5 @@ export default async function AboutUsPage() {
       ? response.data[0]
       : {};
 
-  return <AboutUsContent webElements={webElements} />;
+  return <AboutUsContent logoUrl={logoUrl} webElements={webElements} />;
 }

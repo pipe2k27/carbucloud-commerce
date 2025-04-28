@@ -3,12 +3,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Cloud } from "lucide-react";
 import { WebElementTier1 } from "@/dynamo-db/web-elements.db";
 import React from "react";
+import Image from "next/image";
 
 type FooterProps = {
   webElements?: WebElementTier1;
+  logoUrl?: string;
 };
 
-const Footer: React.FC<FooterProps> = ({ webElements }) => {
+const Footer: React.FC<FooterProps> = ({ webElements, logoUrl }) => {
   return (
     <footer className="border-t bg-muted  py-8">
       <div className="container mx-auto px-4 py-12">
@@ -18,7 +20,14 @@ const Footer: React.FC<FooterProps> = ({ webElements }) => {
             <CardContent className="p-0">
               <Link href="/" className="flex items-center gap-2 mb-1">
                 <div className="text-lg logo-title flex text-primary font-bold">
-                  <Cloud className="mr-1" /> CarbuCloud
+                  {logoUrl && (
+                    <Image src={logoUrl} alt="Logo" width={140} height={70} />
+                  )}
+                  {!logoUrl && (
+                    <>
+                      <Cloud className="mr-1" /> CarbuCloud
+                    </>
+                  )}
                 </div>
               </Link>
               <p className="text-muted-foreground">

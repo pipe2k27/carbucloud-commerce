@@ -25,6 +25,8 @@ export default async function RootLayout({
   if (!companyId) return <></>;
   const webElements = (await getWebElementsByCompanyId(companyId)) as any;
 
+  const logoUrl = process.env.LOGO_URL;
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${GeistSans.className}`}>
@@ -38,11 +40,11 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
+          <Navbar logoUrl={logoUrl} />
           <div className="min-h-[83vh]">{children}</div>
           <Toaster />
           <CommonComponentsProvider />
-          <Footer webElements={webElements?.data[0]} />
+          <Footer logoUrl={logoUrl} webElements={webElements?.data[0]} />
         </ThemeProvider>
       </body>
     </html>

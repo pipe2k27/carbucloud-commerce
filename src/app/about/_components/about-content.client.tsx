@@ -5,14 +5,21 @@ import { MessageCircleWarning, SearchCheckIcon } from "lucide-react";
 import { Suspense } from "react";
 import MapLocation from "../../_home-components/map-location";
 import { WebElementTier1 } from "@/dynamo-db/web-elements.db";
+import Image from "next/image";
 
 type Props = {
   webElements?: Partial<WebElementTier1>;
+  logoUrl?: string;
 };
 
-export default function AboutUsContent({ webElements }: Props) {
+export default function AboutUsContent({ webElements, logoUrl }: Props) {
   return (
     <div className="bg-background text-foreground py-20 px-4">
+      {logoUrl && (
+        <div className="w-full flex justify-center  mb-24">
+          <Image src={logoUrl} alt="Logo" width={300} height={150} />
+        </div>
+      )}
       <div className="max-w-3xl mx-auto text-center">
         <h1 className="text-4xl font-bold mb-4">
           {webElements?.aboutTitle || "Sobre nosotros"}

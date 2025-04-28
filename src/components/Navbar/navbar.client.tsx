@@ -12,8 +12,9 @@ import {
 } from "../ui/sheet";
 // import { ModeToggle } from "../ui/mode-toggle";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
-export default function Navbar() {
+export default function Navbar({ logoUrl }: { logoUrl?: string }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const router = useRouter();
@@ -26,7 +27,14 @@ export default function Navbar() {
           className="text-lg logo-title flex text-primary font-bold"
           onClick={() => router.push("/")}
         >
-          <Cloud className="mr-1" /> CarbuCloud
+          {logoUrl && (
+            <Image src={logoUrl} alt="Logo" width={120} height={60} />
+          )}
+          {!logoUrl && (
+            <>
+              <Cloud className="mr-1" /> CarbuCloud
+            </>
+          )}
         </div>
 
         {/* Desktop Links */}
