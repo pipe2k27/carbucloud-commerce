@@ -3,7 +3,6 @@
 import { useEffect, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -214,9 +213,17 @@ const FiltersPanel = ({
   transmissions,
   reset,
 }: any) => {
-  const kmRange = watch("km");
-  const yearRange = watch("year");
   const currency = watch("currency");
+
+  const kmSteps = [
+    0, 10000, 20000, 30000, 40000, 50000, 75000, 100000, 125000, 150000, 175000,
+    200000, 250000, 300000, 350000, 500000, 1000000,
+  ];
+
+  const yearSteps = Array.from(
+    { length: new Date().getFullYear() - 1989 },
+    (_, i) => 1990 + i
+  );
 
   return (
     <div className="space-y-8">
@@ -307,49 +314,137 @@ const FiltersPanel = ({
         </div>
       </div>
 
-      {/* KM */}
+      {/* KM - FROM and TO */}
       <div>
-        <label className="block mb-1 text-sm font-medium">Kilómetros</label>
-        <Controller
-          name="km"
-          control={control}
-          render={({ field }) => (
-            <Slider
-              min={0}
-              max={300000}
-              step={1000}
-              value={field.value}
-              onValueChange={field.onChange}
-            />
-          )}
-        />
-        <div className="text-xs text-muted-foreground mt-1">
-          {kmRange[0]} km - {kmRange[1]} km
+        <label className="block mb-1 text-sm font-medium">
+          Kilómetros
+          <span className="text-[11px] text-muted-foreground ml-2">
+            (Desde - Hasta)
+          </span>
+        </label>
+        <div className="flex gap-2">
+          <Controller
+            name="km"
+            control={control}
+            render={({ field }) => (
+              <>
+                <Select
+                  onValueChange={(val) => {
+                    const to = field.value[1];
+                    field.onChange([Number(val), to]);
+                  }}
+                  value={String(field.value[0])}
+                >
+                  <SelectTrigger className="text-xs">
+                    <SelectValue placeholder="Desde" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {kmSteps.map((km) => (
+                      <SelectItem
+                        key={km}
+                        value={String(km)}
+                        className="text-xs"
+                      >
+                        {km.toLocaleString("es")} km
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Select
+                  onValueChange={(val) => {
+                    const from = field.value[0];
+                    field.onChange([from, Number(val)]);
+                  }}
+                  value={String(field.value[1])}
+                >
+                  <SelectTrigger className="text-xs">
+                    <SelectValue placeholder="Hasta" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {kmSteps.map((km) => (
+                      <SelectItem
+                        className="text-xs"
+                        key={km}
+                        value={String(km)}
+                      >
+                        {km.toLocaleString("es")} km
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </>
+            )}
+          />
         </div>
       </div>
 
-      {/* Year */}
+      {/* Year - FROM and TO */}
       <div>
-        <label className="block mb-1 text-sm font-medium">Año</label>
-        <Controller
-          name="year"
-          control={control}
-          render={({ field }) => (
-            <Slider
-              min={1990}
-              max={new Date().getFullYear()}
-              step={1}
-              value={field.value}
-              onValueChange={field.onChange}
-            />
-          )}
-        />
-        <div className="text-xs text-muted-foreground mt-1">
-          {yearRange[0]} - {yearRange[1]}
+        <label className="block mb-1 text-sm font-medium">
+          Año
+          <span className="text-[11px] text-muted-foreground ml-2">
+            (Desde - Hasta)
+          </span>
+        </label>
+        <div className="flex gap-2">
+          <Controller
+            name="year"
+            control={control}
+            render={({ field }) => (
+              <>
+                <Select
+                  onValueChange={(val) => {
+                    const to = field.value[1];
+                    field.onChange([Number(val), to]);
+                  }}
+                  value={String(field.value[0])}
+                >
+                  <SelectTrigger className="text-xs">
+                    <SelectValue placeholder="Desde" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {yearSteps.map((year) => (
+                      <SelectItem
+                        className="text-xs"
+                        key={year}
+                        value={String(year)}
+                      >
+                        {year}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Select
+                  onValueChange={(val) => {
+                    const from = field.value[0];
+                    field.onChange([from, Number(val)]);
+                  }}
+                  value={String(field.value[1])}
+                >
+                  <SelectTrigger className="text-xs">
+                    <SelectValue placeholder="Hasta" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {yearSteps.map((year) => (
+                      <SelectItem
+                        className="text-xs"
+                        key={year}
+                        value={String(year)}
+                      >
+                        {year}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </>
+            )}
+          />
         </div>
       </div>
 
-      {/* Transmissions */}
+      {/* Transmission */}
       <div>
         <label className="block mb-1 text-sm font-medium">Transmisión</label>
         <div className="flex flex-wrap gap-2">
@@ -376,6 +471,8 @@ const FiltersPanel = ({
           ))}
         </div>
       </div>
+
+      {/* Reset Button */}
       <Button
         variant="secondary"
         className="w-full"
