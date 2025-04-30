@@ -10,7 +10,7 @@ export default function CarGrid({ cars }: { cars: Car[] }) {
   const [filteredCars, setFilteredCars] = useState<Car[]>(cars);
 
   return (
-    <div>
+    <div className="mt-[-100px]">
       <div className="absoulte top-0 right-0">
         <CarGridSort cars={filteredCars} setSortedCars={setFilteredCars} />
       </div>
