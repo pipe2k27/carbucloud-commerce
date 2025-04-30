@@ -44,7 +44,13 @@ export default function CarCard({ car }: { car: Car }) {
           </p>
           <p className="text-lg font-semibold mt-2">
             {formatCurrency(car.price, car.currency)}
+            {car.priceUsd && car.currency === "ARS" && (
+              <span className="text-muted-foreground text-sm opacity-55 italic ml-2 font-normal">
+                ({formatCurrency(car.priceUsd, "USD")})
+              </span>
+            )}
           </p>
+
           <div className="mt-2 flex flex-wrap gap-2">
             {car.transmission && car.transmission.length > 1 && (
               <span className="inline-block bg-gray-200/20 rounded-full px-3 py-1 text-xs font-semibold text-card-foreground border border-solid border-muted">

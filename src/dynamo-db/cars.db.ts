@@ -43,6 +43,7 @@ export type Car = FormCar & {
   createdBy: string;
   updatedAt: string;
   userId: string;
+  priceUsd?: number | string;
 };
 
 // ✅ Initialize DynamoDB Client

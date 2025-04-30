@@ -1,10 +1,12 @@
 export const dynamic = "force-dynamic";
 
 import { Metadata } from "next";
-import { getCarsByCompanyId } from "@/dynamo-db/cars.db";
+import { Car, getCarsByCompanyId } from "@/dynamo-db/cars.db";
 import { Suspense } from "react";
 import CarGridSkeleton from "./_components/car-grid-skeleton";
 import CarGrid from "./_components/car-grid";
+import { fetchDolarOficialRate } from "@/utils/currencyUtils";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -15,6 +17,20 @@ export default async function DashboardPage() {
   const companyId = process.env.COMPANY_ID;
   if (!companyId) return <></>;
   const { data: cars } = await getCarsByCompanyId(companyId);
+
+  const dolarRate = await fetchDolarOficialRate();
+
+  if (!cars || !dolarRate) return redirect("/error-page");
+
+  if (dolarRate) {
+    cars.forEach((car: Car) => {
+      if (car.price && car.currency === "USD") {
+        car.priceUsd = car.price;
+      } else {
+        car.priceUsd = Math.round(Number(car.price) / dolarRate);
+      }
+    });
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
