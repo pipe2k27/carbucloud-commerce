@@ -84,7 +84,7 @@ export default function ProductDetail({ data, images }: Props) {
               <div className="text-[11px] text-muted-foreground font-normal absolute top-[-18px] left-[45px]">
                 {car.year} - {Number(car.km).toLocaleString("es")}km
               </div>
-              <div className="max-w-[calc(100%_-_230px)]">
+              <div className="lg:max-w-[calc(100%_-_230px)]">
                 {car.brand} {car.model}
               </div>
             </div>
