@@ -2,9 +2,10 @@ export const dynamic = "force-dynamic";
 
 import { getCarAction } from "@/service/actions/cars.actions";
 import { notFound } from "next/navigation";
-import ProductDetail from "./components/product-detail.client";
 import { getStockImagesByProductIdAction } from "@/service/actions/images.actions";
 import CarGridBanner from "@/components/Common/car-grid-banner.server";
+import ProductDetailDesktop from "./components/product-detail-desktop.client";
+import ProductDetailMobile from "./components/product-detail-mobile.client";
 
 type Params = Promise<{ productId: string }>;
 
@@ -29,9 +30,20 @@ const ProductDetailPage: React.FC<Props> = async ({ params }) => {
 
   const images = imagesResponse.data.map((img: any) => img.imageUrl);
 
+  const logoUrl = process.env.LOGO_URL;
+
   return (
     <div className="mb-16">
-      <ProductDetail data={response.data} images={images} />
+      <div className="hidden lg:block">
+        <ProductDetailDesktop
+          data={response.data}
+          images={images}
+          logoUrl={logoUrl}
+        />
+      </div>
+      <div className="lg:hidden">
+        <ProductDetailMobile data={response.data} images={images} />
+      </div>
       <CarGridBanner label="También te puede interesar" />
     </div>
   );

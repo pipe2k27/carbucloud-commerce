@@ -1,29 +1,28 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Car as CarIcon,
-  ArrowLeft,
-  CircleArrowRight,
+  DownloadCloud,
   MessageCircleWarning,
   SearchCheckIcon,
 } from "lucide-react";
 import { Car } from "@/dynamo-db/cars.db";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import ImageCarousel from "@/components/ui/image-carousel";
 import { statusConfig } from "@/components/Common/car-status-badge";
 import { openWhatsappModal } from "@/components/Modals/transformation/new-contact-modal.client";
+import ImageGrid from "./image-grid.client";
+import { formatCurrency } from "@/utils/currencyUtils";
+import SpecCards from "./spec-cards.client";
 
 interface Props {
   data: Car;
   images: string[];
+  logoUrl?: string;
 }
 
-export default function ProductDetail({ data, images }: Props) {
+export default function ProductDetailDesktop({ data, images, logoUrl }: Props) {
   const [car, setCar] = useState<Car | null>(null);
-  const router = useRouter();
 
   const [currentImages, setCurrentImages] = useState<string[]>();
 
@@ -47,50 +46,74 @@ export default function ProductDetail({ data, images }: Props) {
   if (!car) return <></>;
 
   return (
-    <div className="max-w-[1500px] w-[98%] mx-auto p-1 mb-8">
-      <div
-        onClick={() => {
-          router.push("/explore");
-        }}
-        className="mb-6 cursor-pointer flex items-center mt-6"
-      >
-        <ArrowLeft className="w-4 mr-1" /> Volver
-      </div>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold flex items-center">
-          <CircleArrowRight className="mr-2 text-primary w-6 h-6" />
-          Detalles del Vehículo
-        </h1>
-      </div>
-      <Card className="flex flex-col lg:flex-row relative">
-        <div className="absolute top-0 right-0 z-10 bg-muted w-[230px] h-[68px] place-content-center  pl-8 rounded-bl-[8px] rounded-tr-[12px] hidden lg:block">
-          <div>
-            <div className="text-xs">Precio:</div>
-            <div className="font-semibold text-primary text-lg text-left w-full">
-              {car.currency === "USD" ? "U$D " : "$"}
-              {car.price?.toLocaleString("es") || 0}
-            </div>
-          </div>
-        </div>
-        <CardContent className="pt-0 px-0 flex flex-col items-center pb-0">
-          {currentImages && <ImageCarousel images={currentImages} />}
-        </CardContent>
-        <CardContent className="lg:w-2/3 p-4 pt-0 lg:pt-14">
-          <div className="text-lg font-bold mb-4 flex relative w-full ">
+    <div className="py-8 mb-8 max-w-[1488px] mx-auto w-[calc(80vw+48px)]">
+      <div className="my-12 flex justify-between items-center">
+        <div className="flex items-center">
+          <div className="max-w-[35vw] whitespace-nowrap overflow-hidden text-lg  xl:text-3xl font-bold flex relative">
             <div className="w-[45px]">
-              <CarIcon className="mr-2  scale-x-[-1] text-primary w-8 h-8 translate-y-[-3px]" />
+              <CarIcon className="mr-2  scale-x-[-1] text-primary w-8 h-8 translate-y-[2px]" />
             </div>
             <div className="w-full">
-              <div className="text-[11px] text-muted-foreground font-normal absolute top-[-18px] left-[45px]">
+              <div className="text-[13px] text-muted-foreground font-normal absolute top-[-24px] left-[45px]">
                 {car.year} - {Number(car.km).toLocaleString("es")}km
               </div>
+              <div className="translate-y-[5px] xl:translate-y-0">
+                {car.brand} {car.model}
+              </div>
+            </div>
+          </div>
+          <div className="font-normal text-lg text-muted-foreground translate-y-[4px] align-bottom p-0 ml-0 opacity-60">
+            / {formatCurrency(car.price, car.currency)}
+          </div>
+        </div>
+
+        <div>
+          <Button
+            onClick={() => {
+              openWhatsappModal(car);
+            }}
+            className="w-[200px] mr-4"
+            variant="secondary"
+          >
+            Consultar
+            <MessageCircleWarning className="ml-[-2px] scale-110" />
+          </Button>
+          <Button
+            onClick={() => {
+              openWhatsappModal(car);
+            }}
+            className="w-[200px]"
+          >
+            Ficha Tecnica
+            <DownloadCloud className="ml-[-2px] scale-110" />
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex flex-col justify-center items-center w-full">
+        <div className="flex justify-center items-center w-full">
+          {currentImages && (
+            <ImageGrid logoUrl={logoUrl} images={currentImages} />
+          )}
+        </div>
+        <div className="w-full my-12">
+          <div className="text-lg mt-10 font-bold mb-4 flex relative w-full ">
+            {/* <div className="w-[45px]">
+              <CarIcon className="mr-2  scale-x-[-1] text-primary w-8 h-8 translate-y-[-3px]" />
+            </div> */}
+            <div className="w-full">
               <div className="lg:max-w-[calc(100%_-_230px)]">
                 {car.brand} {car.model}
               </div>
             </div>
           </div>
-          <div className="w-full h-[1px] bg-gray-300 mt-4 mb-4" />
+          <div className="w-full h-[1px] bg-gray-300 mt-4 mb-12" />
+          <SpecCards car={car} />
+
+          <div className="w-full h-[1px] bg-gray-300 mt-8 mb-8" />
           <div className="grid grid-cols-2 gap-4">
+            <DetailItem label="Marca" value={car.brand} />
+            <DetailItem label="Modelo y versión" value={car.model} />
             <DetailItem label="Año" value={car.year} />
             <DetailItem label="Tipo" value={car.carType} />
             <DetailItem label="Transmisión" value={car.transmission} />
@@ -107,11 +130,11 @@ export default function ProductDetail({ data, images }: Props) {
               className={statusConfig[car.status]?.color || "text-gray-500"}
             />
             {/* <DetailItem
-              label="Fecha de Ingreso:"
-              value={dateStringToddmmyyyy(String(car.createdAt))}
-              className="text-muted-foreground"
-            /> */}
-            <div className="lg:hidden">
+                      label="Fecha de Ingreso:"
+                      value={dateStringToddmmyyyy(String(car.createdAt))}
+                      className="text-muted-foreground"
+                    /> */}
+            <div className="">
               <DetailItem
                 label="Precio"
                 value={`${car.currency} $${
@@ -121,7 +144,7 @@ export default function ProductDetail({ data, images }: Props) {
               />
             </div>
           </div>
-          <div className="w-full h-[1px] bg-gray-300 mt-6" />
+          <div className="w-full h-[1px] bg-gray-300 mt-8" />
           <div className="lg:min-h-[100px]">
             <DetailText label="Descripción" value={car.description} />
           </div>
@@ -147,8 +170,8 @@ export default function ProductDetail({ data, images }: Props) {
               <MessageCircleWarning className="ml-[-2px] scale-110" />
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
