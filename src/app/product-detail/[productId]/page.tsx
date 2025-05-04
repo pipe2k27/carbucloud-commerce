@@ -31,6 +31,7 @@ const ProductDetailPage: React.FC<Props> = async ({ params }) => {
   const images = imagesResponse.data.map((img: any) => img.imageUrl);
 
   const logoUrl = process.env.LOGO_URL;
+  const logoWhiteUrl = process.env.LOGO_JPEG;
 
   return (
     <div className="mb-16">
@@ -39,6 +40,7 @@ const ProductDetailPage: React.FC<Props> = async ({ params }) => {
           data={response.data}
           images={images}
           logoUrl={logoUrl}
+          logoWhiteUrl={logoWhiteUrl}
         />
       </div>
       <div className="lg:hidden">

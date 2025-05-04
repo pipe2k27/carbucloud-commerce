@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import ImageCarouselGrid from "./image-carousel-grid";
+import ImageCarouselGrid from "./image-carousel-grid.client";
 import { Zap } from "lucide-react";
 
 type ImageGridProps = {
