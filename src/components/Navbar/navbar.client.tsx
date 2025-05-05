@@ -27,9 +27,7 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
           className="text-lg logo-title flex text-primary font-bold"
           onClick={() => router.push("/")}
         >
-          {logoUrl && (
-            <Image src={logoUrl} alt="Logo" width={120} height={60} />
-          )}
+          {logoUrl && <Image src={logoUrl} alt="Logo" width={90} height={30} />}
           {!logoUrl && (
             <>
               <Cloud className="mr-1" /> CarbuCloud

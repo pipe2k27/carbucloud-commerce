@@ -7,9 +7,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Props {
   images: string[];
+  openImageViewer: (index: number) => void;
 }
 
-export default function ImageCarouselGrid({ images }: Props) {
+export default function ImageCarouselGrid({ images, openImageViewer }: Props) {
   const [selectedImage, setSelectedImage] = useState(images[0]);
 
   // State for scrolling thumbnails
@@ -25,11 +26,19 @@ export default function ImageCarouselGrid({ images }: Props) {
       setScrollIndex(scrollIndex + 1);
   };
 
+  const handleViewer = () => {
+    const index = images.findIndex((img) => img === selectedImage);
+    if (index !== -1) openImageViewer(index);
+  };
+
   return (
     <CardContent className="pt-0 p-0 flex flex-col items-center">
       {/* Main Image */}
       {selectedImage && (
-        <div className="relative w-[calc(40vw+16px)] h-[calc(40vw+16px)] max-w-[736px] max-h-[736px]">
+        <div
+          onClick={handleViewer}
+          className=" cursor-pointer hover:scale-[0.995] transition-all relative w-[calc(40vw+16px)] h-[calc(40vw+16px)] max-w-[486px] max-h-[436px]"
+        >
           <Image
             src={selectedImage}
             alt="Selected Product Image"

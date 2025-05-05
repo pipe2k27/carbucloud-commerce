@@ -57,16 +57,16 @@ export default function SpecCards({ car }: SpecCardsProps) {
 
         return (
           <Card key={key} className="text-center transition-all hover:bg-muted">
-            <CardContent className="flex flex-col items-center justify-center gap-2 py-6">
-              <Icon className="w-6 h-6 text-primary" />
-              <div className="text-sm text-muted-foreground">{label}</div>
+            <CardContent className="flex flex-col items-center justify-center gap-2 py-3">
+              <Icon className="w-5 h-5 text-primary" />
+              <div className="text-xs text-muted-foreground">{label}</div>
               {key === "price" && (
                 <div className="text-sm font-semibold">
                   {formatCurrency(value, car.currency)}
                 </div>
               )}
               {key !== "price" && (
-                <div className="text-base font-semibold">{value ?? "—"}</div>
+                <div className="text-md font-semibold">{value ?? "—"}</div>
               )}
             </CardContent>
           </Card>

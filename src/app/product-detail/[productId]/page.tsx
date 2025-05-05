@@ -46,7 +46,9 @@ const ProductDetailPage: React.FC<Props> = async ({ params }) => {
       <div className="lg:hidden">
         <ProductDetailMobile data={response.data} images={images} />
       </div>
-      <CarGridBanner label="También te puede interesar" />
+      <div className="w-[1050px] mx-auto max-w-[95vw]">
+        <CarGridBanner label="También te puede interesar" />
+      </div>
     </div>
   );
 };

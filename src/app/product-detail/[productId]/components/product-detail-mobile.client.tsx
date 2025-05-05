@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   Car as CarIcon,
   ArrowLeft,
-  CircleArrowRight,
   MessageCircleWarning,
   SearchCheckIcon,
 } from "lucide-react";
@@ -53,15 +52,22 @@ export default function ProductDetailMobile({ data, images }: Props) {
         onClick={() => {
           router.push("/explore");
         }}
-        className="mb-6 cursor-pointer flex items-center mt-6"
+        className="mb-6 cursor-pointer flex items-center mt-6 opacity-40"
       >
         <ArrowLeft className="w-4 mr-1" /> Volver
       </div>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold flex items-center">
-          <CircleArrowRight className="mr-2 text-primary w-6 h-6" />
-          Detalles del Vehículo
-        </h1>
+      <div className="text-lg font-bold mb-4 pl-2 flex relative w-full ">
+        <div className="w-[45px]">
+          <CarIcon className="mr-2  scale-x-[-1] text-primary w-8 h-8 translate-y-[-3px]" />
+        </div>
+        <div className="w-full">
+          <div className="text-[11px] text-muted-foreground font-normal absolute top-[-18px] left-[50px]">
+            {car.year} - {Number(car.km).toLocaleString("es")}km
+          </div>
+          <div className="lg:max-w-[calc(100%_-_230px)]">
+            {car.brand} {car.model}
+          </div>
+        </div>
       </div>
       <Card className="flex flex-col lg:flex-row relative">
         <div className="absolute top-0 right-0 z-10 bg-muted w-[230px] h-[68px] place-content-center  pl-8 rounded-bl-[8px] rounded-tr-[12px] hidden lg:block">
@@ -77,19 +83,6 @@ export default function ProductDetailMobile({ data, images }: Props) {
           {currentImages && <ImageCarousel images={currentImages} />}
         </CardContent>
         <CardContent className="lg:w-2/3 p-4 pt-0 lg:pt-14">
-          <div className="text-lg font-bold mb-4 flex relative w-full ">
-            <div className="w-[45px]">
-              <CarIcon className="mr-2  scale-x-[-1] text-primary w-8 h-8 translate-y-[-3px]" />
-            </div>
-            <div className="w-full">
-              <div className="text-[11px] text-muted-foreground font-normal absolute top-[-18px] left-[45px]">
-                {car.year} - {Number(car.km).toLocaleString("es")}km
-              </div>
-              <div className="lg:max-w-[calc(100%_-_230px)]">
-                {car.brand} {car.model}
-              </div>
-            </div>
-          </div>
           <div className="w-full h-[1px] bg-gray-300 mt-4 mb-4" />
           <div className="grid grid-cols-2 gap-4">
             <DetailItem label="Año" value={car.year} />

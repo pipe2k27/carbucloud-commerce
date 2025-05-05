@@ -9,14 +9,19 @@ import { Zap } from "lucide-react";
 type ImageGridProps = {
   images: string[];
   logoUrl?: string;
+  openImageViewer: (index: number) => void;
 };
 
-export default function ImageGrid({ images, logoUrl }: ImageGridProps) {
+export default function ImageGrid({
+  images,
+  logoUrl,
+  openImageViewer,
+}: ImageGridProps) {
   const displayedImages = images.slice(1, 5);
 
   return (
     <div className="flex">
-      <ImageCarouselGrid images={images} />
+      <ImageCarouselGrid images={images} openImageViewer={openImageViewer} />
 
       <div className="grid grid-cols-2 gap-y-[16px] gap-x-[16px] max-w-fit ml-[16px] h-fit">
         {[...Array(4)].map((_, index) => {
@@ -28,13 +33,16 @@ export default function ImageGrid({ images, logoUrl }: ImageGridProps) {
             <div
               key={index}
               className={cn(
-                "relative aspect-square w-[20vw] max-h-[360px] max-w-[360px] overflow-hidden",
+                " cursor-pointer hover:scale-[0.995] relative h-[20vw] w-[22vw] max-h-[210px] max-w-[252px] overflow-hidden",
                 {
                   "rounded-tr-[1.5rem]": isTopRight,
                   "rounded-br-[1.5rem]": isBottomRight,
                   "bg-muted": !hasImage,
                 }
               )}
+              onClick={() => {
+                if (hasImage) openImageViewer(index + 1);
+              }}
             >
               {hasImage && (
                 <Image

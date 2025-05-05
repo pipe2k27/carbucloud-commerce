@@ -8,7 +8,7 @@ type CarSpecsProps = { car: Car };
 const CarSpecs: React.FC<CarSpecsProps> = ({ car }) => {
   return (
     <>
-      <div className="w-full h-[1px] bg-gray-300 mt-8 mb-8" />
+      <div className="w-full h-[1px] bg-gray-300 mt-4 mb-8" />
       <div className="grid grid-cols-2 gap-4">
         <DetailItem label="Marca" value={car.brand} />
         <DetailItem label="Modelo y versión" value={car.model} />
