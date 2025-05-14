@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getWebElementsByCompanyId } from "@/dynamo-db/web-elements.db";
+import { CarSearchForm } from "@/components/CarSearch/CarSearch.client";
 
 export default async function HeroBanner() {
   const companyId = process.env.COMPANY_ID;
@@ -20,7 +21,7 @@ export default async function HeroBanner() {
   const logoUrl = process.env.LOGO_URL;
 
   return (
-    <div>
+    <div className="mb-8">
       <div className="relative rounded-xl overflow-hidden">
         <div className="absolute inset-0">
           <Image
@@ -59,11 +60,7 @@ export default async function HeroBanner() {
           </div>
         </div>
       </div>
-      {logoUrl && (
-        <div className="w-full flex justify-center  my-24">
-          <Image src={logoUrl} alt="Logo" width={300} height={150} />
-        </div>
-      )}
+      <CarSearchForm logoUrl={logoUrl} />
     </div>
   );
 }
