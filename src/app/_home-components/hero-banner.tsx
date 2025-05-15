@@ -47,7 +47,7 @@ export default async function HeroBanner() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button asChild size="lg">
-              <Link href="/explore">Ver autos disponibles</Link>
+              <Link href="/explore/any">Ver autos disponibles</Link>
             </Button>
             <Button
               asChild

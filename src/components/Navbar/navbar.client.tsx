@@ -40,7 +40,7 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
           <div
             className="hover:text-muted-foreground cursor-pointer"
             onClick={() => {
-              router.push("/explore");
+              router.push("/explore/any");
             }}
           >
             Explorar
@@ -81,7 +81,7 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
             <div className="flex flex-col mt-4 space-y-4">
               <a
                 onClick={() => {
-                  router.push("/explore");
+                  router.push("/explore/any");
                 }}
                 className="text-gray-600 hover:text-gray-800"
               >

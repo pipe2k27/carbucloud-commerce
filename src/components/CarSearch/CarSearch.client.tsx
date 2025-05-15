@@ -14,7 +14,7 @@ import {
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "../ui/card";
-import { SearchCheck, Wand2 } from "lucide-react";
+import { SearchCheck, Wand2, X } from "lucide-react";
 import Image from "next/image";
 import { carBrandsInArgentina } from "@/constants/car-constants";
 
@@ -26,7 +26,15 @@ export const carSearchSchema = z.object({
 
 export type CarSearchSchema = z.infer<typeof carSearchSchema>;
 
-export function CarSearchForm({ logoUrl }: { logoUrl?: string }) {
+export function CarSearchForm({
+  logoUrl,
+  showClose,
+  onClose,
+}: {
+  logoUrl?: string;
+  showClose?: boolean;
+  onClose?: () => void;
+}) {
   const { register, handleSubmit, watch, setValue } = useForm<CarSearchSchema>({
     resolver: zodResolver(carSearchSchema),
     defaultValues: {
@@ -42,7 +50,7 @@ export function CarSearchForm({ logoUrl }: { logoUrl?: string }) {
     const brand = encodeURIComponent(data.brand);
     const model = encodeURIComponent(data.model || "any");
     const minYear = encodeURIComponent(data.minYear || "any");
-    router.push(`/search/${brand}/${model}/${minYear}`);
+    router.push(`/explore/${brand}/${model}/${minYear}`);
   };
 
   const brand = watch("brand");
@@ -58,6 +66,12 @@ export function CarSearchForm({ logoUrl }: { logoUrl?: string }) {
         <h3 className="my-4 font-semibold text-xl flex w-full justify-start">
           <SearchCheck className="text-primary mr-2" /> Encontrá tu auto ideal
         </h3>
+        {showClose && (
+          <X
+            className="absolute top-4 right-4 cursor-pointer"
+            onClick={onClose}
+          />
+        )}
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

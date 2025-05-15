@@ -73,6 +73,10 @@ export async function getCarsByCompanyId(companyId: string): Promise<any> {
 
     const response = await dynamoDbClient.send(queryCommand);
 
+    if (!response.Items) {
+      return { status: 400, message: "No cars found" };
+    }
+
     return {
       status: 200,
       data:

@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Car } from "@/dynamo-db/cars.db";
-import { Wand2 } from "lucide-react";
+import { SearchCheck, Wand2 } from "lucide-react";
 
 // Filter form type
 type FilterForm = {
@@ -31,12 +31,17 @@ type FilterForm = {
 type Props = {
   cars: Car[];
   setFilteredCars: (cars: Car[]) => void;
+  setShowSearchForm: any;
 };
 
 const FILTER_STORAGE_KEY = "car-filters";
 const TWO_HOURS = 2 * 60 * 60 * 1000;
 
-export const CarGridFilters = ({ cars, setFilteredCars }: Props) => {
+export const CarGridFilters = ({
+  cars,
+  setFilteredCars,
+  setShowSearchForm,
+}: Props) => {
   const { control, watch, setValue, reset, getValues } = useForm<FilterForm>({
     defaultValues: {
       km: [0, 350000],
@@ -171,6 +176,7 @@ export const CarGridFilters = ({ cars, setFilteredCars }: Props) => {
             statuses={statuses}
             transmissions={transmissions}
             reset={reset}
+            setShowSearchForm={setShowSearchForm}
           />
         </div>
 
@@ -199,6 +205,14 @@ export const CarGridFilters = ({ cars, setFilteredCars }: Props) => {
               />
             </SheetContent>
           </Sheet>
+          <Button
+            onClick={() => {
+              setShowSearchForm((prev: boolean) => !prev);
+            }}
+            className="w-full  max-w-[498px] left-[50%] translate-x-[-50%] relative mb-4"
+          >
+            <SearchCheck className="mr-1" /> Buscar Autos
+          </Button>
         </div>
       </div>
     </div>
@@ -212,6 +226,7 @@ const FiltersPanel = ({
   brands,
   transmissions,
   reset,
+  setShowSearchForm,
 }: any) => {
   const currency = watch("currency");
 
@@ -226,272 +241,286 @@ const FiltersPanel = ({
   );
 
   return (
-    <div className="space-y-8">
-      {/* Brand */}
-      <div>
-        <label className="block mb-1 text-sm font-medium">Marca</label>
-        <Controller
-          name="brand"
-          control={control}
-          render={({ field }) => (
-            <Select
-              onValueChange={(val) => field.onChange(val === "all" ? "" : val)}
-              value={field.value || "all"}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Todas las marcas" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas</SelectItem>
-                {brands.map((b: string) => (
-                  <SelectItem key={b} value={b}>
-                    {b}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-      </div>
-
-      {/* Currency */}
-      <div>
-        <label className="block mb-1 text-sm font-medium">Moneda</label>
-        <Controller
-          name="currency"
-          control={control}
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccionar moneda" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">Todas las Monedas</SelectItem>
-                <SelectItem value="USD">Dólar estadounidense</SelectItem>
-                <SelectItem value="ARS">Peso argentino</SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        />
-      </div>
-
-      {/* Price */}
-      <div className="flex gap-2">
-        <div className="flex-1">
-          <label className="block mb-1 text-sm font-medium">
-            Precio mínimo
-          </label>
-          <Controller
-            name="priceMin"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                value={currency === "none" ? "" : field.value}
-                disabled={currency === "none"}
-                placeholder="Ej. 5000"
-              />
-            )}
-          />
-        </div>
-        <div className="flex-1">
-          <label className="block mb-1 text-sm font-medium">
-            Precio máximo
-          </label>
-          <Controller
-            name="priceMax"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                value={currency === "none" ? "" : field.value}
-                onChange={field.onChange}
-                disabled={currency === "none"}
-                placeholder="Ej. 20000"
-              />
-            )}
-          />
-        </div>
-      </div>
-
-      {/* KM - FROM and TO */}
-      <div>
-        <label className="block mb-1 text-sm font-medium">
-          Kilómetros
-          <span className="text-[11px] text-muted-foreground ml-2">
-            (Desde - Hasta)
-          </span>
-        </label>
-        <div className="flex gap-2">
-          <Controller
-            name="km"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Select
-                  onValueChange={(val) => {
-                    const to = field.value[1];
-                    field.onChange([Number(val), to]);
-                  }}
-                  value={String(field.value[0])}
-                >
-                  <SelectTrigger className="text-xs">
-                    <SelectValue placeholder="Desde" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {kmSteps.map((km) => (
-                      <SelectItem
-                        key={km}
-                        value={String(km)}
-                        className="text-xs"
-                      >
-                        {km.toLocaleString("es")} km
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <Select
-                  onValueChange={(val) => {
-                    const from = field.value[0];
-                    field.onChange([from, Number(val)]);
-                  }}
-                  value={String(field.value[1])}
-                >
-                  <SelectTrigger className="text-xs">
-                    <SelectValue placeholder="Hasta" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {kmSteps.map((km) => (
-                      <SelectItem
-                        className="text-xs"
-                        key={km}
-                        value={String(km)}
-                      >
-                        {km.toLocaleString("es")} km
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </>
-            )}
-          />
-        </div>
-      </div>
-
-      {/* Year - FROM and TO */}
-      <div>
-        <label className="block mb-1 text-sm font-medium">
-          Año
-          <span className="text-[11px] text-muted-foreground ml-2">
-            (Desde - Hasta)
-          </span>
-        </label>
-        <div className="flex gap-2">
-          <Controller
-            name="year"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Select
-                  onValueChange={(val) => {
-                    const to = field.value[1];
-                    field.onChange([Number(val), to]);
-                  }}
-                  value={String(field.value[0])}
-                >
-                  <SelectTrigger className="text-xs">
-                    <SelectValue placeholder="Desde" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {yearSteps.map((year) => (
-                      <SelectItem
-                        className="text-xs"
-                        key={year}
-                        value={String(year)}
-                      >
-                        {year}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <Select
-                  onValueChange={(val) => {
-                    const from = field.value[0];
-                    field.onChange([from, Number(val)]);
-                  }}
-                  value={String(field.value[1])}
-                >
-                  <SelectTrigger className="text-xs">
-                    <SelectValue placeholder="Hasta" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {yearSteps.map((year) => (
-                      <SelectItem
-                        className="text-xs"
-                        key={year}
-                        value={String(year)}
-                      >
-                        {year}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </>
-            )}
-          />
-        </div>
-      </div>
-
-      {/* Transmission */}
-      <div>
-        <label className="block mb-1 text-sm font-medium">Transmisión</label>
-        <div className="flex flex-wrap gap-2">
-          {transmissions.map((t: string) => (
-            <Badge
-              key={t}
-              onClick={() => {
-                const current = watch("transmission");
-                const isSelected = current.includes(t);
-                setValue(
-                  "transmission",
-                  isSelected
-                    ? current.filter((s: string) => s !== t)
-                    : [...current, t]
-                );
-              }}
-              variant={
-                watch("transmission").includes(t) ? "default" : "outline"
-              }
-              className="cursor-pointer"
-            >
-              {t}
-            </Badge>
-          ))}
-        </div>
-      </div>
-
-      {/* Reset Button */}
+    <div>
       <Button
-        variant="secondary"
-        className="w-full"
         onClick={() => {
-          localStorage.removeItem(FILTER_STORAGE_KEY);
-          reset({
-            km: [0, 350000],
-            year: [1990, new Date().getFullYear()],
-            status: [],
-            brand: "all",
-            transmission: [],
-            priceMin: "",
-            priceMax: "",
-            currency: "none",
-          });
+          setShowSearchForm((prev: boolean) => !prev);
         }}
+        className="w-full mb-4 hidden lg:flex"
       >
-        Limpiar Filtros <Wand2 />
+        <SearchCheck className="mr-1" /> Buscar Autos
       </Button>
+
+      <div className="space-y-8">
+        {/* Brand */}
+
+        <div>
+          <label className="block mb-1 text-sm font-medium">Marca</label>
+          <Controller
+            name="brand"
+            control={control}
+            render={({ field }) => (
+              <Select
+                onValueChange={(val) =>
+                  field.onChange(val === "all" ? "" : val)
+                }
+                value={field.value || "all"}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Todas las marcas" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas</SelectItem>
+                  {brands.map((b: string) => (
+                    <SelectItem key={b} value={b}>
+                      {b}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
+
+        {/* Currency */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">Moneda</label>
+          <Controller
+            name="currency"
+            control={control}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar moneda" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Todas las Monedas</SelectItem>
+                  <SelectItem value="USD">Dólar estadounidense</SelectItem>
+                  <SelectItem value="ARS">Peso argentino</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
+
+        {/* Price */}
+        <div className="flex gap-2">
+          <div className="flex-1">
+            <label className="block mb-1 text-sm font-medium">
+              Precio mínimo
+            </label>
+            <Controller
+              name="priceMin"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  value={currency === "none" ? "" : field.value}
+                  disabled={currency === "none"}
+                  placeholder="Ej. 5000"
+                />
+              )}
+            />
+          </div>
+          <div className="flex-1">
+            <label className="block mb-1 text-sm font-medium">
+              Precio máximo
+            </label>
+            <Controller
+              name="priceMax"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  value={currency === "none" ? "" : field.value}
+                  onChange={field.onChange}
+                  disabled={currency === "none"}
+                  placeholder="Ej. 20000"
+                />
+              )}
+            />
+          </div>
+        </div>
+
+        {/* KM - FROM and TO */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">
+            Kilómetros
+            <span className="text-[11px] text-muted-foreground ml-2">
+              (Desde - Hasta)
+            </span>
+          </label>
+          <div className="flex gap-2">
+            <Controller
+              name="km"
+              control={control}
+              render={({ field }) => (
+                <>
+                  <Select
+                    onValueChange={(val) => {
+                      const to = field.value[1];
+                      field.onChange([Number(val), to]);
+                    }}
+                    value={String(field.value[0])}
+                  >
+                    <SelectTrigger className="text-xs">
+                      <SelectValue placeholder="Desde" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {kmSteps.map((km) => (
+                        <SelectItem
+                          key={km}
+                          value={String(km)}
+                          className="text-xs"
+                        >
+                          {km.toLocaleString("es")} km
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Select
+                    onValueChange={(val) => {
+                      const from = field.value[0];
+                      field.onChange([from, Number(val)]);
+                    }}
+                    value={String(field.value[1])}
+                  >
+                    <SelectTrigger className="text-xs">
+                      <SelectValue placeholder="Hasta" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {kmSteps.map((km) => (
+                        <SelectItem
+                          className="text-xs"
+                          key={km}
+                          value={String(km)}
+                        >
+                          {km.toLocaleString("es")} km
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </>
+              )}
+            />
+          </div>
+        </div>
+
+        {/* Year - FROM and TO */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">
+            Año
+            <span className="text-[11px] text-muted-foreground ml-2">
+              (Desde - Hasta)
+            </span>
+          </label>
+          <div className="flex gap-2">
+            <Controller
+              name="year"
+              control={control}
+              render={({ field }) => (
+                <>
+                  <Select
+                    onValueChange={(val) => {
+                      const to = field.value[1];
+                      field.onChange([Number(val), to]);
+                    }}
+                    value={String(field.value[0])}
+                  >
+                    <SelectTrigger className="text-xs">
+                      <SelectValue placeholder="Desde" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {yearSteps.map((year) => (
+                        <SelectItem
+                          className="text-xs"
+                          key={year}
+                          value={String(year)}
+                        >
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Select
+                    onValueChange={(val) => {
+                      const from = field.value[0];
+                      field.onChange([from, Number(val)]);
+                    }}
+                    value={String(field.value[1])}
+                  >
+                    <SelectTrigger className="text-xs">
+                      <SelectValue placeholder="Hasta" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {yearSteps.map((year) => (
+                        <SelectItem
+                          className="text-xs"
+                          key={year}
+                          value={String(year)}
+                        >
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </>
+              )}
+            />
+          </div>
+        </div>
+
+        {/* Transmission */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">Transmisión</label>
+          <div className="flex flex-wrap gap-2">
+            {transmissions.map((t: string) => (
+              <Badge
+                key={t}
+                onClick={() => {
+                  const current = watch("transmission");
+                  const isSelected = current.includes(t);
+                  setValue(
+                    "transmission",
+                    isSelected
+                      ? current.filter((s: string) => s !== t)
+                      : [...current, t]
+                  );
+                }}
+                variant={
+                  watch("transmission").includes(t) ? "default" : "outline"
+                }
+                className="cursor-pointer"
+              >
+                {t}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        {/* Reset Button */}
+        <Button
+          variant="secondary"
+          className="w-full"
+          onClick={() => {
+            localStorage.removeItem(FILTER_STORAGE_KEY);
+            reset({
+              km: [0, 350000],
+              year: [1990, new Date().getFullYear()],
+              status: [],
+              brand: "all",
+              transmission: [],
+              priceMin: "",
+              priceMax: "",
+              currency: "none",
+            });
+          }}
+        >
+          Limpiar Filtros <Wand2 />
+        </Button>
+      </div>
     </div>
   );
 };
