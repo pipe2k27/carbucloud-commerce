@@ -6,7 +6,7 @@ import { CarGridFilters } from "./car-grid-filters";
 import { useState } from "react";
 import CarGridSort from "./car-grid-sort";
 import { CarSearchForm } from "@/components/CarSearch/CarSearch.client";
-import { motion, AnimatePresence } from "framer-motion";
+import ScaleDiv from "@/components/ui/scale-div";
 
 export default function CarGrid({ cars }: { cars: Car[] }) {
   const [showSearchForm, setShowSearchForm] = useState(false);
@@ -14,19 +14,11 @@ export default function CarGrid({ cars }: { cars: Car[] }) {
 
   return (
     <div>
-      <AnimatePresence>
-        {showSearchForm && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.3 }}
-            className="mb-[100px]"
-          >
-            <CarSearchForm />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {showSearchForm && (
+        <ScaleDiv>
+          <CarSearchForm />
+        </ScaleDiv>
+      )}
       <div className="mt-[-100px]">
         <div className="absoulte top-0 right-0">
           <div>

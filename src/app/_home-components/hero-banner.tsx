@@ -55,7 +55,7 @@ export default async function HeroBanner() {
               size="lg"
               className="bg-white/10 text-white border-white/20 hover:bg-white/20"
             >
-              <Link href="/es/contact">¿Tenés dudas? Contactanos</Link>
+              <Link href="/seller">Vendé tu Auto</Link>
             </Button>
           </div>
         </div>
