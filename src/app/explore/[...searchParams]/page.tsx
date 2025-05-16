@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import CleanupBadge from "../_components/cleanup-badge";
+import SearchBadges from "../_components/search-badges.client";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -70,20 +71,7 @@ export default async function ExplorePage({ params }: any) {
       </h1>
       <CleanupBadge showParams={showParams} />
       {!showParams && <p className="mb-8">Autos en stock</p>}
-      {showParams && (
-        <div className="mb-8 flex">
-          {searchParams.map((param: string, index: number) => {
-            const tag = processParam(param);
-            if (tag === "") return;
-            return (
-              <Badge key={tag} className="mr-2 z-10">
-                {tag}{" "}
-                {index !== 0 && <X className="w-3 h-3 ml-1 cursor-pointer" />}
-              </Badge>
-            );
-          })}
-        </div>
-      )}
+      {showParams && <SearchBadges searchParams={searchParams} />}
       <Suspense fallback={<CarGridSkeleton />}>
         <div className={`${showParams && "mt-[110px]"} md:mt-4`}>
           <CarGrid cars={cars} />
