@@ -7,8 +7,6 @@ import CarGridSkeleton from "../_components/car-grid-skeleton";
 import CarGrid from "../_components/car-grid";
 import { fetchDolarOficialRate } from "@/utils/currencyUtils";
 import { redirect } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
-import { X } from "lucide-react";
 import CleanupBadge from "../_components/cleanup-badge";
 import SearchBadges from "../_components/search-badges.client";
 
