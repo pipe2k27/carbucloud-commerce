@@ -86,7 +86,7 @@ export async function createPurchaseAction(
       createdAt: now,
       updatedAt: now,
       createdBy: "Potencial Cliente",
-      status: "pending",
+      status: "new",
     };
 
     const sanitizedData = Object.fromEntries(

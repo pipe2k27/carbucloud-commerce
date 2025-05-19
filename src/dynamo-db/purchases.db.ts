@@ -3,6 +3,7 @@ import { GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { Car, FormCar } from "./cars.db";
 
 export type PurchaseStatusType =
+  | "new"
   | "pending"
   | "revision"
   | "rejected"
