@@ -45,6 +45,12 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
           >
             Explorar
           </div>
+          <div
+            className="hover:text-muted-foreground cursor-pointer"
+            onClick={() => router.push("/seller")}
+          >
+            Vendé tu Auto
+          </div>{" "}
           {/* <div className="hover:text-muted-foreground cursor-pointer">
             Vender
           </div> */}
@@ -82,6 +88,7 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
               <a
                 onClick={() => {
                   router.push("/explore/any");
+                  setIsMobileMenuOpen(false);
                 }}
                 className="text-gray-600 hover:text-gray-800"
               >
@@ -89,7 +96,17 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
               </a>
               <a
                 onClick={() => {
+                  router.push("/seller");
+                  setIsMobileMenuOpen(false);
+                }}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                Vendé tu Auto
+              </a>
+              <a
+                onClick={() => {
                   router.push("/contact");
+                  setIsMobileMenuOpen(false);
                 }}
                 className="text-gray-600 hover:text-gray-800"
               >
@@ -98,6 +115,7 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
               <a
                 onClick={() => {
                   router.push("/about");
+                  setIsMobileMenuOpen(false);
                 }}
                 className="text-gray-600 hover:text-gray-800"
               >
@@ -106,6 +124,7 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
               <a
                 onClick={() => {
                   router.push("/");
+                  setIsMobileMenuOpen(false);
                 }}
                 className="text-gray-600 hover:text-gray-800"
               >

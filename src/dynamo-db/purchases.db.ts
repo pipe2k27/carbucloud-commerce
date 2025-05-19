@@ -1,11 +1,5 @@
-import { errorObject } from "@/constants/api-constants";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-  GetCommand,
-  PutCommand,
-  DeleteCommand,
-  QueryCommand,
-} from "@aws-sdk/lib-dynamodb";
+import { GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { Car, FormCar } from "./cars.db";
 
 export type PurchaseStatusType =
@@ -69,7 +63,6 @@ export async function createPurchase(purchase: Purchase) {
   }
 }
 
-// ✅ Update an existing potential car purchase
 export async function updatePurchase(
   productId: string,
   companyId: string,
@@ -110,78 +103,5 @@ export async function updatePurchase(
       status: 500,
       message: "An error occurred while updating the  car purchase",
     };
-  }
-}
-
-// ✅ Delete a potential car purchase (DELETE)
-export async function deletePurchase(productId: string, companyId: string) {
-  try {
-    const deleteCommand = new DeleteCommand({
-      TableName: TABLE_NAME,
-      Key: { productId, companyId },
-    });
-
-    await dynamoDbClient.send(deleteCommand);
-
-    return {
-      status: 200,
-      message: "Potential car purchase deleted successfully",
-    };
-  } catch (error) {
-    console.error("[deletePurchase] Error:", error);
-    return {
-      status: 500,
-      message: "An error occurred while deleting the potential car purchase",
-    };
-  }
-}
-
-// ✅ Get all potential car purchases for a given companyId (QUERY)
-export async function getPurchasesByCompanyId(companyId: string): Promise<any> {
-  try {
-    const queryCommand = new QueryCommand({
-      TableName: TABLE_NAME,
-      KeyConditionExpression: "companyId = :companyId",
-      ExpressionAttributeValues: {
-        ":companyId": companyId,
-      },
-    });
-
-    const response = await dynamoDbClient.send(queryCommand);
-
-    return { status: 200, data: response.Items || [] };
-  } catch (error) {
-    console.error("[getPurchasesByCompanyId] Error:", error);
-    return {
-      status: 500,
-      message: "An error occurred while retrieving potential car purchases",
-    };
-  }
-}
-
-// ✅ Get a specific potential car purchase by productId and companyId
-export async function getPurchase(
-  companyId: string,
-  productId: string
-): Promise<any> {
-  try {
-    const getCommand = new GetCommand({
-      TableName: TABLE_NAME,
-      Key: {
-        companyId, // Partition Key
-        productId, // Sort Key
-      },
-    });
-
-    const response = await dynamoDbClient.send(getCommand);
-
-    if (!response.Item) {
-      return { status: 404, message: "Potential car purchase not found" };
-    }
-
-    return { status: 200, data: response.Item };
-  } catch (error) {
-    console.error("[getPurchase] Error:", error);
-    return errorObject;
   }
 }

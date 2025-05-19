@@ -5,7 +5,13 @@ import { useForm, Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import {
   Select,
   SelectTrigger,
@@ -14,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Car } from "@/dynamo-db/cars.db";
-import { SearchCheck, Wand2 } from "lucide-react";
+import { CheckCircle, SearchCheck, Wand2 } from "lucide-react";
 
 // Filter form type
 type FilterForm = {
@@ -191,9 +197,10 @@ export const CarGridFilters = ({
               </Button>
             </SheetTrigger>
             <SheetContent
-              side="left"
+              side="right"
               className="w-[85vw] max-w-sm p-4 overflow-auto"
             >
+              <SheetTitle className="mb-6">Filtros</SheetTitle>
               <FiltersPanel
                 control={control}
                 setValue={setValue}
@@ -203,6 +210,12 @@ export const CarGridFilters = ({
                 transmissions={transmissions}
                 reset={reset}
               />
+              <SheetClose className="w-full mt-4" asChild>
+                <Button className="w-full mt-4">
+                  Aplicar filtros
+                  <CheckCircle />{" "}
+                </Button>
+              </SheetClose>
             </SheetContent>
           </Sheet>
           <Button
