@@ -1,15 +1,7 @@
 export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  Car,
-  CheckCircle,
-  CloudLightning,
-  PlayCircle,
-  Search,
-  SearchCheck,
-  Zap,
-} from "lucide-react";
+import { CheckCircle, PlayCircle, SearchCheck } from "lucide-react";
 
 export default function SellYourCar() {
   return (
