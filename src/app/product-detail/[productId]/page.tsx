@@ -7,14 +7,14 @@ import CarGridBanner from "@/components/Common/car-grid-banner.server";
 import ProductDetailDesktop from "./components/product-detail-desktop.client";
 import ProductDetailMobile from "./components/product-detail-mobile.client";
 
-type Params = Promise<{ productId: string }>;
+type Params = { productId: string };
 
 type Props = {
   params: Params;
 };
 
 const ProductDetailPage: React.FC<Props> = async ({ params }) => {
-  const pageparams = await params;
+  const pageparams = params;
   const { productId } = pageparams;
 
   const response = await getCarAction(productId);
