@@ -489,9 +489,9 @@ const FiltersPanel = ({
         <div>
           <label className="block mb-1 text-sm font-medium">Transmisión</label>
           <div className="flex flex-wrap gap-2">
-            {transmissions.map((t: string) => (
+            {transmissions.map((t: string, index: number) => (
               <Badge
-                key={t}
+                key={index}
                 onClick={() => {
                   const current = watch("transmission");
                   const isSelected = current.includes(t);

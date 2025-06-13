@@ -46,6 +46,8 @@ export default function ProductDetailMobile({ data, images }: Props) {
 
   if (!car) return <></>;
 
+  const isReserved = car.status === "reserved";
+
   return (
     <div className="max-w-[1500px] w-[98%] mx-auto p-1 mb-8">
       <div
@@ -79,7 +81,11 @@ export default function ProductDetailMobile({ data, images }: Props) {
             </div>
           </div>
         </div>
-        <CardContent className="pt-0 px-0 flex flex-col items-center pb-0">
+        <CardContent
+          className={`pt-0 px-0 flex flex-col items-center pb-0 ${
+            isReserved ? "opacity-50" : ""
+          } `}
+        >
           {currentImages && <ImageCarousel images={currentImages} />}
         </CardContent>
         <CardContent className="lg:w-2/3 p-4 pt-0 lg:pt-14">

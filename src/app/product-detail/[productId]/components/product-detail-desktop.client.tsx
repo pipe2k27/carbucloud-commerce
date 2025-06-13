@@ -56,6 +56,8 @@ export default function ProductDetailDesktop({
 
   if (!car) return <></>;
 
+  const isReserved = car.status === "reserved";
+
   const openImageViewer = (index: number) => {
     setViewingImageIndex(index);
     setIsImageViewerOpen(true);
@@ -75,7 +77,7 @@ export default function ProductDetailDesktop({
         <div className="mt-4 mb-8 flex justify-between items-center">
           <div className="flex items-center relative">
             <div className="text-[12px] text-primary font-normal absolute top-[-16px] left-[40px]">
-              {car.year} - {Number(car.km).toLocaleString("es")}km
+              {car.year} - {Number(car.km).toLocaleString("es")}km -{" "}
             </div>
             <div className="max-w-[35vw] whitespace-nowrap overflow-hidden text-lg  xl:text-xl font-bold flex relative">
               <div className="w-[45px]">
@@ -88,7 +90,8 @@ export default function ProductDetailDesktop({
               </div>
             </div>
             <div className="font-normal text-md text-muted-foreground translate-y-[2px] align-bottom p-0 ml-0 opacity-60">
-              / {formatCurrency(car.price, car.currency)}
+              /{formatCurrency(car.price, car.currency)}{" "}
+              {isReserved && " - Reservado"}
             </div>
           </div>
 
@@ -131,6 +134,7 @@ export default function ProductDetailDesktop({
                 logoUrl={logoUrl}
                 images={currentImages}
                 openImageViewer={openImageViewer}
+                isReserved={isReserved}
               />
             )}
           </div>
