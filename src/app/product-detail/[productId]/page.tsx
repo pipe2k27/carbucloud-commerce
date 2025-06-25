@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import { getCarAction } from "@/service/actions/cars.actions";
 import { notFound } from "next/navigation";
 import { getStockImagesByProductIdAction } from "@/service/actions/images.actions";
@@ -7,29 +5,33 @@ import CarGridBanner from "@/components/Common/car-grid-banner.server";
 import ProductDetailDesktop from "./components/product-detail-desktop.client";
 import ProductDetailMobile from "./components/product-detail-mobile.client";
 
-type Params = { productId: string };
+export const dynamic = "force-dynamic";
 
-type Props = {
-  params: Params;
-};
+interface ProductDetailParams {
+  productId: string;
+}
 
-const ProductDetailPage: React.FC<Props> = async ({ params }) => {
-  const pageparams = params;
-  const { productId } = pageparams;
+interface ProductDetailPageProps {
+  params: Promise<ProductDetailParams>;
+}
+
+export default async function ProductDetailPage({
+  params,
+}: ProductDetailPageProps) {
+  const { productId } = await params;
 
   const response = await getCarAction(productId);
   const imagesResponse = await getStockImagesByProductIdAction(productId);
 
   if (response.status !== 200 || !response.data) {
-    return notFound(); // Show 404 if product is not found
+    return notFound();
   }
 
   if (imagesResponse.status !== 200 || !imagesResponse.data) {
-    return notFound(); // Show 404 if product images are not found
+    return notFound();
   }
 
   const images = imagesResponse.data.map((img: any) => img.imageUrl);
-
   const logoUrl = process.env.LOGO_URL;
   const logoWhiteUrl = process.env.LOGO_JPEG;
 
@@ -51,6 +53,4 @@ const ProductDetailPage: React.FC<Props> = async ({ params }) => {
       </div>
     </div>
   );
-};
-
-export default ProductDetailPage;
+}
