@@ -67,13 +67,15 @@ const WhatsappModal = () => {
         status: "new",
       };
 
+      const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+
       // Simulate server-side save
       const lead = await createLeadAction(carData);
       console.log("Lead created:", lead);
 
       const message = `Hola! Soy ${data.fullName} y me interesa un vehículo. Mi número es ${data.phone}`;
       const encodedMsg = encodeURIComponent(message);
-      const whatsappURL = `https://wa.me/5491168220080?text=${encodedMsg}`;
+      const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMsg}`;
 
       window.open(whatsappURL, "_blank");
       resetCommonComponentAtom();

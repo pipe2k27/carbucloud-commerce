@@ -23,6 +23,8 @@ export default async function ContactoPage() {
       ? (data.data[0] as WebElementTier1)
       : ({} as WebElementTier1);
 
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+
   return (
     <div className="bg-background text-foreground py-20 px-4">
       <div className="max-w-2xl mx-auto text-center">
@@ -58,7 +60,7 @@ export default async function ContactoPage() {
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Button asChild variant="default" className=" px-6 py-4">
             <a
-              href="https://wa.me/5491168220080"
+              href={`https://wa.me/${whatsappNumber || "5491168220080"}`}
               target="_blank"
               rel="noopener noreferrer"
             >
