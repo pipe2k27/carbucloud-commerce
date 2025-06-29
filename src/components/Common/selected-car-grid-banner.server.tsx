@@ -33,21 +33,21 @@ export default async function SelectedCarGridBanner({
       return <></>;
     }
 
-    selectedCars = cars.filter((car: Car) => {
-      if (!webElements) return false;
-      const carId = car.productId;
-      if (
-        carId === webElements.carrouselElement1 ||
-        carId === webElements.carrouselElement2 ||
-        carId === webElements.carrouselElement3
-      ) {
-        return true;
-      }
-    });
-  }
+    if (webElements) {
+      const carouselOrder = [
+        webElements.carrouselElement1,
+        webElements.carrouselElement2,
+        webElements.carrouselElement3,
+      ];
 
-  if (selectedCars.length < 3 && cars.length > 2) {
-    selectedCars = [...selectedCars, cars[0], cars[1], cars[2]];
+      selectedCars = carouselOrder
+        .map((id) => cars.find((car: Car) => car.productId === id))
+        .filter((car): car is Car => Boolean(car)); // <-- this removes undefined
+
+      if (selectedCars.length < 3 && cars.length > 2) {
+        selectedCars = [...selectedCars, cars[0], cars[1], cars[2]];
+      }
+    }
   }
 
   return (
