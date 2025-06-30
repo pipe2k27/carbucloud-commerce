@@ -11,7 +11,7 @@ import CleanupBadge from "../_components/cleanup-badge";
 import SearchBadges from "../_components/search-badges.client";
 
 export const metadata: Metadata = {
-  title: "Dashboard",
+  title: process.env.PAGE_NAME || "Carbucloud Commerce",
   description: "Example dashboard app built using the components.",
 };
 

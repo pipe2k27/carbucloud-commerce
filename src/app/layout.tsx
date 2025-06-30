@@ -12,7 +12,7 @@ import Footer from "@/components/Footer/footer.client";
 import { getWebElementsByCompanyId } from "@/dynamo-db/web-elements.db";
 
 export const metadata: Metadata = {
-  title: "Carbucloud Commerce",
+  title: process.env.PAGE_NAME || "Carbucloud Commerce",
   description: "Tu concesionaria en la nube",
 };
 
