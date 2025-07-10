@@ -21,7 +21,7 @@ export default function WhatsAppButton() {
       aria-label="Contactarse por WhatsApp"
     >
       <MessageCircle className="w-5 h-5" />
-      <span className="font-medium text-sm hidden sm:inline">
+      <span className="font-medium text-sm inline">
         Contactarse por WhatsApp
       </span>
     </Link>
