@@ -73,7 +73,7 @@ const WhatsappModal = () => {
       const lead = createLeadAction(carData);
       console.log("Lead created:", lead);
 
-      const message = `Hola! Soy ${data.fullName} y te consulto por el vehículo ${currentCar?.brand} ${currentCar?.model} ${currentCar?.year}.`;
+      const message = `Hola, soy ${data.fullName} y vi el vehículo ${currentCar?.brand} ${currentCar?.model} ${currentCar?.year} en tu PÁGINA WEB. Te quería hacer la siguiente consulta:`;
       const encodedMsg = encodeURIComponent(message);
       const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMsg}`;
 

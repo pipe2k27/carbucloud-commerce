@@ -60,7 +60,9 @@ export default async function ContactoPage() {
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Button asChild variant="default" className=" px-6 py-4">
             <a
-              href={`https://wa.me/${whatsappNumber || "5491168220080"}`}
+              href={`https://wa.me/${
+                whatsappNumber || "5491168220080"
+              }?text=Hola te contacto desde la PÁGINA WEB. Te queria hacer la siguiente consulta:`}
               target="_blank"
               rel="noopener noreferrer"
             >
