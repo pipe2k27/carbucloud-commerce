@@ -70,14 +70,19 @@ const WhatsappModal = () => {
       const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
 
       // Simulate server-side save
-      const lead = await createLeadAction(carData);
+      const lead = createLeadAction(carData);
       console.log("Lead created:", lead);
 
       const message = `Hola! Soy ${data.fullName} y te consulto por el vehículo ${currentCar?.brand} ${currentCar?.model} ${currentCar?.year}.`;
       const encodedMsg = encodeURIComponent(message);
       const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMsg}`;
 
-      window.open(whatsappURL, "_blank");
+      // iOS Safari may block window.open with "_blank" unless triggered directly by user gesture.
+      // Fallback: set location.href if window.open returns null (popup blocked or iOS Safari)
+      const newWindow = window.open(whatsappURL, "_blank");
+      if (!newWindow) {
+        window.location.href = whatsappURL;
+      }
       resetCommonComponentAtom();
     } catch {
       toast({
