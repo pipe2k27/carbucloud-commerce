@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getWebElementsByCompanyId } from "@/dynamo-db/web-elements.db";
 import { CarSearchForm } from "@/components/CarSearch/CarSearch.client";
+import { BadgeDollarSign, Car } from "lucide-react";
 
 export default async function HeroBanner() {
   const companyId = process.env.COMPANY_ID;
@@ -47,7 +48,9 @@ export default async function HeroBanner() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button asChild size="lg">
-              <Link href="/explore/any">Ver autos disponibles</Link>
+              <Link href="/explore/any">
+                Ver autos disponibles <Car className="mr-1" />
+              </Link>
             </Button>
             <Button
               asChild
@@ -55,7 +58,9 @@ export default async function HeroBanner() {
               size="lg"
               className="bg-white/10 text-white border-white/20 hover:bg-white/20"
             >
-              <Link href="/seller">Vendé tu Auto</Link>
+              <Link href="/seller">
+                Vendé tu Auto <BadgeDollarSign />{" "}
+              </Link>
             </Button>
           </div>
         </div>

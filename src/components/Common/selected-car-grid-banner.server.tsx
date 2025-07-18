@@ -8,6 +8,7 @@ import {
   getWebElementsByCompanyId,
   WebElementTier1,
 } from "@/dynamo-db/web-elements.db";
+import { ShoppingBag } from "lucide-react";
 
 type Props = {
   label?: string;
@@ -54,7 +55,8 @@ export default async function SelectedCarGridBanner({
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         {label && (
-          <h1 className="text-2xl w-full text-center  font-semibold mb-2">
+          <h1 className="text-2xl w-full text-center  font-semibold mb-2 flex items-center justify-center">
+            <ShoppingBag className="mr-2 -translate-y-[1px] text-primary" />{" "}
             {label}
           </h1>
         )}
