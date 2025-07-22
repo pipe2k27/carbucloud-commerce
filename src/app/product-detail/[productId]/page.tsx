@@ -17,11 +17,7 @@ interface ProductDetailPageProps {
   params: Promise<ProductDetailParams>;
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { productId: string };
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { productId } = await params;
 
   const res = await getCarAction(productId);
