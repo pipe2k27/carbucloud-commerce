@@ -4,6 +4,7 @@ import { getStockImagesByProductIdAction } from "@/service/actions/images.action
 import CarGridBanner from "@/components/Common/car-grid-banner.server";
 import ProductDetailDesktop from "./components/product-detail-desktop.client";
 import ProductDetailMobile from "./components/product-detail-mobile.client";
+import { Car } from "@/dynamo-db/cars.db";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,43 @@ interface ProductDetailParams {
 
 interface ProductDetailPageProps {
   params: Promise<ProductDetailParams>;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: ProductDetailParams;
+}) {
+  const { productId } = await params;
+
+  const res = await getCarAction(productId);
+
+  if (!res || res.status !== 200 || !res.data) {
+    return {
+      title: "Auto no encontrado",
+      description: "Este auto no existe o fue removido.",
+    };
+  }
+
+  const car = res.data as Car;
+
+  return {
+    title: `${car.brand} - ${car.model} - ${car.year}`,
+    description: "Usado en impecable estado",
+    openGraph: {
+      title: `${car.brand} - ${car.model} - ${car.year}`,
+      description: "Usado en impecable estado",
+      url: `https://carbucloud.com`,
+      images: [
+        {
+          url: car.mainImageUrl,
+          width: 1200,
+          height: 630,
+          alt: car.brand,
+        },
+      ],
+    },
+  };
 }
 
 export default async function ProductDetailPage({
