@@ -5,6 +5,7 @@ import CarGridBanner from "@/components/Common/car-grid-banner.server";
 import ProductDetailDesktop from "./components/product-detail-desktop.client";
 import ProductDetailMobile from "./components/product-detail-mobile.client";
 import { Car } from "@/dynamo-db/cars.db";
+import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
@@ -19,8 +20,8 @@ interface ProductDetailPageProps {
 export async function generateMetadata({
   params,
 }: {
-  params: ProductDetailParams;
-}) {
+  params: { productId: string };
+}): Promise<Metadata> {
   const { productId } = await params;
 
   const res = await getCarAction(productId);
@@ -43,7 +44,7 @@ export async function generateMetadata({
       url: `https://carbucloud.com`,
       images: [
         {
-          url: car.mainImageUrl,
+          url: car.mainImageUrl || "",
           width: 1200,
           height: 630,
           alt: car.brand,
