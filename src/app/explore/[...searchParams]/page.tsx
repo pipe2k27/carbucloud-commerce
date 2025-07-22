@@ -62,6 +62,19 @@ export default async function ExplorePage({ params }: any) {
     });
   }
 
+  cars.sort((a, b) => {
+    // If one car is reserved and the other is not, send reserved to the end
+    if (a.status === "reserved" && b.status !== "reserved") {
+      return 1;
+    }
+    if (a.status !== "reserved" && b.status === "reserved") {
+      return -1;
+    }
+    // Otherwise, sort by priceUsd if both exist
+
+    return 0;
+  });
+
   return (
     <div className="container relative mx-auto px-4 py-8">
       <h1 className="text-2xl font-semibold mb-2">

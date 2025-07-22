@@ -28,11 +28,14 @@ export default async function CarGridBanner({ label, description }: Props) {
       <Suspense fallback={<CarGridSkeleton />}>
         {cars.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 gap-y-9">
-            {cars.slice(0, 3).map((car: Car, index: number) => (
-              <div key={index} className="flex justify-center">
-                <CarCard car={car} />
-              </div>
-            ))}
+            {cars
+              .filter((car: Car) => car.status !== "reserved")
+              .slice(0, 3)
+              .map((car: Car, index: number) => (
+                <div key={index} className="flex justify-center">
+                  <CarCard car={car} />
+                </div>
+              ))}
           </div>
         )}
       </Suspense>
