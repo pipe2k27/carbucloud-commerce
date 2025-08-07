@@ -1,6 +1,6 @@
 "use client";
 import { sellerFrom, sellerSchemas } from "@/utils/purchase-form";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SellerForm from "./seller-form.client";
 import AppearDiv from "@/components/ui/appear-div";
 import { Purchase } from "@/dynamo-db/purchases.db";
@@ -11,6 +11,14 @@ import UploadImage from "./upload-image.client";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
+export function disableScroll() {
+  document.body.style.overflow = "hidden";
+}
+
+export function enableScroll() {
+  document.body.style.overflow = "";
+}
+
 const SellerFormSelector = ({ logoUrl }: { logoUrl?: string }) => {
   const [currentForm, setCurrentForm] = useState<number>(0);
   const [currentFormData, setCurrentFormData] = useState<Partial<Purchase>>({});
@@ -18,6 +26,11 @@ const SellerFormSelector = ({ logoUrl }: { logoUrl?: string }) => {
   const [productId, setProductId] = useState<string | null>(null);
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    disableScroll();
+    return () => enableScroll(); // Re-enable scroll on unmount
+  }, []);
 
   const router = useRouter();
 
@@ -61,7 +74,7 @@ const SellerFormSelector = ({ logoUrl }: { logoUrl?: string }) => {
         }}
       />
       <AppearDiv>
-        <div className="w-[90vw] max-w-[600px] min-h-[600px]">
+        <div className="w-[90vw] max-w-[600px] min-h-[600px] pt-20 md:pt-0">
           {currentForm < 4 && (
             <>
               <h1 className="font-semibold text-xl">Compramos tu auto</h1>
@@ -144,14 +157,14 @@ const SellerFormSelector = ({ logoUrl }: { logoUrl?: string }) => {
             </div>
           )}
           {currentForm < 4 && (
-            <div className="w-full text-center mt-8 text-muted-foreground opacity-60">
+            <div className="w-full text-center mt-2 md:mt-8 text-muted-foreground opacity-60">
               {currentForm + 1}/4
             </div>
           )}
           {logoUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              className="mx-auto mt-24 w-48 grayscale opacity-20"
+              className="mx-auto mt-8 md:mt-24 w-36 md:w-48 grayscale opacity-20"
               src={logoUrl}
               alt="Logo"
             />
