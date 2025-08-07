@@ -10,10 +10,25 @@ import { redirect } from "next/navigation";
 import CleanupBadge from "../_components/cleanup-badge";
 import SearchBadges from "../_components/search-badges.client";
 
-export const metadata: Metadata = {
-  title: process.env.PAGE_NAME || "Carbucloud Commerce",
-  description: "Example dashboard app built using the components.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: process.env.PAGE_NAME,
+    description: "Concesionaria de autos",
+    openGraph: {
+      title: process.env.PAGE_NAME,
+      description: "Concesionaria de autos",
+      url: ``,
+      images: [
+        {
+          url: process.env.LOGO_JPEG || "",
+          width: 1200,
+          height: 630,
+          alt: process.env.PAGE_NAME,
+        },
+      ],
+    },
+  };
+}
 
 const processParam = (param?: string) => {
   if (!param) return "";

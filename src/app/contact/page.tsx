@@ -12,6 +12,27 @@ import {
   MessageCircleWarning,
   SearchCheckIcon,
 } from "lucide-react";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: process.env.PAGE_NAME,
+    description: "Concesionaria de autos",
+    openGraph: {
+      title: process.env.PAGE_NAME,
+      description: "Concesionaria de autos",
+      url: ``,
+      images: [
+        {
+          url: process.env.LOGO_JPEG || "",
+          width: 1200,
+          height: 630,
+          alt: process.env.PAGE_NAME,
+        },
+      ],
+    },
+  };
+}
 
 export default async function ContactoPage() {
   const companyId = process.env.COMPANY_ID;

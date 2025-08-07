@@ -7,6 +7,27 @@ import MapLocation from "./_home-components/map-location";
 import SelectedCarGridBanner from "@/components/Common/selected-car-grid-banner.server";
 import SellYourCar from "./_home-components/sell-your-car";
 import WhatsAppButton from "@/components/Common/whatsapp-button.client";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: process.env.PAGE_NAME,
+    description: "Concesionaria de autos",
+    openGraph: {
+      title: process.env.PAGE_NAME,
+      description: "Concesionaria de autos",
+      url: ``,
+      images: [
+        {
+          url: process.env.LOGO_JPEG || "",
+          width: 1200,
+          height: 630,
+          alt: process.env.PAGE_NAME,
+        },
+      ],
+    },
+  };
+}
 
 export default function Home() {
   return (
