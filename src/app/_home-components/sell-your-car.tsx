@@ -34,7 +34,7 @@ export default function SellYourCar() {
         </div>
         <div className="flex flex-col sm:flex-row gap-4 my-16">
           <Button asChild size="lg" className="py-6 md:px-24 ">
-            <Link href="/seller">
+            <Link href="/vende-tu-auto">
               Cotizá tu auto ahora <SearchCheck className="ml-1" />
             </Link>
           </Button>

@@ -40,14 +40,14 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
           <div
             className="hover:text-muted-foreground cursor-pointer"
             onClick={() => {
-              router.push("/explore/any");
+              router.push("/catalogo/todos");
             }}
           >
             Explorar
           </div>
           <div
             className="hover:text-muted-foreground cursor-pointer"
-            onClick={() => router.push("/seller")}
+            onClick={() => router.push("/vende-tu-auto")}
           >
             Vendé tu Auto
           </div>{" "}
@@ -87,7 +87,7 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
             <div className="flex flex-col mt-4 space-y-4">
               <a
                 onClick={() => {
-                  router.push("/explore/any");
+                  router.push("/catalogo/todos");
                   setIsMobileMenuOpen(false);
                 }}
                 className="text-gray-600 hover:text-gray-800"
@@ -96,7 +96,7 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
               </a>
               <a
                 onClick={() => {
-                  router.push("/seller");
+                  router.push("/vende-tu-auto");
                   setIsMobileMenuOpen(false);
                 }}
                 className="text-gray-600 hover:text-gray-800"

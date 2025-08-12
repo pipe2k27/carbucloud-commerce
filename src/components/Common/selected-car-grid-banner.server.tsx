@@ -3,12 +3,12 @@ export const dynamic = "force-dynamic";
 import { Car, getCarsByCompanyId } from "@/dynamo-db/cars.db";
 import { Suspense } from "react";
 import CarCard from "./car-card";
-import CarGridSkeleton from "@/app/explore/_components/car-grid-skeleton";
 import {
   getWebElementsByCompanyId,
   WebElementTier1,
 } from "@/dynamo-db/web-elements.db";
 import { ShoppingBag } from "lucide-react";
+import CarGridSkeleton from "@/app/catalogo/_components/car-grid-skeleton";
 
 type Props = {
   label?: string;

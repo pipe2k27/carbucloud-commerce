@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 const processParam = (param?: string) => {
   if (!param) return "";
-  if (param === "any") return "";
+  if (param === "todos") return "";
   return decodeURIComponent(param);
 };
 
@@ -16,9 +16,9 @@ export default function SearchBadges({ searchParams }: any) {
   const handleDelete = (param: string) => {
     const newParams = searchParams.map((p: string) => {
       if (p !== param) return p;
-      return "any";
+      return "todos";
     });
-    router.push(`/explore/${newParams.join("/")}`);
+    router.push(`/catalogo/${newParams.join("/")}`);
   };
 
   return (

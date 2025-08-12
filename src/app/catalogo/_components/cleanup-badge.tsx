@@ -9,7 +9,7 @@ const CleanupBadge = ({ showParams }: any) => {
   const handleClick = () => {
     window.localStorage.removeItem("car-filters");
     setTimeout(() => {
-      router.push("/explore/any");
+      router.push("/catalogo/todos");
     }, 0);
   };
 

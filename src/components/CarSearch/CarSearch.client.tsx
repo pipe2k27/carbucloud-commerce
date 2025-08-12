@@ -48,9 +48,9 @@ export function CarSearchForm({
 
   const onSubmit = (data: CarSearchSchema) => {
     const brand = encodeURIComponent(data.brand);
-    const model = encodeURIComponent(data.model || "any");
-    const minYear = encodeURIComponent(data.minYear || "any");
-    router.push(`/explore/${brand}/${model}/${minYear}`);
+    const model = encodeURIComponent(data.model || "todos");
+    const minYear = encodeURIComponent(data.minYear || "todos");
+    router.push(`/catalogo/${brand}/${model}/${minYear}`);
   };
 
   const brand = watch("brand");

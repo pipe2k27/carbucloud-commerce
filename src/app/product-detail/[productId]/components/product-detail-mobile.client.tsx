@@ -52,7 +52,7 @@ export default function ProductDetailMobile({ data, images }: Props) {
     <div className="max-w-[1500px] w-[98%] mx-auto p-1 mb-8">
       <div
         onClick={() => {
-          router.push("/explore/any");
+          router.push("/catalogo/todos");
         }}
         className="mb-6 cursor-pointer flex items-center mt-6 opacity-40"
       >
