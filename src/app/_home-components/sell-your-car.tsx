@@ -5,15 +5,25 @@ import { CheckCircle, PlayCircle, SearchCheck } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 
+const messages = ["Vendemos tu Auto", "Compramos tu Auto"];
+
+const idsForVendemosTuAuto = ["0004"];
+
 export default function SellYourCar() {
   const logoUrl = process.env.LOGO_URL;
+
+  const companyId = process.env.COMPANY_ID;
+
+  const message = idsForVendemosTuAuto.includes(companyId || "0000")
+    ? messages[0]
+    : messages[1];
 
   return (
     <Card className="bg-muted my-32 relative">
       <CardHeader className="pt-12 flex flex-col items-center text-center max-w-[98vw] mx-auto px-0">
         <h1 className="text-xl md:text-4xl font-bold mb-4 flex">
           <PlayCircle className="text-primary mr-3 w-7 h-7 md:w-10 md:h-10" />
-          Compramos tu auto{" "}
+          {message}
           {/* <Car className="text-primary ml-3  w-7 h-7 md:w-10 md:h-10" /> */}
         </h1>
       </CardHeader>
