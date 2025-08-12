@@ -22,8 +22,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 const SellerPage = () => {
   const logoUrl = process.env.LOGO_URL;
+  const companyId = process.env.COMPANY_ID;
 
-  return <SellerFormSelector logoUrl={logoUrl} />;
+  return <SellerFormSelector logoUrl={logoUrl} companyId={companyId} />;
 };
 
 export default SellerPage;

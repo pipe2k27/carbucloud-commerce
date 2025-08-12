@@ -19,11 +19,25 @@ export function enableScroll() {
   document.body.style.overflow = "";
 }
 
-const SellerFormSelector = ({ logoUrl }: { logoUrl?: string }) => {
+const messages = ["Vendemos tu Auto", "Compramos tu Auto"];
+
+const idsForVendemosTuAuto = ["0004"];
+
+const SellerFormSelector = ({
+  logoUrl,
+  companyId,
+}: {
+  logoUrl?: string;
+  companyId?: string;
+}) => {
   const [currentForm, setCurrentForm] = useState<number>(0);
   const [currentFormData, setCurrentFormData] = useState<Partial<Purchase>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [productId, setProductId] = useState<string | null>(null);
+
+  const message = idsForVendemosTuAuto.includes(companyId || "0000")
+    ? messages[0]
+    : messages[1];
 
   const { toast } = useToast();
 
@@ -77,7 +91,7 @@ const SellerFormSelector = ({ logoUrl }: { logoUrl?: string }) => {
         <div className="w-[90vw] max-w-[600px] min-h-[600px] pt-20 md:pt-0">
           {currentForm < 4 && (
             <>
-              <h1 className="font-semibold text-xl">Compramos tu auto</h1>
+              <h1 className="font-semibold text-xl">{message}</h1>
               <div className="mb-8 text-muted-foreground">
                 Respondé las siguientes preguntas y recibí una cotización en
                 menos de 24hs
