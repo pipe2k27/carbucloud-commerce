@@ -20,7 +20,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Car } from "@/dynamo-db/cars.db";
-import { CheckCircle, SearchCheck, Wand2 } from "lucide-react";
+import {
+  BadgeDollarSign,
+  CheckCircle,
+  SearchCheck,
+  ShoppingBag,
+  Wand2,
+} from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 
 // Filter form type
 type FilterForm = {
@@ -252,6 +259,9 @@ const FiltersPanel = ({
     { length: new Date().getFullYear() - 1989 },
     (_, i) => 1990 + i
   );
+  const pathname = usePathname();
+  const isVendidosPage = pathname.includes("vendidos");
+  const router = useRouter();
 
   return (
     <div>
@@ -533,6 +543,48 @@ const FiltersPanel = ({
         >
           Limpiar Filtros <Wand2 />
         </Button>
+        {!isVendidosPage && (
+          <Button
+            className="w-full"
+            onClick={() => {
+              localStorage.removeItem(FILTER_STORAGE_KEY);
+              reset({
+                km: [0, 350000],
+                year: [1990, new Date().getFullYear()],
+                status: [],
+                brand: "all",
+                transmission: [],
+                priceMin: "",
+                priceMax: "",
+                currency: "none",
+              });
+              router.push("/vendidos/todos");
+            }}
+          >
+            Ver autos vendidos <BadgeDollarSign />
+          </Button>
+        )}
+        {isVendidosPage && (
+          <Button
+            className="w-full"
+            onClick={() => {
+              localStorage.removeItem(FILTER_STORAGE_KEY);
+              reset({
+                km: [0, 350000],
+                year: [1990, new Date().getFullYear()],
+                status: [],
+                brand: "all",
+                transmission: [],
+                priceMin: "",
+                priceMax: "",
+                currency: "none",
+              });
+              router.push("/catalogo/todos");
+            }}
+          >
+            Ver autos en Stock <ShoppingBag />
+          </Button>
+        )}
       </div>
     </div>
   );

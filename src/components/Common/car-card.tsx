@@ -9,14 +9,21 @@ import { MessageCircleWarning, Plus } from "lucide-react";
 import { CarStatusBadge } from "./car-status-badge";
 import { useRouter } from "next/navigation";
 import { openWhatsappModal } from "../Modals/transformation/new-contact-modal.client";
+import { Sale } from "@/dynamo-db/sales.db";
 
-export default function CarCard({ car }: { car: Car }) {
+export default function CarCard({ car }: { car: Car | Sale }) {
   const router = useRouter();
+
+  let sold = false;
+
+  if (car.status === "sold") {
+    sold = true;
+  }
   return (
     <Card className="overflow-hidden max-w-[500px] w-full hover:scale-[0.995] transition-all duration-[400ms] ease-in relative">
       <CardContent
         className={`p-0 min-h-[550px] ${
-          car.status === "reserved" && "opacity-50"
+          (car.status === "reserved" || sold) && "opacity-50"
         }`}
       >
         <div className="relative aspect-square border-8 border-muted bg-muted rounded-sm overflow-hidden">
@@ -26,7 +33,8 @@ export default function CarCard({ car }: { car: Car }) {
             fill
             className="object-cover rounded-lg"
             onClick={() => {
-              router.push(`/product-detail/${car.productId}`);
+              if (!sold) router.push(`/product-detail/${car.productId}`);
+              else router.push(`/vendidos-detail/${car.productId}`);
             }}
           />
         </div>
@@ -43,10 +51,19 @@ export default function CarCard({ car }: { car: Car }) {
             {car.year} • {car.km.toLocaleString("es")} km
           </p>
           <p className="text-lg font-semibold mt-2">
-            {formatCurrency(car.price, car.currency)}
-            {car.priceUsd && car.currency === "ARS" && (
+            {!sold && formatCurrency(car.price, car.currency)}
+            {!sold && car.priceUsd && car.currency === "ARS" && (
               <span className="text-muted-foreground text-sm opacity-55 italic ml-2 font-normal">
                 ({formatCurrency(car.priceUsd, "USD")})
+              </span>
+            )}
+            {/* Show "Venta" badge or info if car is a Sale */}
+            {"soldPrice" in car && (
+              <span className="text-muted-foreground opacity-55">
+                {formatCurrency(car.soldPrice, car.currency)}{" "}
+                <span className="text-muted-foreground text-sm opacity-55 italic ml-2 font-normal">
+                  Vendido
+                </span>
               </span>
             )}
           </p>
@@ -78,7 +95,8 @@ export default function CarCard({ car }: { car: Car }) {
             // asChild
             className="w-[48%]"
             onClick={() => {
-              router.push(`/product-detail/${car.productId}`);
+              if (!sold) router.push(`/product-detail/${car.productId}`);
+              else router.push(`/vendidos-detail/${car.productId}`);
             }}
           >
             Ver detalles <Plus size={16} className="ml-[-4px]" />

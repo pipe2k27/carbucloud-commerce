@@ -43,7 +43,15 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
               router.push("/catalogo/todos");
             }}
           >
-            Explorar
+            En stock
+          </div>
+          <div
+            className="hover:text-muted-foreground cursor-pointer"
+            onClick={() => {
+              router.push("/vendidos/todos");
+            }}
+          >
+            Vendidos
           </div>
           <div
             className="hover:text-muted-foreground cursor-pointer"
@@ -92,7 +100,16 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
                 }}
                 className="text-gray-600 hover:text-gray-800"
               >
-                Explorar
+                En stock
+              </a>
+              <a
+                onClick={() => {
+                  router.push("/vendidos/todos");
+                  setIsMobileMenuOpen(false);
+                }}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                Vendidos
               </a>
               <a
                 onClick={() => {

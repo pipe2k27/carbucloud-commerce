@@ -15,17 +15,21 @@ import ImageCarousel from "@/components/ui/image-carousel";
 import { statusConfig } from "@/components/Common/car-status-badge";
 import { openWhatsappModal } from "@/components/Modals/transformation/new-contact-modal.client";
 import SpecCards from "./spec-cards.client";
+import { Sale } from "@/dynamo-db/sales.db";
 
 interface Props {
-  data: Car;
+  data: Car | Sale;
   images: string[];
+  sold?: boolean;
 }
 
-export default function ProductDetailMobile({ data, images }: Props) {
+export default function ProductDetailMobile({ data, images, sold }: Props) {
   const [car, setCar] = useState<Car | null>(null);
   const router = useRouter();
 
   const [currentImages, setCurrentImages] = useState<string[]>();
+
+  const soldCar = data as Sale;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -52,7 +56,8 @@ export default function ProductDetailMobile({ data, images }: Props) {
     <div className="max-w-[1500px] w-[98%] mx-auto p-1 mb-8">
       <div
         onClick={() => {
-          router.push("/catalogo/todos");
+          router.back();
+          return;
         }}
         className="mb-6 cursor-pointer flex items-center mt-6 opacity-40"
       >
@@ -73,17 +78,28 @@ export default function ProductDetailMobile({ data, images }: Props) {
       </div>
       <Card className="flex flex-col lg:flex-row relative">
         <div className="absolute top-0 right-0 z-10 bg-muted w-[230px] h-[68px] place-content-center  pl-8 rounded-bl-[8px] rounded-tr-[12px] hidden lg:block">
-          <div>
-            <div className="text-xs">Precio:</div>
-            <div className="font-semibold text-primary text-lg text-left w-full">
-              {car.currency === "USD" ? "U$D " : "$"}
-              {car.price?.toLocaleString("es") || 0}
+          {!sold && (
+            <div>
+              <div className="text-xs">Precio:</div>
+              <div className="font-semibold text-primary text-lg text-left w-full">
+                {car.currency === "USD" ? "U$D " : "$"}
+                {car.price?.toLocaleString("es") || 0}
+              </div>
             </div>
-          </div>
+          )}
+          {sold && (
+            <div>
+              <div className="text-xs">Precio:</div>
+              <div className="font-semibold text-primary text-lg text-left w-full">
+                {car.currency === "USD" ? "U$D " : "$"}
+                {soldCar.soldPrice?.toLocaleString("es") || 0}
+              </div>
+            </div>
+          )}
         </div>
         <CardContent
           className={`pt-0 px-0 flex flex-col items-center pb-0 ${
-            isReserved ? "opacity-50" : ""
+            isReserved || sold ? "opacity-50" : ""
           } `}
         >
           {currentImages && <ImageCarousel images={currentImages} />}
@@ -111,15 +127,28 @@ export default function ProductDetailMobile({ data, images }: Props) {
               value={dateStringToddmmyyyy(String(car.createdAt))}
               className="text-muted-foreground"
             /> */}
-            <div className="lg:hidden">
-              <DetailItem
-                label="Precio"
-                value={`${car.currency} $${
-                  car.price?.toLocaleString("es") || 0
-                }`}
-                className="text-primary"
-              />
-            </div>
+            {!sold && (
+              <div className="lg:hidden">
+                <DetailItem
+                  label="Precio"
+                  value={`${car.currency} $${
+                    car.price?.toLocaleString("es") || 0
+                  }`}
+                  className="text-primary"
+                />
+              </div>
+            )}
+            {sold && (
+              <div className="lg:hidden">
+                <DetailItem
+                  label="Precio"
+                  value={`${car.currency} $${
+                    soldCar.soldPrice?.toLocaleString("es") || 0
+                  } (Vendido)`}
+                  className="text-primary"
+                />
+              </div>
+            )}
           </div>
           <div className="w-full h-[1px] bg-gray-300 mt-6" />
           <div className="lg:min-h-[100px]">
@@ -150,7 +179,7 @@ export default function ProductDetailMobile({ data, images }: Props) {
         </CardContent>
       </Card>
       <div className="mt-8">
-        <SpecCards car={car} />
+        <SpecCards car={car} sold={sold} />
       </div>
     </div>
   );

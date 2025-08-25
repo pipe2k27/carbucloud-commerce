@@ -2,10 +2,13 @@
 
 import { statusConfig } from "@/components/Common/car-status-badge";
 import { Car } from "@/dynamo-db/cars.db";
+import { Sale } from "@/dynamo-db/sales.db";
 
-type CarSpecsProps = { car: Car };
+type CarSpecsProps = { car: Car | Sale; sold?: boolean };
 
-const CarSpecs: React.FC<CarSpecsProps> = ({ car }) => {
+const CarSpecs: React.FC<CarSpecsProps> = ({ car, sold }) => {
+  const soldCar = car as Sale;
+
   return (
     <>
       <div className="w-full h-[1px] bg-gray-300 mt-4 mb-8" />
@@ -28,11 +31,22 @@ const CarSpecs: React.FC<CarSpecsProps> = ({ car }) => {
           className={statusConfig[car.status]?.color || "text-gray-500"}
         />
         <div className="">
-          <DetailItem
-            label="Precio"
-            value={`${car.currency} $${car.price?.toLocaleString("es") || 0}`}
-            className="text-primary"
-          />
+          {!sold && (
+            <DetailItem
+              label="Precio"
+              value={`${car.currency} $${car.price?.toLocaleString("es") || 0}`}
+              className="text-primary"
+            />
+          )}
+          {sold && (
+            <DetailItem
+              label="Precio"
+              value={`${car.currency} $${
+                soldCar.soldPrice?.toLocaleString("es") || 0
+              } (Vendido)`}
+              className="text-primary"
+            />
+          )}
         </div>
       </div>
       <div className="w-full h-[1px] bg-gray-300 mt-8" />

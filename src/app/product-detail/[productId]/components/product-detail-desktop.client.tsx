@@ -17,12 +17,14 @@ import CarSpecs from "./car-specs.client";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ProductDetailPdf } from "./product-detail-pdf.client";
 import ImageViewer from "./image-viewer";
+import { Sale } from "@/dynamo-db/sales.db";
 
 interface Props {
-  data: Car;
+  data: Car | Sale;
   images: string[];
   logoUrl?: string;
   logoWhiteUrl?: string;
+  sold?: boolean;
 }
 
 export default function ProductDetailDesktop({
@@ -30,8 +32,9 @@ export default function ProductDetailDesktop({
   images,
   logoUrl,
   logoWhiteUrl,
+  sold,
 }: Props) {
-  const [car, setCar] = useState<Car | null>(null);
+  const [car, setCar] = useState<Car | Sale | null>(null);
 
   const [currentImages, setCurrentImages] = useState<string[]>();
   const [viewingImageIndex, setViewingImageIndex] = useState<number>(0);
@@ -90,8 +93,8 @@ export default function ProductDetailDesktop({
               </div>
             </div>
             <div className="font-normal text-md text-muted-foreground translate-y-[2px] align-bottom p-0 ml-0 opacity-60">
-              /{formatCurrency(car.price, car.currency)}{" "}
-              {isReserved && " - Reservado"}
+              {!sold && `/${formatCurrency(car.price, car.currency)}{" "}`}
+              {isReserved && " - Reservado"} {sold && " - Vendido"}
             </div>
           </div>
 
@@ -128,7 +131,10 @@ export default function ProductDetailDesktop({
         </div>
 
         <div className="flex flex-col justify-center items-center w-full">
-          <div className="flex justify-center items-center w-full">
+          <div
+            className="flex justify-center items-center w-full"
+            style={{ opacity: sold ? 0.5 : 1 }}
+          >
             {currentImages && (
               <ImageGrid
                 logoUrl={logoUrl}
@@ -139,7 +145,7 @@ export default function ProductDetailDesktop({
             )}
           </div>
           <div className="w-full my-8">
-            <SpecCards car={car} />
+            <SpecCards car={car} sold={sold} />
             <div className="text-lg mt-6 font-bold mb-0 flex relative w-full ">
               {/* <div className="w-[45px]">
               <CarIcon className="mr-2  scale-x-[-1] text-primary w-8 h-8 translate-y-[-3px]" />
@@ -150,7 +156,7 @@ export default function ProductDetailDesktop({
                 </div>
               </div>
             </div>
-            <CarSpecs car={car} />
+            <CarSpecs car={car} sold={sold} />
             <div className="flex justify-between items-center w-full mt-2">
               <Button
                 // asChild
