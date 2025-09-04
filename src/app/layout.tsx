@@ -10,6 +10,7 @@ import { CommonComponentsProvider } from "@/components/Providers/common-componen
 import { Toaster } from "@/components/ui/toaster";
 import Footer from "@/components/Footer/footer.client";
 import { getWebElementsByCompanyId } from "@/dynamo-db/web-elements.db";
+import { isMotos } from "@/utils/isMotos";
 
 export const metadata: Metadata = {
   title: process.env.PAGE_NAME || "Carbucloud Commerce",
@@ -24,6 +25,8 @@ export default async function RootLayout({
   const companyId = process.env.COMPANY_ID;
   if (!companyId) return <></>;
   const webElements = (await getWebElementsByCompanyId(companyId)) as any;
+
+  const isMotosOnly = isMotos(companyId);
 
   const logoUrl = process.env.LOGO_URL;
 
@@ -40,7 +43,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar logoUrl={logoUrl} />
+          <Navbar isMotosOnly={isMotosOnly} logoUrl={logoUrl} />
           <div className="min-h-[83vh]">{children}</div>
           <Toaster />
           <CommonComponentsProvider />

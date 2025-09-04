@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Car } from "@/dynamo-db/cars.db";
-import { Car as CarIcon, TrendingUp } from "lucide-react";
+import { PlayCircle, TrendingUp } from "lucide-react";
 
 type Props = {
   cars: Car[];
@@ -39,12 +39,12 @@ export default function CarSortSelect({ cars, setSortedCars }: Props) {
     <div className="flex flex-row py-4 gap-2 justify-between items-center">
       <div>
         <p className="text-sm hidden lg:block pl-[310px] lg:translate-y-[16px]">
-          <CarIcon className="text-primary inline mr-2 scale-x-[-100%] translate-y-[-2px] text-lg" />
+          <PlayCircle className="text-primary inline mr-2 translate-y-[-2px] text-lg" />
           Mostrando{" "}
           <span className="font-semibold bg-muted px-2 rounded-sm py-2">
             {cars.length || 0}
           </span>{" "}
-          Autos
+          Resultados
         </p>
       </div>
       <div>

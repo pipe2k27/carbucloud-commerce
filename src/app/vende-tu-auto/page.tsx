@@ -4,10 +4,10 @@ import SellerFormSelector from "./_components/seller-form-selector.client";
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: process.env.PAGE_NAME,
-    description: "Vendé tu auto",
+    description: "Vendé tu Vehículo",
     openGraph: {
       title: process.env.PAGE_NAME,
-      description: "Vendé tu auto",
+      description: "Vendé tu Vehículo",
       url: ``,
       images: [
         {

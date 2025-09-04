@@ -8,6 +8,7 @@ import SelectedCarGridBanner from "@/components/Common/selected-car-grid-banner.
 import SellYourCar from "./_home-components/sell-your-car";
 import WhatsAppButton from "@/components/Common/whatsapp-button.client";
 import { Metadata } from "next";
+import { isMotos } from "@/utils/isMotos";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -30,14 +31,18 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function Home() {
+  const companyId = process.env.COMPANY_ID;
+  const isMotosOnly = isMotos(companyId);
+
+  const description = isMotosOnly
+    ? "Todas nuestras motos estan disponibles para entrega inmediata."
+    : "Todos nuestros autos estan disponibles para entrega inmediata.";
+
   return (
     <>
       <div className="container mx-auto px-4 py-8">
         <HeroBanner />
-        <SelectedCarGridBanner
-          label="En Stock"
-          description="Todos nuestros autos estan disponibles para entrega inmediata."
-        />
+        <SelectedCarGridBanner label="En Stock" description={description} />
         <SellYourCar />
         {process.env.NEXT_PUBLIC_MAP_LOCATION && (
           <section className="my-16">

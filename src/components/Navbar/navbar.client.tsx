@@ -14,7 +14,13 @@ import {
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-export default function Navbar({ logoUrl }: { logoUrl?: string }) {
+export default function Navbar({
+  logoUrl,
+  isMotosOnly,
+}: {
+  logoUrl?: string;
+  isMotosOnly: boolean;
+}) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const router = useRouter();
@@ -57,7 +63,7 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
             className="hover:text-muted-foreground cursor-pointer"
             onClick={() => router.push("/vende-tu-auto")}
           >
-            Vendé tu Auto
+            Vendé tu {isMotosOnly ? "Moto" : "Auto"}
           </div>{" "}
           {/* <div className="hover:text-muted-foreground cursor-pointer">
             Vender

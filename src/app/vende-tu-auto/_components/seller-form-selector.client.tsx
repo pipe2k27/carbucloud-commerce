@@ -10,6 +10,7 @@ import { CheckCircle, X } from "lucide-react";
 import UploadImage from "./upload-image.client";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { isMotos } from "@/utils/isMotos";
 
 export function disableScroll() {
   document.body.style.overflow = "hidden";
@@ -20,6 +21,7 @@ export function enableScroll() {
 }
 
 const messages = ["Vendemos tu Auto", "Compramos tu Auto"];
+const messagesMotos = ["Vendemos tu Moto", "Compramos tu Moto"];
 
 const idsForVendemosTuAuto = ["0004"];
 
@@ -34,9 +36,14 @@ const SellerFormSelector = ({
   const [currentFormData, setCurrentFormData] = useState<Partial<Purchase>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [productId, setProductId] = useState<string | null>(null);
+  const isMotosOnly = isMotos(companyId);
 
   const message = idsForVendemosTuAuto.includes(companyId || "0000")
-    ? messages[0]
+    ? isMotosOnly
+      ? messagesMotos[0]
+      : messages[0]
+    : isMotosOnly
+    ? messagesMotos[1]
     : messages[1];
 
   const { toast } = useToast();
@@ -133,10 +140,11 @@ const SellerFormSelector = ({
           {currentForm === 4 && productId && (
             <div className="w-full">
               <h1 className="font-semibold text-xl">
-                Cargá una foto de tu Auto
+                Cargá una foto de tu {isMotosOnly ? "Moto" : "Auto"}
               </h1>
               <div className="mb-2 text-muted-foreground">
-                Que se ve bien el modelo y el estado del auto
+                Que se ve bien el modelo y el estado{" "}
+                {isMotosOnly ? " de la moto" : "del auto"}
               </div>
               <div className="w-full flex items-start justify-start mb-2">
                 <UploadImage

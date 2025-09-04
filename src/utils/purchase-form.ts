@@ -3,6 +3,7 @@ import {
   carTypes,
   carYears,
   currencyOptions,
+  motorcycleBrandsInArgentina,
   transmisionTypes,
 } from "@/constants/car-constants";
 
@@ -29,7 +30,7 @@ export const PurchaseSchema = z.object({
     .string()
     .trim()
     .min(1, "Por favor complete este campo")
-    .max(50, "El tipo de auto no puede superar 50 caracteres"),
+    .max(50, "El tipo de vehículo no puede superar 50 caracteres"),
   transmission: z
     .string()
     .trim()
@@ -179,7 +180,7 @@ export const brandAndModelFields: Field[] = [
     name: "brand",
     label: "Marca",
     type: "options",
-    options: carBrandsInArgentina
+    options: [...carBrandsInArgentina, ...motorcycleBrandsInArgentina]
       .sort((a, b) => a.localeCompare(b))
       .map((brand) => ({
         value: brand,

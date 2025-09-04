@@ -5,11 +5,13 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getWebElementsByCompanyId } from "@/dynamo-db/web-elements.db";
 import { CarSearchForm } from "@/components/CarSearch/CarSearch.client";
-import { BadgeDollarSign, Car } from "lucide-react";
+import { BadgeDollarSign, Bike, Car } from "lucide-react";
+import { isMotos } from "@/utils/isMotos";
 
 export default async function HeroBanner() {
   const companyId = process.env.COMPANY_ID;
   if (!companyId) return <></>;
+  const isMotosOnly = isMotos(companyId);
   const response = (await getWebElementsByCompanyId(companyId)) as any;
 
   const webElements =
@@ -40,7 +42,8 @@ export default async function HeroBanner() {
 
         <div className="relative py-20 px-6 md:py-32 md:px-12 max-w-3xl">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            {webElements.title || "Encontrá el auto ideal para vos"}
+            {webElements.title ||
+              `Encontrá ${isMotosOnly ? "la moto" : "el auto"} ideal para vos`}
           </h1>
           <p className="text-xl text-white/90 mb-8">
             {webElements.subtitle ||
@@ -49,7 +52,12 @@ export default async function HeroBanner() {
           <div className="flex flex-col sm:flex-row gap-4">
             <Button asChild size="lg">
               <Link href="/catalogo/todos">
-                Ver autos disponibles <Car className="mr-1" />
+                Ver {isMotosOnly ? "motos" : "autos"} disponibles{" "}
+                {isMotosOnly ? (
+                  <Bike className="mr-1" />
+                ) : (
+                  <Car className="mr-1" />
+                )}
               </Link>
             </Button>
             <Button
@@ -59,7 +67,7 @@ export default async function HeroBanner() {
               className="bg-white/10 text-white border-white/20 hover:bg-white/20"
             >
               <Link href="/vende-tu-auto">
-                Vendé tu Auto <BadgeDollarSign />{" "}
+                Vendé tu {isMotosOnly ? "Moto" : "Auto"} <BadgeDollarSign />{" "}
               </Link>
             </Button>
           </div>

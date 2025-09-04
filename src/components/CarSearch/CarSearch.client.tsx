@@ -16,7 +16,10 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { SearchCheck, Wand2, X } from "lucide-react";
 import Image from "next/image";
-import { carBrandsInArgentina } from "@/constants/car-constants";
+import {
+  carBrandsInArgentina,
+  motorcycleBrandsInArgentina,
+} from "@/constants/car-constants";
 
 export const carSearchSchema = z.object({
   brand: z.string().min(1, "Brand is required"),
@@ -34,6 +37,7 @@ export function CarSearchForm({
   logoUrl?: string;
   showClose?: boolean;
   onClose?: () => void;
+  isMotosOnly?: boolean;
 }) {
   const { register, handleSubmit, watch, setValue } = useForm<CarSearchSchema>({
     resolver: zodResolver(carSearchSchema),
@@ -64,7 +68,8 @@ export function CarSearchForm({
           </div>
         )}
         <h3 className="my-4 font-semibold text-xl flex w-full justify-start">
-          <SearchCheck className="text-primary mr-2" /> Encontrá tu auto ideal
+          <SearchCheck className="text-primary mr-2" /> Encontrá el vehículo que
+          buscás
         </h3>
         {showClose && (
           <X
@@ -84,11 +89,13 @@ export function CarSearchForm({
                 <SelectValue placeholder="Marca" />
               </SelectTrigger>
               <SelectContent>
-                {carBrandsInArgentina.map((brand: string) => (
-                  <SelectItem key={brand} value={brand}>
-                    {brand}
-                  </SelectItem>
-                ))}
+                {[...carBrandsInArgentina, ...motorcycleBrandsInArgentina]
+                  .sort((a, b) => a.localeCompare(b))
+                  .map((brand: string) => (
+                    <SelectItem key={brand} value={brand}>
+                      {brand}
+                    </SelectItem>
+                  ))}
 
                 {/* Add more brands */}
               </SelectContent>

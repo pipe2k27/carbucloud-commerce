@@ -24,8 +24,8 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 
   if (!res || res.status !== 200 || !res.data) {
     return {
-      title: "Auto no encontrado",
-      description: "Este auto no existe o fue removido.",
+      title: "Vehiculo no encontrado",
+      description: "Este Vehiculo no existe o fue removido.",
     };
   }
 
@@ -33,10 +33,10 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 
   return {
     title: `${car.brand} - ${car.model} - ${car.year}`,
-    description: "Usado en impecable estado",
+    description: "Vehiculo Usado en impecable estado",
     openGraph: {
       title: `${car.brand} - ${car.model} - ${car.year}`,
-      description: "Usado en impecable estado",
+      description: "Vehiculo Usado en impecable estado",
       url: `https://carbucloud.com`,
       images: [
         {

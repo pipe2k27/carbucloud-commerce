@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, PlayCircle, SearchCheck } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
+import { isMotos } from "@/utils/isMotos";
 
 const messages = ["Vendemos tu Auto", "Compramos tu Auto"];
+const messagesMotos = ["Vendemos tu Moto", "Compramos tu Moto"];
 
 const idsForVendemosTuAuto = ["0004"];
 
@@ -14,8 +16,14 @@ export default function SellYourCar() {
 
   const companyId = process.env.COMPANY_ID;
 
+  const isMotosOnly = isMotos(companyId);
+
   const message = idsForVendemosTuAuto.includes(companyId || "0000")
-    ? messages[0]
+    ? isMotosOnly
+      ? messagesMotos[0]
+      : messages[0]
+    : isMotosOnly
+    ? messagesMotos[1]
     : messages[1];
 
   return (
@@ -45,7 +53,8 @@ export default function SellYourCar() {
         <div className="flex flex-col sm:flex-row gap-4 my-16">
           <Button asChild size="lg" className="py-6 md:px-24 ">
             <Link href="/vende-tu-auto">
-              Cotizá tu auto ahora <SearchCheck className="ml-1" />
+              Cotizá tu {isMotosOnly ? "moto" : "auto"} ahora{" "}
+              <SearchCheck className="ml-1" />
             </Link>
           </Button>
         </div>

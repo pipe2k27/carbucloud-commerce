@@ -30,6 +30,29 @@ export const carBrandsInArgentina: string[] = [
   "Porsche",
   "Mini",
   "Lexus",
+  "Otra",
+];
+
+export const motorcycleBrandsInArgentina: string[] = [
+  "Aprilia",
+  "Bajaj",
+  "Benelli",
+  "Brava",
+  "Cagiva",
+  "Corven",
+  "Ducati",
+  "Gilera",
+  "Harley-Davidson",
+  "Kawasaki",
+  "Keller",
+  "KTM",
+  "Motomel",
+  "MV Agusta",
+  "Piaggio",
+  "Royal Enfield",
+  "Triumph",
+  "Yamaha",
+  "Zanella",
 ];
 
 export const carTypes: string[] = [

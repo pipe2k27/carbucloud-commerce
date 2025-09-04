@@ -9,6 +9,7 @@ import { fetchDolarOficialRate } from "@/utils/currencyUtils";
 import { redirect } from "next/navigation";
 import CleanupBadge from "../_components/cleanup-badge";
 import SearchBadges from "../_components/search-badges.client";
+import { isMotos } from "@/utils/isMotos";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -39,6 +40,8 @@ const processParam = (param?: string) => {
 export default async function ExplorePage({ params }: any) {
   const companyId = process.env.COMPANY_ID;
   if (!companyId) return <></>;
+
+  const isMotosOnly = isMotos(companyId);
 
   const { searchParams } = await params;
 
@@ -96,11 +99,13 @@ export default async function ExplorePage({ params }: any) {
         {showParams ? "Resultados" : "Explorar"}{" "}
       </h1>
       <CleanupBadge showParams={showParams} />
-      {!showParams && <p className="mb-8">Autos en stock</p>}
+      {!showParams && (
+        <p className="mb-8">{isMotosOnly ? "Motos" : "Autos"} en stock</p>
+      )}
       {showParams && <SearchBadges searchParams={searchParams} />}
       <Suspense fallback={<CarGridSkeleton />}>
         <div className={`${showParams && "mt-[110px]"} md:mt-4`}>
-          <CarGrid cars={cars} />
+          <CarGrid cars={cars} isMotosOnly={isMotosOnly} />
         </div>
       </Suspense>
     </div>

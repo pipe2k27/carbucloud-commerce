@@ -45,6 +45,7 @@ type Props = {
   cars: Car[];
   setFilteredCars: (cars: Car[]) => void;
   setShowSearchForm: any;
+  isMotosOnly: boolean;
 };
 
 const FILTER_STORAGE_KEY = "car-filters";
@@ -54,6 +55,7 @@ export const CarGridFilters = ({
   cars,
   setFilteredCars,
   setShowSearchForm,
+  isMotosOnly,
 }: Props) => {
   const { control, watch, setValue, reset, getValues } = useForm<FilterForm>({
     defaultValues: {
@@ -190,6 +192,7 @@ export const CarGridFilters = ({
             transmissions={transmissions}
             reset={reset}
             setShowSearchForm={setShowSearchForm}
+            isMotosOnly={isMotosOnly}
           />
         </div>
 
@@ -216,6 +219,7 @@ export const CarGridFilters = ({
                 statuses={statuses}
                 transmissions={transmissions}
                 reset={reset}
+                isMotosOnly={isMotosOnly}
               />
               <SheetClose className="w-full mt-4" asChild>
                 <Button className="w-full mt-4">
@@ -231,7 +235,8 @@ export const CarGridFilters = ({
             }}
             className="w-full  max-w-[498px] left-[50%] translate-x-[-50%] relative mb-4"
           >
-            <SearchCheck className="mr-1" /> Buscar Autos
+            <SearchCheck className="mr-1" /> Buscar{" "}
+            {isMotosOnly ? "Motos" : "Autos"}
           </Button>
         </div>
       </div>
@@ -247,6 +252,7 @@ const FiltersPanel = ({
   transmissions,
   reset,
   setShowSearchForm,
+  isMotosOnly,
 }: any) => {
   const currency = watch("currency");
 
@@ -271,7 +277,8 @@ const FiltersPanel = ({
         }}
         className="w-full mb-4 hidden lg:flex"
       >
-        <SearchCheck className="mr-1" /> Buscar Autos
+        <SearchCheck className="mr-1" /> Buscar{" "}
+        {isMotosOnly ? "Motos" : "Autos"}
       </Button>
 
       <div className="space-y-8">
@@ -561,7 +568,8 @@ const FiltersPanel = ({
               router.push("/vendidos/todos");
             }}
           >
-            Ver autos vendidos <BadgeDollarSign />
+            Ver {isMotosOnly ? "Motos Vendidas" : "Autos Vendidos"}{" "}
+            <BadgeDollarSign />
           </Button>
         )}
         {isVendidosPage && (
@@ -582,7 +590,7 @@ const FiltersPanel = ({
               router.push("/catalogo/todos");
             }}
           >
-            Ver autos en Stock <ShoppingBag />
+            Ver {isMotosOnly ? "motos" : "autos"} en Stock <ShoppingBag />
           </Button>
         )}
       </div>
