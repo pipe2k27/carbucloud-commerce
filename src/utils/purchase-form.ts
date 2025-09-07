@@ -72,8 +72,10 @@ export const PurchaseSchema = z.object({
     .max(50, "La transmisión no puede superar 50 caracteres"),
   ownerPhone: z
     .string()
-    .trim()
-    .max(50, "La transmisión no puede superar 50 caracteres"),
+    .regex(
+      /^\+549\d{6,10}$/,
+      "Número inválido. Debe iniciar con +549 seguido de 6 a 10 dígitos"
+    ),
 });
 
 export const purchasaeFormFields: Field[] = [
@@ -158,7 +160,7 @@ export const purchasaeFormFields: Field[] = [
   {
     name: "ownerPhone",
     label: "Teléfono del dueño:",
-    type: "text",
+    type: "phone",
     required: false,
   },
   {
@@ -231,7 +233,7 @@ export const ownerFields: Field[] = [
   {
     name: "ownerPhone",
     label: "Teléfono para que te contactemos:",
-    type: "text",
+    type: "phone",
     required: false,
   },
 ];
@@ -332,8 +334,10 @@ export const ownerSchema = z.object({
     .max(50, "La transmisión no puede superar 50 caracteres"),
   ownerPhone: z
     .string()
-    .trim()
-    .max(50, "La transmisión no puede superar 50 caracteres"),
+    .regex(
+      /^\+549\d{6,10}$/,
+      "Número inválido. Debe iniciar con +549 seguido de 6 a 10 dígitos"
+    ),
 });
 
 // Si necesitás el esquema completo:

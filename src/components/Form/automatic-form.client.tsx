@@ -3,6 +3,7 @@ import FormSelect, { Option } from "./form-select.client";
 import FormInput from "./form-input.client";
 import FormNumber from "./form-number.client";
 import FormTextArea from "./form-text-area.client";
+import FormPhone from "./form-phone.client";
 
 export type Field = {
   name: string;
@@ -15,7 +16,8 @@ export type Field = {
     | "textarea"
     | "email"
     | "date"
-    | "plainDate";
+    | "plainDate"
+    | "phone";
   required?: boolean;
   options?: Option[];
   checkboxOptions?: string[];
@@ -62,6 +64,18 @@ const FormFields = ({ control, field }: any) => {
   if (field.type === "textarea") {
     return (
       <FormTextArea
+        key={field.name}
+        control={control}
+        label={field.label}
+        name={field.name}
+        required={field.required || false}
+        //   isInvalid={errors && errors[field.name]}
+      />
+    );
+  }
+  if (field.type === "phone") {
+    return (
+      <FormPhone
         key={field.name}
         control={control}
         label={field.label}

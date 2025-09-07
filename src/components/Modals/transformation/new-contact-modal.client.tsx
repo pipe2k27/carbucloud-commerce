@@ -16,6 +16,7 @@ import Modal from "../modal.client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import FormPhone from "@/components/Form/form-phone.client";
 import { Car } from "@/dynamo-db/cars.db";
 import { createLeadAction } from "@/service/actions/leads.actions";
 
@@ -31,8 +32,8 @@ const whatsappSchema = z.object({
   phone: z
     .string()
     .regex(
-      /^\+\d{6,15}$/,
-      "Número inválido. Debe iniciar con + y no tener espacios ni guiones"
+      /^\+549\d{6,10}$/,
+      "Número inválido. Debe iniciar con +549 seguido de 6 a 10 dígitos"
     ),
 });
 
@@ -46,13 +47,14 @@ const WhatsappModal = () => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isValid },
   } = useForm<FormData>({
     resolver: zodResolver(whatsappSchema),
     mode: "onChange",
     defaultValues: {
       fullName: "",
-      phone: "+54",
+      phone: "+549",
     },
   });
 
@@ -123,22 +125,13 @@ const WhatsappModal = () => {
         </div>
 
         <div>
-          <Label>
-            Tu número de WhatsApp{" "}
-            <span className="text-xs ml-1 text-muted-foreground">
-              (sin espacios ni guiones, iniciando con +)
-            </span>
-          </Label>
-          <Input
-            className="mt-1 text-sm"
-            placeholder="Ej: +541168223455"
-            {...register("phone")}
+          <FormPhone
+            name="phone"
+            control={control}
+            label="Tu número de WhatsApp"
+            required={true}
+            defaultValue="+549"
           />
-          {errors.phone && (
-            <p className="text-[11px] text-red-500 mt-1">
-              {errors.phone.message}
-            </p>
-          )}
         </div>
       </div>
     </Modal>
