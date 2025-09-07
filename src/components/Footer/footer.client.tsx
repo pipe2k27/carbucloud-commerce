@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Cloud } from "lucide-react";
+import { Cloud, InstagramIcon } from "lucide-react";
 import { WebElementTier1 } from "@/dynamo-db/web-elements.db";
 import React from "react";
 import Image from "next/image";
@@ -94,6 +94,22 @@ const Footer: React.FC<FooterProps> = ({ webElements, logoUrl }) => {
                   {webElements?.contactPhone || "Contactate por WhatsApp"}
                 </li>
                 <li>{webElements?.contactEmail || "carbucloud@gmail.com"}</li>
+                {process.env.NEXT_PUBLIC_INSTAGRAM_URL && (
+                  <li>
+                    <a
+                      href={
+                        process.env.NEXT_PUBLIC_INSTAGRAM_URL ||
+                        "https://instagram.com/carbucloud"
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-2 hover:text-primary"
+                    >
+                      <InstagramIcon className="w-4 h-4" />
+                      <span>Seguinos en Instagram</span>
+                    </a>
+                  </li>
+                )}
               </ul>
             </CardContent>
           </Card>
