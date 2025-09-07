@@ -81,7 +81,11 @@ export default async function ProductDetailPage({
         />
       </div>
       <div className="lg:hidden">
-        <ProductDetailMobile data={response.data} images={images} />
+        <ProductDetailMobile
+          data={response.data}
+          images={images}
+          logoWhiteUrl={logoWhiteUrl}
+        />
       </div>
       <div className="w-[1050px] mx-auto max-w-[95vw]">
         <CarGridBanner label="También te puede interesar" />

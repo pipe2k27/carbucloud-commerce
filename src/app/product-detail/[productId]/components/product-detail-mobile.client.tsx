@@ -7,6 +7,7 @@ import {
   ArrowLeft,
   MessageCircleWarning,
   SearchCheckIcon,
+  DownloadCloud,
 } from "lucide-react";
 import { Car } from "@/dynamo-db/cars.db";
 import { useRouter } from "next/navigation";
@@ -16,14 +17,22 @@ import { statusConfig } from "@/components/Common/car-status-badge";
 import { openWhatsappModal } from "@/components/Modals/transformation/new-contact-modal.client";
 import SpecCards from "./spec-cards.client";
 import { Sale } from "@/dynamo-db/sales.db";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { ProductDetailPdf } from "./product-detail-pdf.client";
 
 interface Props {
   data: Car | Sale;
   images: string[];
   sold?: boolean;
+  logoWhiteUrl?: string;
 }
 
-export default function ProductDetailMobile({ data, images, sold }: Props) {
+export default function ProductDetailMobile({
+  data,
+  images,
+  sold,
+  logoWhiteUrl,
+}: Props) {
   const [car, setCar] = useState<Car | null>(null);
   const router = useRouter();
 
@@ -181,6 +190,23 @@ export default function ProductDetailMobile({ data, images, sold }: Props) {
       <div className="mt-8">
         <SpecCards car={car} sold={sold} />
       </div>
+      <PDFDownloadLink
+        document={
+          <ProductDetailPdf
+            car={car}
+            imageBase64={car.mainImageUrl}
+            logoUrl={logoWhiteUrl}
+          />
+        }
+        fileName={`${car.brand}-${car.model}.pdf`}
+      >
+        {() => (
+          <Button className="w-full mt-4">
+            Ficha Tecnica
+            <DownloadCloud className="ml-[-2px] scale-110" />
+          </Button>
+        )}
+      </PDFDownloadLink>
     </div>
   );
 }
