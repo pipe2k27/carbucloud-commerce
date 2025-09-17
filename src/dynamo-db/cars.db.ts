@@ -35,6 +35,10 @@ export type FormCar = {
   ownershipType: string;
   ownerName: string;
   ownerPhone: string;
+  displacement?: string;
+  plate?: string;
+  fuelType?: string;
+  vehicleType?: "car" | "motorbike";
 };
 
 export type Car = FormCar & {

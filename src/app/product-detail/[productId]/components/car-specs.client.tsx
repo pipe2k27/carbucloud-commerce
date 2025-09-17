@@ -18,8 +18,17 @@ const CarSpecs: React.FC<CarSpecsProps> = ({ car, sold }) => {
         <DetailItem label="Año" value={car.year} />
         <DetailItem label="Tipo" value={car.carType} />
         <DetailItem label="Transmisión" value={car.transmission} />
+
+        {car.vehicleType === "motorbike" && (
+          <DetailItem
+            label="Cilindrada"
+            value={car.displacement || "Sin Especificar"}
+          />
+        )}
         <DetailItem label="Motor" value={car.engine} />
-        <DetailItem label="Tracción" value={car.traction} />
+        {car.vehicleType === "car" && (
+          <DetailItem label="Tracción" value={car.traction} />
+        )}
         <DetailItem
           label="Kilometraje"
           value={`${Number(car.km).toLocaleString("es")} km`}

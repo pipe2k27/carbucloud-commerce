@@ -6,6 +6,7 @@ import {
   DownloadCloud,
   MessageCircleWarning,
   SearchCheckIcon,
+  Bike,
 } from "lucide-react";
 import { Car } from "@/dynamo-db/cars.db";
 import { useEffect, useState } from "react";
@@ -80,11 +81,16 @@ export default function ProductDetailDesktop({
         <div className="mt-4 mb-8 flex justify-between items-center">
           <div className="flex items-center relative">
             <div className="text-[12px] text-primary font-normal absolute top-[-16px] left-[40px]">
-              {car.year} - {Number(car.km).toLocaleString("es")}km -{" "}
+              {car.year} - {Number(car.km).toLocaleString("es")}km -
             </div>
             <div className="max-w-[35vw] whitespace-nowrap overflow-hidden text-lg  xl:text-xl font-bold flex relative">
               <div className="w-[45px]">
-                <CarIcon className="mr-2  scale-x-[-1] text-primary w-7 h-7 translate-y-[-1px]" />
+                {car.vehicleType !== "motorbike" && (
+                  <CarIcon className="mr-2  scale-x-[-1] text-primary w-7 h-7 translate-y-[-1px]" />
+                )}
+                {car.vehicleType === "motorbike" && (
+                  <Bike className="mr-2  scale-x-[-1] text-primary w-7 h-7 translate-y-[-1px]" />
+                )}
               </div>
               <div className="w-full">
                 <div className="translate-y-[5px] xl:translate-y-0">
@@ -93,7 +99,7 @@ export default function ProductDetailDesktop({
               </div>
             </div>
             <div className="font-normal text-md text-muted-foreground translate-y-[2px] align-bottom p-0 ml-0 opacity-60">
-              {!sold && `/${formatCurrency(car.price, car.currency)}{" "}`}
+              {!sold && `/${formatCurrency(car.price, car.currency)}`}
               {isReserved && " - Reservado"} {sold && " - Vendido"}
             </div>
           </div>

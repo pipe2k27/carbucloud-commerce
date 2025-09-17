@@ -11,6 +11,8 @@ import {
   Settings as Transmission, // Replace with a valid icon or alias
   MountainSnow,
   BadgeDollarSign,
+  Bike,
+  ShoppingBagIcon,
 } from "lucide-react";
 
 type SpecCardsProps = {
@@ -52,9 +54,33 @@ const specs = [
 ];
 
 export default function SpecCards({ car, sold }: SpecCardsProps) {
+  let currentSpecs = [...specs];
+
+  if (car.vehicleType === "motorbike") {
+    currentSpecs.unshift({
+      key: "displacement",
+      label: "Cilindrada",
+      icon: Settings,
+    });
+
+    currentSpecs.unshift({
+      key: "brand",
+      label: "Marca",
+      icon: ShoppingBagIcon,
+    });
+    currentSpecs = currentSpecs.filter((spec) => spec.key !== "engine");
+    currentSpecs = currentSpecs.filter((spec) => spec.key !== "traction");
+    currentSpecs = currentSpecs.filter((spec) => spec.key !== "carType");
+    currentSpecs.unshift({
+      key: "carType",
+      label: "Tipo",
+      icon: Bike,
+    });
+  }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      {specs.map(({ key, label, icon: Icon }) => {
+      {currentSpecs.map(({ key, label, icon: Icon }) => {
         const value = (car as any)[key];
 
         const soldCar = car as Sale;
