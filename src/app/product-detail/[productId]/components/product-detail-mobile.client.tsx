@@ -8,6 +8,7 @@ import {
   MessageCircleWarning,
   SearchCheckIcon,
   DownloadCloud,
+  Bike,
 } from "lucide-react";
 import { Car } from "@/dynamo-db/cars.db";
 import { useRouter } from "next/navigation";
@@ -74,7 +75,12 @@ export default function ProductDetailMobile({
       </div>
       <div className="text-lg font-bold mb-4 pl-2 flex relative w-full ">
         <div className="w-[45px]">
-          <CarIcon className="mr-2  scale-x-[-1] text-primary w-8 h-8 translate-y-[-3px]" />
+          {car.vehicleType === "car" && (
+            <CarIcon className="mr-2  scale-x-[-1] text-primary w-8 h-8 translate-y-[-3px]" />
+          )}
+          {car.vehicleType === "motorbike" && (
+            <Bike className="mr-2  scale-x-[-1] text-primary w-8 h-8 translate-y-[-3px]" />
+          )}
         </div>
         <div className="w-full">
           <div className="text-[11px] text-muted-foreground font-normal absolute top-[-18px] left-[50px]">
@@ -120,7 +126,15 @@ export default function ProductDetailMobile({
             <DetailItem label="Tipo" value={car.carType} />
             <DetailItem label="Transmisión" value={car.transmission} />
             <DetailItem label="Motor" value={car.engine} />
-            <DetailItem label="Tracción" value={car.traction} />
+            {car.vehicleType === "car" && (
+              <DetailItem label="Tracción" value={car.traction} />
+            )}
+            {car.vehicleType === "motorbike" && (
+              <DetailItem
+                label="Cilindrada"
+                value={car.displacement || "Sin Especificar"}
+              />
+            )}
             <DetailItem
               label="Kilometraje"
               value={`${Number(car.km).toLocaleString("es")} km`}
