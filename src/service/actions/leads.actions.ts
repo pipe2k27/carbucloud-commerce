@@ -6,6 +6,7 @@ import { errorObject, ServerResponse } from "@/constants/api-constants";
 
 // ✅ Schema matching the Lead type (excluding system-generated fields)
 const leadSchema = z.object({
+  vehicleType: z.enum(["car", "motorbike"]),
   leadName: z.string().trim().max(100),
   phone: z.string().trim().max(20),
   productId: z.string().trim().max(50),
