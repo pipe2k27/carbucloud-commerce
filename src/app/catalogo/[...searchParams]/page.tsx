@@ -105,7 +105,12 @@ export default async function ExplorePage({ params }: any) {
         {showParams ? "Resultados" : "Explorar"}{" "}
       </h1>
       <CleanupBadge showParams={showParams} />
-      {!showParams && <p className="mb-8">{sellerWordCapitalized} en stock</p>}
+      {!showParams && (
+        <p className="mb-8">
+          <strong className="lg:hidden"> {cars.length || 0}</strong>{" "}
+          {sellerWordCapitalized}s en stock
+        </p>
+      )}
       {showParams && <SearchBadges searchParams={searchParams} />}
       <Suspense fallback={<CarGridSkeleton />}>
         <div className={`${showParams && "mt-[110px]"} md:mt-4`}>
