@@ -43,6 +43,14 @@ const SellerFormSelector = ({
 
   const { toast } = useToast();
 
+  const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER; // Replace with actual WhatsApp number
+  const messagewhap =
+    "Hola, quiero vender mi auto! Cargué los datos en su página web. Espero su respuesta, gracias.";
+
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+    messagewhap
+  )}`;
+
   useEffect(() => {
     disableScroll();
     return () => enableScroll(); // Re-enable scroll on unmount
@@ -135,7 +143,7 @@ const SellerFormSelector = ({
           {currentForm === 4 && productId && (
             <div className="w-full">
               <h1 className="font-semibold text-xl">
-                Cargá una foto de tu {capitalize(sellerWord)}
+                Cargá una foto de tu {capitalize(sellerWord)} (Opcional)
               </h1>
               <div className="mb-2 text-muted-foreground">
                 En la que se vea bien el modelo y el estado del vehículo
@@ -148,8 +156,14 @@ const SellerFormSelector = ({
                   productId={productId}
                 />
               </div>
-              <Button variant="secondary" disabled className="w-full mt-0">
-                Finalizar <CheckCircle className="ml-1" />
+              <Button
+                className="w-full mt-0"
+                onClick={() => {
+                  window.open(whatsappUrl, "_blank");
+                }}
+              >
+                Finalizar y continuar por WhatsApp{" "}
+                <CheckCircle className="ml-1" />
               </Button>
             </div>
           )}
