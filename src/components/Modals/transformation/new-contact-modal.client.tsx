@@ -72,8 +72,7 @@ const WhatsappModal = () => {
       const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
 
       // Simulate server-side save
-      const lead = createLeadAction(carData);
-      console.log("Lead created:", lead);
+      createLeadAction(carData);
 
       const message = `Hola, soy ${data.fullName} y vi el vehículo ${currentCar?.brand} ${currentCar?.model} ${currentCar?.year} en tu PÁGINA WEB. Te quería hacer la siguiente consulta:`;
       const encodedMsg = encodeURIComponent(message);

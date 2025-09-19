@@ -73,7 +73,6 @@ export async function searchSalesInDb(
     if (!items) {
       return { status: 404, message: "No cars found" };
     }
-    console.log("Items:", items);
 
     const data = items.filter((car) => {
       const yearMatch = !minYear || parseInt(car.year) >= parseInt(minYear);

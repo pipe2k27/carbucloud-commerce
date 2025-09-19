@@ -28,6 +28,11 @@ import {
   Wand2,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import {
+  useSellerWord,
+  useSellerWordCapitalized,
+} from "@/jotai/seller-type-atom.jotai";
+import { capitalize } from "@/utils/capitalize";
 
 // Filter form type
 type FilterForm = {
@@ -39,13 +44,13 @@ type FilterForm = {
   priceMin: string;
   priceMax: string;
   currency: string;
+  vehicleType: string;
 };
 
 type Props = {
   cars: Car[];
   setFilteredCars: (cars: Car[]) => void;
   setShowSearchForm: any;
-  isMotosOnly: boolean;
 };
 
 const FILTER_STORAGE_KEY = "car-filters";
@@ -55,7 +60,6 @@ export const CarGridFilters = ({
   cars,
   setFilteredCars,
   setShowSearchForm,
-  isMotosOnly,
 }: Props) => {
   const { control, watch, setValue, reset, getValues } = useForm<FilterForm>({
     defaultValues: {
@@ -67,6 +71,7 @@ export const CarGridFilters = ({
       priceMin: "",
       priceMax: "",
       currency: "none",
+      vehicleType: "todos",
     },
   });
 
@@ -78,6 +83,7 @@ export const CarGridFilters = ({
   const priceMin = watch("priceMin");
   const priceMax = watch("priceMax");
   const currency = watch("currency");
+  const vehicleType = watch("vehicleType");
 
   const statuses = useMemo(
     () => Array.from(new Set(cars.map((c) => c.status))),
@@ -121,6 +127,7 @@ export const CarGridFilters = ({
     priceMin,
     priceMax,
     currency,
+    vehicleType,
     getValues,
   ]);
 
@@ -152,6 +159,16 @@ export const CarGridFilters = ({
         matchCurrency = car.currency === currency;
       }
 
+      let matchVehicleType = true;
+      if (vehicleType !== "todos") {
+        if (vehicleType === "autos") {
+          matchVehicleType =
+            car.vehicleType === "car" || car.vehicleType === undefined;
+        } else if (vehicleType === "motos") {
+          matchVehicleType = car.vehicleType === "motorbike";
+        }
+      }
+
       return (
         matchKm &&
         matchYear &&
@@ -160,7 +177,8 @@ export const CarGridFilters = ({
         matchBrand &&
         matchPriceMin &&
         matchPriceMax &&
-        matchCurrency
+        matchCurrency &&
+        matchVehicleType
       );
     });
 
@@ -175,8 +193,11 @@ export const CarGridFilters = ({
     priceMin,
     priceMax,
     currency,
+    vehicleType,
     cars,
   ]);
+
+  const sellerWordCapitalized = useSellerWordCapitalized();
 
   return (
     <div className="flex flex-col lg:flex-row gap-4">
@@ -192,7 +213,6 @@ export const CarGridFilters = ({
             transmissions={transmissions}
             reset={reset}
             setShowSearchForm={setShowSearchForm}
-            isMotosOnly={isMotosOnly}
           />
         </div>
 
@@ -219,7 +239,6 @@ export const CarGridFilters = ({
                 statuses={statuses}
                 transmissions={transmissions}
                 reset={reset}
-                isMotosOnly={isMotosOnly}
               />
               <SheetClose className="w-full mt-4" asChild>
                 <Button className="w-full mt-4">
@@ -235,8 +254,7 @@ export const CarGridFilters = ({
             }}
             className="w-full  max-w-[498px] left-[50%] translate-x-[-50%] relative mb-4"
           >
-            <SearchCheck className="mr-1" /> Buscar{" "}
-            {isMotosOnly ? "Motos" : "Autos"}
+            <SearchCheck className="mr-1" /> Buscar {sellerWordCapitalized}
           </Button>
         </div>
       </div>
@@ -252,7 +270,6 @@ const FiltersPanel = ({
   transmissions,
   reset,
   setShowSearchForm,
-  isMotosOnly,
 }: any) => {
   const currency = watch("currency");
 
@@ -269,6 +286,9 @@ const FiltersPanel = ({
   const isVendidosPage = pathname.includes("vendidos");
   const router = useRouter();
 
+  const sellerWordCapitalized = useSellerWordCapitalized();
+  const sellerWord = useSellerWord();
+
   return (
     <div>
       <Button
@@ -277,8 +297,7 @@ const FiltersPanel = ({
         }}
         className="w-full mb-4 hidden lg:flex"
       >
-        <SearchCheck className="mr-1" /> Buscar{" "}
-        {isMotosOnly ? "Motos" : "Autos"}
+        <SearchCheck className="mr-1" /> Buscar {sellerWordCapitalized}
       </Button>
 
       <div className="space-y-8">
@@ -306,6 +325,29 @@ const FiltersPanel = ({
                       {b}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
+
+        {/* Vehicle Type */}
+        <div>
+          <label className="block mb-1 text-sm font-medium">
+            Tipo de Vehículo
+          </label>
+          <Controller
+            name="vehicleType"
+            control={control}
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos</SelectItem>
+                  <SelectItem value="autos">Autos</SelectItem>
+                  <SelectItem value="motos">Motos</SelectItem>
                 </SelectContent>
               </Select>
             )}
@@ -545,6 +587,7 @@ const FiltersPanel = ({
               priceMin: "",
               priceMax: "",
               currency: "none",
+              vehicleType: "todos",
             });
           }}
         >
@@ -564,11 +607,12 @@ const FiltersPanel = ({
                 priceMin: "",
                 priceMax: "",
                 currency: "none",
+                vehicleType: "todos",
               });
               router.push("/vendidos/todos");
             }}
           >
-            Ver {isMotosOnly ? "Motos Vendidas" : "Autos Vendidos"}{" "}
+            Ver Vendidos
             <BadgeDollarSign />
           </Button>
         )}
@@ -586,11 +630,12 @@ const FiltersPanel = ({
                 priceMin: "",
                 priceMax: "",
                 currency: "none",
+                vehicleType: "todos",
               });
               router.push("/catalogo/todos");
             }}
           >
-            Ver {isMotosOnly ? "motos" : "autos"} en Stock <ShoppingBag />
+            Ver {capitalize(sellerWord)} en Stock <ShoppingBag />
           </Button>
         )}
       </div>

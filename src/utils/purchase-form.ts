@@ -179,10 +179,38 @@ export const purchasaeFormFields: Field[] = [
 
 export const brandAndModelFields: Field[] = [
   {
+    name: "vehicleType",
+    label: "Tipo de Vehículo",
+    type: "options",
+    options: [
+      { value: "car", label: "Auto" },
+      { value: "motorbike", label: "Moto" },
+    ],
+  },
+  {
     name: "brand",
     label: "Marca",
     type: "options",
-    options: [...carBrandsInArgentina, ...motorcycleBrandsInArgentina]
+    depndency: {
+      field: "vehicleType",
+      value: "car",
+    },
+    options: carBrandsInArgentina
+      .sort((a, b) => a.localeCompare(b))
+      .map((brand) => ({
+        value: brand,
+        label: brand,
+      })),
+  },
+  {
+    name: "brand",
+    label: "Marca",
+    type: "options",
+    depndency: {
+      field: "vehicleType",
+      value: "motorbike",
+    },
+    options: motorcycleBrandsInArgentina
       .sort((a, b) => a.localeCompare(b))
       .map((brand) => ({
         value: brand,
@@ -290,6 +318,11 @@ import { z } from "zod";
 
 // Grupo 1: Marca y modelo
 export const brandAndModelSchema = z.object({
+  vehicleType: z
+    .string()
+    .trim()
+    .max(50, "El tipo de vehículo no puede superar 50 caracteres")
+    .min(1, "Por favor complete este campo"),
   brand: z
     .string()
     .trim()

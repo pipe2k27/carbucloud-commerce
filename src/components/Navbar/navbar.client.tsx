@@ -13,15 +13,11 @@ import {
 // import { ModeToggle } from "../ui/mode-toggle";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useSellerWordCapitalized } from "@/jotai/seller-type-atom.jotai";
 
-export default function Navbar({
-  logoUrl,
-  isMotosOnly,
-}: {
-  logoUrl?: string;
-  isMotosOnly: boolean;
-}) {
+export default function Navbar({ logoUrl }: { logoUrl?: string }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const sellerWordCapitalized = useSellerWordCapitalized();
 
   const router = useRouter();
 
@@ -63,7 +59,7 @@ export default function Navbar({
             className="hover:text-muted-foreground cursor-pointer"
             onClick={() => router.push("/vende-tu-auto")}
           >
-            Vendé tu {isMotosOnly ? "Moto" : "Auto"}
+            Vendé tu {sellerWordCapitalized}
           </div>{" "}
           {/* <div className="hover:text-muted-foreground cursor-pointer">
             Vender
@@ -124,7 +120,7 @@ export default function Navbar({
                 }}
                 className="text-gray-600 hover:text-gray-800"
               >
-                Vendé tu Auto
+                Vendé tu {sellerWordCapitalized}
               </a>
               <a
                 onClick={() => {

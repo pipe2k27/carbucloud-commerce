@@ -9,15 +9,18 @@ import { fetchDolarOficialRate } from "@/utils/currencyUtils";
 import { redirect } from "next/navigation";
 import CleanupBadge from "../_components/cleanup-badge";
 import SearchBadges from "../_components/search-badges.client";
-import { isMotos } from "@/utils/isMotos";
+import {
+  getSellerTypeServer,
+  getSellerWordServerCapitalized,
+} from "@/utils/sellerTypeServer";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: process.env.PAGE_NAME,
-    description: "Concesionaria de autos",
+    description: "Tu Concesionaria",
     openGraph: {
       title: process.env.PAGE_NAME,
-      description: "Concesionaria de autos",
+      description: "Tu Concesionaria",
       url: ``,
       images: [
         {
@@ -41,7 +44,10 @@ export default async function ExplorePage({ params }: any) {
   const companyId = process.env.COMPANY_ID;
   if (!companyId) return <></>;
 
-  const isMotosOnly = isMotos(companyId);
+  const sellerType = await getSellerTypeServer(companyId);
+  const sellerWordCapitalized = await getSellerWordServerCapitalized(
+    sellerType
+  );
 
   const { searchParams } = await params;
 
@@ -99,13 +105,11 @@ export default async function ExplorePage({ params }: any) {
         {showParams ? "Resultados" : "Explorar"}{" "}
       </h1>
       <CleanupBadge showParams={showParams} />
-      {!showParams && (
-        <p className="mb-8">{isMotosOnly ? "Motos" : "Autos"} en stock</p>
-      )}
+      {!showParams && <p className="mb-8">{sellerWordCapitalized} en stock</p>}
       {showParams && <SearchBadges searchParams={searchParams} />}
       <Suspense fallback={<CarGridSkeleton />}>
         <div className={`${showParams && "mt-[110px]"} md:mt-4`}>
-          <CarGrid cars={cars} isMotosOnly={isMotosOnly} />
+          <CarGrid cars={cars} />
         </div>
       </Suspense>
     </div>

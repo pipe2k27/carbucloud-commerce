@@ -21,7 +21,7 @@ const SellerForm: React.FC<Props> = ({ form, schema, onSubmit, isLoading }) => {
     return acc;
   }, {} as Partial<Purchase>);
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, watch } = useForm({
     resolver: zodResolver(schema),
     defaultValues,
   });
@@ -32,7 +32,7 @@ const SellerForm: React.FC<Props> = ({ form, schema, onSubmit, isLoading }) => {
 
   return (
     <AppearDiv>
-      <AutomaticForm fields={form} control={control} />
+      <AutomaticForm watch={watch} fields={form} control={control} />
       <Button
         variant="secondary"
         className="w-full mt-8"

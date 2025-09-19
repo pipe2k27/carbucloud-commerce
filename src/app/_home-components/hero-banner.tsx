@@ -6,12 +6,16 @@ import { Button } from "@/components/ui/button";
 import { getWebElementsByCompanyId } from "@/dynamo-db/web-elements.db";
 import { CarSearchForm } from "@/components/CarSearch/CarSearch.client";
 import { BadgeDollarSign, Bike, Car } from "lucide-react";
-import { isMotos } from "@/utils/isMotos";
+import {
+  getSellerTypeServer,
+  getSellerWordServer,
+} from "@/utils/sellerTypeServer";
 
 export default async function HeroBanner() {
   const companyId = process.env.COMPANY_ID;
   if (!companyId) return <></>;
-  const isMotosOnly = isMotos(companyId);
+  const sellerType = await getSellerTypeServer(companyId);
+  const sellerWord = await getSellerWordServer(sellerType);
   const response = (await getWebElementsByCompanyId(companyId)) as any;
 
   const webElements =
@@ -42,18 +46,17 @@ export default async function HeroBanner() {
 
         <div className="relative py-20 px-6 md:py-32 md:px-12 max-w-3xl">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            {webElements.title ||
-              `Encontrá ${isMotosOnly ? "la moto" : "el auto"} ideal para vos`}
+            {webElements.title || `Encontrá tu ${sellerWord} ideal para vos`}
           </h1>
           <p className="text-xl text-white/90 mb-8">
             {webElements.subtitle ||
-              "Las mejores ofertas en vehículos certificados. ¡Fácil, rápido y seguro!"}
+              `Las mejores ofertas en ${sellerWord}s. ¡Fácil, rápido y seguro!`}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button asChild size="lg">
               <Link href="/catalogo/todos">
-                Ver {isMotosOnly ? "motos" : "autos"} disponibles{" "}
-                {isMotosOnly ? (
+                Ver {sellerWord}s disponibles{" "}
+                {sellerType === "motorbikes" ? (
                   <Bike className="mr-1" />
                 ) : (
                   <Car className="mr-1" />
@@ -67,7 +70,7 @@ export default async function HeroBanner() {
               className="bg-white/10 text-white border-white/20 hover:bg-white/20"
             >
               <Link href="/vende-tu-auto">
-                Vendé tu {isMotosOnly ? "Moto" : "Auto"} <BadgeDollarSign />{" "}
+                Vendé tu {sellerWord} <BadgeDollarSign />{" "}
               </Link>
             </Button>
           </div>

@@ -110,6 +110,9 @@ export function ProductDetailPdf({ car, imageBase64, logoUrl }: Props) {
     month: "long",
     year: "numeric",
   });
+
+  const isMotorbike = car.vehicleType === "motorbike";
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -133,7 +136,7 @@ export function ProductDetailPdf({ car, imageBase64, logoUrl }: Props) {
         )}
 
         <View style={styles.card}>
-          <View style={{ paddingLeft: 30, opacity: 0.7 }}>
+          <View style={{ paddingLeft: isMotorbike ? 0 : 30, opacity: 0.7 }}>
             <Text style={{ fontSize: 9, color: "gray" }}>
               {car.year} - {Number(car.km).toLocaleString("es")}km
             </Text>
@@ -146,7 +149,10 @@ export function ProductDetailPdf({ car, imageBase64, logoUrl }: Props) {
               marginBottom: 16,
             }}
           >
-            <Image src={carIcon} style={styles.carIcon} />
+            {/* en algun lado hay que poner el icono de la moto */}
+            {car.vehicleType !== "motorbike" && (
+              <Image src={carIcon} style={styles.carIcon} />
+            )}
             <Text style={styles.title}>
               {car.brand} {car.model}
             </Text>
@@ -167,17 +173,25 @@ export function ProductDetailPdf({ car, imageBase64, logoUrl }: Props) {
               <Text style={styles.value}>{car.year}</Text>
             </View>
             <View style={styles.specBox}>
-              <Text style={styles.label}>Motor</Text>
-              <Text style={styles.value}>{car.engine}</Text>
+              <Text style={styles.label}>
+                {car.vehicleType !== "motorbike" ? "Motor" : "Cilindrada"}
+              </Text>
+              <Text style={styles.value}>
+                {car.vehicleType !== "motorbike"
+                  ? car.engine
+                  : car.displacement}
+              </Text>
             </View>
             <View style={styles.specBox}>
               <Text style={styles.label}>Transmisión</Text>
               <Text style={styles.value}>{car.transmission}</Text>
             </View>
-            <View style={styles.specBox}>
-              <Text style={styles.label}>Tracción</Text>
-              <Text style={styles.value}>{car.traction}</Text>
-            </View>
+            {car.vehicleType !== "motorbike" && (
+              <View style={styles.specBox}>
+                <Text style={styles.label}>Tracción</Text>
+                <Text style={styles.value}>{car.traction}</Text>
+              </View>
+            )}
             <View style={styles.specBox}>
               <Text style={styles.label}>Tipo</Text>
               <Text style={styles.value}>{car.carType}</Text>

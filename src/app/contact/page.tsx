@@ -17,10 +17,10 @@ import { Metadata } from "next";
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: process.env.PAGE_NAME,
-    description: "Concesionaria de autos",
+    description: "Tu Concesionaria",
     openGraph: {
       title: process.env.PAGE_NAME,
-      description: "Concesionaria de autos",
+      description: "Tu Concesionaria",
       url: ``,
       images: [
         {

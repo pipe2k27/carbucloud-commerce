@@ -4,27 +4,23 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, PlayCircle, SearchCheck } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
-import { isMotos } from "@/utils/isMotos";
-
-const messages = ["Vendemos tu Auto", "Compramos tu Auto"];
-const messagesMotos = ["Vendemos tu Moto", "Compramos tu Moto"];
+import {
+  getSellerTypeServer,
+  getSellerWordServer,
+} from "@/utils/sellerTypeServer";
 
 const idsForVendemosTuAuto = ["0004"];
 
-export default function SellYourCar() {
+export default async function SellYourCar() {
   const logoUrl = process.env.LOGO_URL;
 
   const companyId = process.env.COMPANY_ID;
 
-  const isMotosOnly = isMotos(companyId);
+  const sellerType = await getSellerTypeServer(companyId);
 
   const message = idsForVendemosTuAuto.includes(companyId || "0000")
-    ? isMotosOnly
-      ? messagesMotos[0]
-      : messages[0]
-    : isMotosOnly
-    ? messagesMotos[1]
-    : messages[1];
+    ? "Vendemos tu Vehículo"
+    : "Compramos tu Vehículo";
 
   return (
     <Card className="bg-muted my-32 relative">
@@ -53,7 +49,7 @@ export default function SellYourCar() {
         <div className="flex flex-col sm:flex-row gap-4 my-16">
           <Button asChild size="lg" className="py-6 md:px-24 ">
             <Link href="/vende-tu-auto">
-              Cotizá tu {isMotosOnly ? "moto" : "auto"} ahora{" "}
+              Cotizá tu {getSellerWordServer(sellerType)} ahora{" "}
               <SearchCheck className="ml-1" />
             </Link>
           </Button>

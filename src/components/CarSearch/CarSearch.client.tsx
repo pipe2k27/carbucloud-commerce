@@ -20,6 +20,7 @@ import {
   carBrandsInArgentina,
   motorcycleBrandsInArgentina,
 } from "@/constants/car-constants";
+import { useSellerWordOrBoth } from "@/jotai/seller-type-atom.jotai";
 
 export const carSearchSchema = z.object({
   brand: z.string().min(1, "Brand is required"),
@@ -37,7 +38,6 @@ export function CarSearchForm({
   logoUrl?: string;
   showClose?: boolean;
   onClose?: () => void;
-  isMotosOnly?: boolean;
 }) {
   const { register, handleSubmit, watch, setValue } = useForm<CarSearchSchema>({
     resolver: zodResolver(carSearchSchema),
@@ -59,6 +59,8 @@ export function CarSearchForm({
 
   const brand = watch("brand");
 
+  const sellerWord = useSellerWordOrBoth();
+
   return (
     <Card className="mt-12">
       <CardHeader>
@@ -68,8 +70,8 @@ export function CarSearchForm({
           </div>
         )}
         <h3 className="my-4 font-semibold text-xl flex w-full justify-start">
-          <SearchCheck className="text-primary mr-2" /> Encontrá el vehículo que
-          buscás
+          <SearchCheck className="text-primary mr-2" /> Encontrá tu {sellerWord}{" "}
+          ideal
         </h3>
         {showClose && (
           <X

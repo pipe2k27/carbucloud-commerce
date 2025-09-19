@@ -7,6 +7,12 @@ import {
   updatePurchase,
 } from "@/dynamo-db/purchases.db";
 const carSchema = z.object({
+  vehicleType: z
+    .string()
+    .trim()
+    .max(50, "El tipo de vehículo no puede superar 50 caracteres")
+    .optional()
+    .nullable(),
   brand: z
     .string()
     .trim()

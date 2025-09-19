@@ -10,15 +10,15 @@ import SearchBadges from "@/app/catalogo/_components/search-badges.client";
 import CarGridSkeleton from "@/app/catalogo/_components/car-grid-skeleton";
 import CarGrid from "@/app/catalogo/_components/car-grid";
 import { getSalesByCompanyId, searchSalesInDb } from "@/dynamo-db/sales.db";
-import { isMotos } from "@/utils/isMotos";
+import { getSellerTypeServer } from "@/utils/sellerTypeServer";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: process.env.PAGE_NAME,
-    description: "Concesionaria de autos",
+    description: "Tu Concesionaria",
     openGraph: {
       title: process.env.PAGE_NAME,
-      description: "Concesionaria de autos",
+      description: "Tu Concesionaria",
       url: ``,
       images: [
         {
@@ -41,7 +41,8 @@ const processParam = (param?: string) => {
 export default async function SalesPage({ params }: any) {
   const companyId = process.env.COMPANY_ID;
   if (!companyId) return <></>;
-  const isMotosOnly = isMotos(companyId);
+
+  const sellerType = await getSellerTypeServer(companyId);
 
   const { searchParams } = await params;
 
@@ -88,13 +89,13 @@ export default async function SalesPage({ params }: any) {
       <CleanupBadge showParams={showParams} />
       {!showParams && (
         <p className="mb-8">
-          {isMotosOnly ? "Motos Vendidas" : "Autos Vendidos"}
+          {sellerType === "motorbikes" ? "Motos Vendidas" : "Autos Vendidos"}
         </p>
       )}
       {showParams && <SearchBadges searchParams={searchParams} />}
       <Suspense fallback={<CarGridSkeleton />}>
         <div className={`${showParams && "mt-[110px]"} md:mt-4`}>
-          <CarGrid cars={cars} isMotosOnly={isMotosOnly} />
+          <CarGrid cars={cars} />
         </div>
       </Suspense>
     </div>

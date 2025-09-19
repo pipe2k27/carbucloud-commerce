@@ -8,15 +8,18 @@ import SelectedCarGridBanner from "@/components/Common/selected-car-grid-banner.
 import SellYourCar from "./_home-components/sell-your-car";
 import WhatsAppButton from "@/components/Common/whatsapp-button.client";
 import { Metadata } from "next";
-import { isMotos } from "@/utils/isMotos";
+import {
+  getSellerTypeServer,
+  getSellerWordServer,
+} from "@/utils/sellerTypeServer";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: process.env.PAGE_NAME,
-    description: "Concesionaria de autos",
+    description: "Tu Concesionaria",
     openGraph: {
       title: process.env.PAGE_NAME,
-      description: "Concesionaria de autos",
+      description: "Tu Concesionaria",
       url: ``,
       images: [
         {
@@ -30,13 +33,12 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function Home() {
+export default async function Home() {
   const companyId = process.env.COMPANY_ID;
-  const isMotosOnly = isMotos(companyId);
+  const sellerType = await getSellerTypeServer(companyId);
+  const sellerWord = await getSellerWordServer(sellerType);
 
-  const description = isMotosOnly
-    ? "Todas nuestras motos estan disponibles para entrega inmediata."
-    : "Todos nuestros autos estan disponibles para entrega inmediata.";
+  const description = `Todos nuestros ${sellerWord}s estan disponibles para entrega inmediata.`;
 
   return (
     <>
