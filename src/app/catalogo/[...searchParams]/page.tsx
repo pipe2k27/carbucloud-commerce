@@ -87,6 +87,19 @@ export default async function ExplorePage({ params }: any) {
   }
 
   cars.sort((a, b) => {
+    if (a.productId && b.productId) {
+      const aId = Number(a.productId);
+      const bId = Number(b.productId);
+      if (!isNaN(aId) && !isNaN(bId)) {
+        return bId - aId;
+      }
+    }
+    return 0;
+  });
+
+  cars.sort((a, b) => {
+    // Sort cars by productId from highest to lowest (convert to number)
+
     // If one car is reserved and the other is not, send reserved to the end
     if (a.status === "reserved" && b.status !== "reserved") {
       return 1;
