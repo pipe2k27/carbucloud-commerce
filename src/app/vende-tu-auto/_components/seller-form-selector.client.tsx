@@ -160,6 +160,7 @@ const SellerFormSelector = ({
                 className="w-full mt-0"
                 onClick={() => {
                   window.open(whatsappUrl, "_blank");
+                  router.push("/");
                 }}
               >
                 Finalizar y continuar por WhatsApp{" "}
@@ -176,13 +177,14 @@ const SellerFormSelector = ({
               </div>
               <div className="w-full flex justify-center items-center"></div>
               <Button
+                className="w-full mt-0"
                 onClick={() => {
+                  window.open(whatsappUrl, "_blank");
                   router.push("/");
                 }}
-                variant="secondary"
-                className="w-full mt-12"
               >
-                Volver a la web
+                Finalizar y continuar por WhatsApp{" "}
+                <CheckCircle className="ml-1" />
               </Button>
             </div>
           )}
