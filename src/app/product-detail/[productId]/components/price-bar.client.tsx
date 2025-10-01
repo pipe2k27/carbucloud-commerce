@@ -19,27 +19,24 @@ export default function PriceBar({ car, sold }: PriceBarProps) {
   const carModel = `${car.brand} ${car.model}`;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t">
+    <div className="fixed inset-x-0 bottom-0 z-50 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pb-[max(0px,env(safe-area-inset-bottom))]">
       <Card className="rounded-none border-0 shadow-lg">
-        <div className="flex items-center justify-between px-4 py-3 max-h-[80px] min-h-[60px] max-w-[1000px] mx-auto w-[98%]">
-          {/* Price Section */}
+        <div className="mx-auto flex w-[98%] max-w-[1000px] items-center justify-between px-4 py-3">
           <div className="flex flex-col">
-            <div className="text-xs text-muted-foreground mb-1">{carModel}</div>
-            <div className=" text-lg md:text-2xl font-bold text-primary">
+            <div className="mb-1 text-xs text-muted-foreground">{carModel}</div>
+            <div className="text-lg font-bold text-primary md:text-2xl">
               {currency === "USD" ? "U$D " : "$"}
-
               {displayPrice?.toLocaleString("es") || 0}
             </div>
           </div>
 
-          {/* Contact Buttons */}
           <div className="flex gap-2">
             <Button
               onClick={() => openWhatsappModal(car)}
               size="sm"
               className="flex items-center gap-2 bg-primary hover:bg-primary/90"
             >
-              <MessageCircleWarning className="w-4 h-4" />{" "}
+              <MessageCircleWarning className="h-4 w-4" />
               <span className="sm:inline">Contactar</span>
             </Button>
           </div>

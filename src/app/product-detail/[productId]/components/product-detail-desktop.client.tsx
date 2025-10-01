@@ -80,8 +80,8 @@ export default function ProductDetailDesktop({
       <div className="py-8 mb-24 w-[1050px] relative left-[50%] translate-x-[-50%] max-w-[90vw]">
         <div className="mt-4 mb-8 flex justify-between items-center">
           <div className="flex items-center relative">
-            <div className="text-[12px] text-primary font-normal absolute top-[-16px] left-[40px]">
-              {car.year} - {Number(car.km).toLocaleString("es")}km -
+            <div className="text-[12px] text-primary font-normal absolute top-[-16px] left-[40px] truncate">
+              {car.year} - {Number(car.km).toLocaleString("es")}km
             </div>
             <div className="max-w-[35vw] whitespace-nowrap overflow-hidden text-lg  xl:text-xl font-bold flex relative">
               <div className="w-[45px]">
