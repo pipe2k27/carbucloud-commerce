@@ -1,6 +1,7 @@
 "use client";
 
 import { statusConfig } from "@/components/Common/car-status-badge";
+import RichTextDisplay from "@/components/ui/rich-text-display";
 import { Car } from "@/dynamo-db/cars.db";
 import { Sale } from "@/dynamo-db/sales.db";
 
@@ -60,7 +61,7 @@ const CarSpecs: React.FC<CarSpecsProps> = ({ car, sold }) => {
       </div>
       <div className="w-full h-[1px] bg-gray-300 mt-8" />
       <div className="lg:min-h-[100px]">
-        <DetailText label="Descripción" value={car.description} />
+        <DetailText label="Descripción" value={car.description} isRichText />
       </div>
     </>
   );
@@ -71,6 +72,7 @@ interface DetailItemProps {
   value: string | number;
   className?: string;
   icon?: React.ElementType;
+  isRichText?: boolean;
 }
 
 const DetailItem = ({
@@ -88,10 +90,15 @@ const DetailItem = ({
   </div>
 );
 
-const DetailText = ({ label, value }: DetailItemProps) => (
-  <div className="my-4 min-h-14">
-    <p className="font-semibold text-gray-500">{label}</p>
-    <p className="text-[12px]">{value || "Sin Especificar"} </p>
+const DetailText = ({ label, value, isRichText }: DetailItemProps) => (
+  <div className="my-6 min-h-14">
+    <p className="font-semibold text-lg mb-4 text-gray-500">{label}</p>
+    {!isRichText && (
+      <p className="text-[12px]">{value || "Sin Especificar"} </p>
+    )}
+    {isRichText && (
+      <RichTextDisplay className="text-lg" content={String(value)} />
+    )}
   </div>
 );
 
