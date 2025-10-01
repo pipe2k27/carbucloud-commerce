@@ -12,13 +12,13 @@ import { Car } from "@/dynamo-db/cars.db";
 import { useEffect, useState } from "react";
 import { openWhatsappModal } from "@/components/Modals/transformation/new-contact-modal.client";
 import ImageGrid from "./image-grid.client";
-import { formatCurrency } from "@/utils/currencyUtils";
 import SpecCards from "./spec-cards.client";
 import CarSpecs from "./car-specs.client";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ProductDetailPdf } from "./product-detail-pdf.client";
 import ImageViewer from "./image-viewer";
 import { Sale } from "@/dynamo-db/sales.db";
+import PriceBar from "./price-bar.client";
 
 interface Props {
   data: Car | Sale;
@@ -77,7 +77,7 @@ export default function ProductDetailDesktop({
           onClose={() => setIsImageViewerOpen(false)}
         />
       )}
-      <div className="py-8 mb-8 w-[1050px] relative left-[50%] translate-x-[-50%] max-w-[90vw]">
+      <div className="py-8 mb-24 w-[1050px] relative left-[50%] translate-x-[-50%] max-w-[90vw]">
         <div className="mt-4 mb-8 flex justify-between items-center">
           <div className="flex items-center relative">
             <div className="text-[12px] text-primary font-normal absolute top-[-16px] left-[40px]">
@@ -99,8 +99,7 @@ export default function ProductDetailDesktop({
               </div>
             </div>
             <div className="font-normal text-md text-muted-foreground translate-y-[2px] align-bottom p-0 ml-0 opacity-60">
-              {!sold && `/${formatCurrency(car.price, car.currency)}`}
-              {isReserved && " - Reservado"} {sold && " - Vendido"}
+              {isReserved && " /Reservado"} {sold && " /Vendido"}
             </div>
           </div>
 
@@ -188,6 +187,7 @@ export default function ProductDetailDesktop({
           </div>
         </div>
       </div>
+      <PriceBar car={car} sold={sold} />
     </>
   );
 }

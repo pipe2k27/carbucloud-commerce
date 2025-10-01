@@ -20,6 +20,8 @@ import SpecCards from "./spec-cards.client";
 import { Sale } from "@/dynamo-db/sales.db";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ProductDetailPdf } from "./product-detail-pdf.client";
+import RichTextDisplay from "@/components/ui/rich-text-display";
+import PriceBar from "./price-bar.client";
 
 interface Props {
   data: Car | Sale;
@@ -63,7 +65,7 @@ export default function ProductDetailMobile({
   const isReserved = car.status === "reserved";
 
   return (
-    <div className="max-w-[1500px] w-[98%] mx-auto p-1 mb-8">
+    <div className="max-w-[1500px] w-[98%] mx-auto p-1 mb-24">
       <div
         onClick={() => {
           router.back();
@@ -175,7 +177,11 @@ export default function ProductDetailMobile({
           </div>
           <div className="w-full h-[1px] bg-gray-300 mt-6" />
           <div className="lg:min-h-[100px]">
-            <DetailText label="Descripción" value={car.description} />
+            <DetailText
+              isRichText
+              label="Descripción"
+              value={car.description}
+            />
           </div>
           {/* <DetailText label="Notas Internas" value={car.internalNotes} /> */}
           <div className="flex justify-between items-center w-full mt-2">
@@ -221,6 +227,7 @@ export default function ProductDetailMobile({
           </Button>
         )}
       </PDFDownloadLink>
+      <PriceBar car={car} sold={sold} />
     </div>
   );
 }
@@ -230,6 +237,7 @@ interface DetailItemProps {
   value: string | number;
   className?: string;
   icon?: React.ElementType;
+  isRichText?: boolean;
 }
 
 const DetailItem = ({
@@ -247,9 +255,14 @@ const DetailItem = ({
   </div>
 );
 
-const DetailText = ({ label, value }: DetailItemProps) => (
-  <div className="my-4 min-h-14">
-    <p className="font-semibold text-gray-500">{label}</p>
-    <p className="text-[12px]">{value || "Sin Especificar"} </p>
+const DetailText = ({ label, value, isRichText }: DetailItemProps) => (
+  <div className="my-6 min-h-14">
+    <p className="font-semibold text-md mb-4 text-gray-500">{label}</p>
+    {!isRichText && (
+      <p className="text-[12px]">{value || "Sin Especificar"} </p>
+    )}
+    {isRichText && (
+      <RichTextDisplay className="text-md" content={String(value)} />
+    )}
   </div>
 );

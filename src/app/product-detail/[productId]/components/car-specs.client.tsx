@@ -92,12 +92,12 @@ const DetailItem = ({
 
 const DetailText = ({ label, value, isRichText }: DetailItemProps) => (
   <div className="my-6 min-h-14">
-    <p className="font-semibold text-lg mb-4 text-gray-500">{label}</p>
+    <p className="font-semibold text-md mb-4 text-gray-500">{label}</p>
     {!isRichText && (
       <p className="text-[12px]">{value || "Sin Especificar"} </p>
     )}
     {isRichText && (
-      <RichTextDisplay className="text-lg" content={String(value)} />
+      <RichTextDisplay className="text-md" content={String(value)} />
     )}
   </div>
 );

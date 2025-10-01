@@ -71,7 +71,7 @@ export default async function ProductDetailPage({
   const logoWhiteUrl = process.env.LOGO_JPEG;
 
   return (
-    <div className="mb-16">
+    <div className="mb-24">
       <div className="hidden lg:block">
         <ProductDetailDesktop
           data={response.data}
