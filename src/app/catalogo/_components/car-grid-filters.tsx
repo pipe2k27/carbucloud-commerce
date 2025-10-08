@@ -599,7 +599,7 @@ const FiltersPanel = ({
         >
           Limpiar Filtros <Wand2 />
         </Button>
-        {!isVendidosPage && noSalesCompanies.includes(companyId) && (
+        {!isVendidosPage && !noSalesCompanies.includes(companyId) && (
           <Button
             className="w-full"
             onClick={() => {
