@@ -11,6 +11,7 @@ import CarGridSkeleton from "@/app/catalogo/_components/car-grid-skeleton";
 import CarGrid from "@/app/catalogo/_components/car-grid";
 import { getSalesByCompanyId, searchSalesInDb } from "@/dynamo-db/sales.db";
 import { getSellerTypeServer } from "@/utils/sellerTypeServer";
+import { noSalesCompanies } from "@/constants/car-constants";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -31,8 +32,6 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   };
 }
-
-export const noSalesCompanies = ["0012"];
 
 const processParam = (param?: string) => {
   if (!param) return "";
