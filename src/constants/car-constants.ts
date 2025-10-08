@@ -127,3 +127,5 @@ export const carConditions = [
   "Regular",
   "A reparar",
 ];
+
+export const noSalesCompanies = ["0012"];

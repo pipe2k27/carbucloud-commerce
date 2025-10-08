@@ -127,7 +127,7 @@ export default async function ExplorePage({ params }: any) {
       {showParams && <SearchBadges searchParams={searchParams} />}
       <Suspense fallback={<CarGridSkeleton />}>
         <div className={`${showParams && "mt-[110px]"} md:mt-4`}>
-          <CarGrid cars={cars} />
+          <CarGrid cars={cars} companyId={companyId} />
         </div>
       </Suspense>
     </div>

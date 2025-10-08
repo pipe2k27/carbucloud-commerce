@@ -43,7 +43,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar logoUrl={logoUrl} />
+          <Navbar logoUrl={logoUrl} companyId={companyId} />
           <div className="min-h-[83vh]">{children}</div>
           <Toaster />
           <CommonComponentsProvider sellerType={sellerType} />

@@ -32,6 +32,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+export const noSalesCompanies = ["0012"];
+
 const processParam = (param?: string) => {
   if (!param) return "";
   if (param === "todos") return "";
@@ -41,6 +43,8 @@ const processParam = (param?: string) => {
 export default async function SalesPage({ params }: any) {
   const companyId = process.env.COMPANY_ID;
   if (!companyId) return <></>;
+  if (companyId && noSalesCompanies.includes(companyId))
+    return redirect("/error-page");
 
   const sellerType = await getSellerTypeServer(companyId);
 
@@ -95,7 +99,7 @@ export default async function SalesPage({ params }: any) {
       {showParams && <SearchBadges searchParams={searchParams} />}
       <Suspense fallback={<CarGridSkeleton />}>
         <div className={`${showParams && "mt-[110px]"} md:mt-4`}>
-          <CarGrid cars={cars} />
+          <CarGrid cars={cars} companyId={companyId} />
         </div>
       </Suspense>
     </div>

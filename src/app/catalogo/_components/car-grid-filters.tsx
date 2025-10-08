@@ -33,6 +33,7 @@ import {
   useSellerWordCapitalized,
 } from "@/jotai/seller-type-atom.jotai";
 import { capitalize } from "@/utils/capitalize";
+import { noSalesCompanies } from "@/constants/car-constants";
 
 // Filter form type
 type FilterForm = {
@@ -51,6 +52,7 @@ type Props = {
   cars: Car[];
   setFilteredCars: (cars: Car[]) => void;
   setShowSearchForm: any;
+  companyId: string;
 };
 
 const FILTER_STORAGE_KEY = "car-filters";
@@ -60,6 +62,7 @@ export const CarGridFilters = ({
   cars,
   setFilteredCars,
   setShowSearchForm,
+  companyId,
 }: Props) => {
   const { control, watch, setValue, reset, getValues } = useForm<FilterForm>({
     defaultValues: {
@@ -213,6 +216,7 @@ export const CarGridFilters = ({
             transmissions={transmissions}
             reset={reset}
             setShowSearchForm={setShowSearchForm}
+            companyId={companyId}
           />
         </div>
 
@@ -239,6 +243,7 @@ export const CarGridFilters = ({
                 statuses={statuses}
                 transmissions={transmissions}
                 reset={reset}
+                companyId={companyId}
               />
               <SheetClose className="w-full mt-4" asChild>
                 <Button className="w-full mt-4">
@@ -270,6 +275,7 @@ const FiltersPanel = ({
   transmissions,
   reset,
   setShowSearchForm,
+  companyId,
 }: any) => {
   const currency = watch("currency");
 
@@ -593,7 +599,7 @@ const FiltersPanel = ({
         >
           Limpiar Filtros <Wand2 />
         </Button>
-        {!isVendidosPage && (
+        {!isVendidosPage && noSalesCompanies.includes(companyId) && (
           <Button
             className="w-full"
             onClick={() => {

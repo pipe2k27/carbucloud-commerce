@@ -8,7 +8,13 @@ import CarGridSort from "./car-grid-sort";
 import { CarSearchForm } from "@/components/CarSearch/CarSearch.client";
 import ScaleDiv from "@/components/ui/scale-div";
 
-export default function CarGrid({ cars }: { cars: Car[] }) {
+export default function CarGrid({
+  cars,
+  companyId,
+}: {
+  cars: Car[];
+  companyId: string;
+}) {
   const [showSearchForm, setShowSearchForm] = useState(false);
   const [filteredCars, setFilteredCars] = useState<Car[]>(cars);
 
@@ -30,6 +36,7 @@ export default function CarGrid({ cars }: { cars: Car[] }) {
             setShowSearchForm={setShowSearchForm}
             cars={cars}
             setFilteredCars={setFilteredCars}
+            companyId={companyId}
           />
           {filteredCars.length > 0 ? (
             <>

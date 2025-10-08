@@ -14,8 +14,15 @@ import {
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useSellerWordCapitalized } from "@/jotai/seller-type-atom.jotai";
+import { noSalesCompanies } from "@/constants/car-constants";
 
-export default function Navbar({ logoUrl }: { logoUrl?: string }) {
+export default function Navbar({
+  logoUrl,
+  companyId,
+}: {
+  logoUrl?: string;
+  companyId: string;
+}) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const sellerWordCapitalized = useSellerWordCapitalized();
 
@@ -47,14 +54,16 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
           >
             En stock
           </div>
-          <div
-            className="hover:text-muted-foreground cursor-pointer"
-            onClick={() => {
-              router.push("/vendidos/todos");
-            }}
-          >
-            Vendidos
-          </div>
+          {!noSalesCompanies.includes(companyId) && (
+            <div
+              className="hover:text-muted-foreground cursor-pointer"
+              onClick={() => {
+                router.push("/vendidos/todos");
+              }}
+            >
+              Vendidos
+            </div>
+          )}
           <div
             className="hover:text-muted-foreground cursor-pointer"
             onClick={() => router.push("/vende-tu-auto")}
@@ -104,15 +113,17 @@ export default function Navbar({ logoUrl }: { logoUrl?: string }) {
               >
                 En stock
               </a>
-              <a
-                onClick={() => {
-                  router.push("/vendidos/todos");
-                  setIsMobileMenuOpen(false);
-                }}
-                className="text-gray-600 hover:text-gray-800"
-              >
-                Vendidos
-              </a>
+              {!noSalesCompanies.includes(companyId) && (
+                <a
+                  onClick={() => {
+                    router.push("/vendidos/todos");
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="text-gray-600 hover:text-gray-800"
+                >
+                  Vendidos
+                </a>
+              )}
               <a
                 onClick={() => {
                   router.push("/vende-tu-auto");
