@@ -66,7 +66,7 @@ export const CarGridFilters = ({
 }: Props) => {
   const { control, watch, setValue, reset, getValues } = useForm<FilterForm>({
     defaultValues: {
-      km: [0, 350000],
+      km: [0, 950000],
       year: [1990, new Date().getFullYear()],
       status: [],
       brand: "all",
