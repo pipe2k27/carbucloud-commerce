@@ -13,6 +13,7 @@ import {
   SearchCheckIcon,
 } from "lucide-react";
 import { Metadata } from "next";
+import { WHATSAPP_DEFAULT_MESSAGE } from "@/constants/message-constants";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -83,7 +84,7 @@ export default async function ContactoPage() {
             <a
               href={`https://wa.me/${
                 whatsappNumber || "5491168220080"
-              }?text=Hola te contacto desde la PÁGINA WEB. Te queria hacer la siguiente consulta:`}
+              }?text=${encodeURIComponent(WHATSAPP_DEFAULT_MESSAGE)}`}
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import MapLocation from "../../_home-components/map-location";
 import { WebElementTier1 } from "@/dynamo-db/web-elements.db";
 import Image from "next/image";
+import { WHATSAPP_DEFAULT_MESSAGE } from "@/constants/message-constants";
 
 type Props = {
   webElements?: Partial<WebElementTier1>;
@@ -35,7 +36,7 @@ export default function AboutUsContent({ webElements, logoUrl }: Props) {
           <a
             href={`https://wa.me/${
               whatsappNumber || "5491168220080"
-            }?text=Hola te contacto desde la PÁGINA WEB. Te queria hacer la siguiente consulta:`}
+            }?text=${encodeURIComponent(WHATSAPP_DEFAULT_MESSAGE)}`}
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -2,11 +2,11 @@
 
 import { MessageCircle } from "lucide-react";
 import Link from "next/link";
+import { WHATSAPP_DEFAULT_MESSAGE } from "@/constants/message-constants";
 
 export default function WhatsAppButton() {
   const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER; // Replace with actual WhatsApp number
-  const message =
-    "Hola te contacto desde la PÁGINA WEB. Te queria hacer la siguiente consulta:"; // Default message
+  const message = WHATSAPP_DEFAULT_MESSAGE;
 
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
     message

@@ -45,7 +45,7 @@ const SellerFormSelector = ({
 
   const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER; // Replace with actual WhatsApp number
   const messagewhap =
-    "Hola, quiero vender mi auto! Cargué los datos en su página web. Espero su respuesta, gracias.";
+    "Hola, quiero vender mi auto! Cargué los datos en su página. Espero su respuesta, gracias.";
 
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
     messagewhap

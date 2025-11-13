@@ -74,7 +74,7 @@ const WhatsappModal = () => {
       // Simulate server-side save
       createLeadAction(carData);
 
-      const message = `Hola, soy ${data.fullName} y vi el vehículo ${currentCar?.brand} ${currentCar?.model} ${currentCar?.year} en tu PÁGINA WEB. Te quería hacer la siguiente consulta:`;
+      const message = `Hola, soy ${data.fullName} y vi el vehículo ${currentCar?.brand} ${currentCar?.model} ${currentCar?.year} en tu página. Te quería hacer la siguiente consulta:`;
       const encodedMsg = encodeURIComponent(message);
       const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMsg}`;
 
