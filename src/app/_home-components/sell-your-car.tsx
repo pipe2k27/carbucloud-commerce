@@ -1,7 +1,14 @@
 export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, PlayCircle, SearchCheck } from "lucide-react";
+import {
+  ClipboardList,
+  CircleDollarSign,
+  UserCircle,
+  Car,
+  PlayCircle,
+  SearchCheck,
+} from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 import {
@@ -34,16 +41,20 @@ export default async function SellYourCar() {
       <div className="flex flex-col items-center text-center max-w-[98vw] mx-auto px-0">
         <div className="md:text-[16px] mt-3">
           <p className="my-3 flex items-center">
-            <CheckCircle className="mr-2 w-4 text-primary" /> Recibí una
-            cotización en menos de 24hs
+            <ClipboardList className="mr-2 w-4 text-primary" /> Responde el
+            formulario en menos de 2 minutos
           </p>
           <p className="my-3 flex items-center">
-            <CheckCircle className="mr-2 w-4 text-primary" /> Nos interesa tu
-            usado
+            <CircleDollarSign className="mr-2 w-4 text-primary" /> Recibí una
+            cotización en menos de 24 hs
           </p>
-          {/* <p className="my-3 flex items-center">
-            <CheckCircle className="mr-2 w-4 text-primary" /> Cotizamos respondiendo 
-          </p> */}
+          <p className="my-3 flex items-center">
+            <UserCircle className="mr-2 w-4 text-primary" /> Brindamos atención
+            personalizada en el proceso
+          </p>
+          <p className="my-3 flex items-center">
+            <Car className="mr-2 w-4 text-primary" /> ¡Nos interesa tu usado!
+          </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 my-16">
           <Button asChild size="lg" className="py-6 md:px-24 ">
