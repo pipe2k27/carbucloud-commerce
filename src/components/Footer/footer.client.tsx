@@ -53,7 +53,7 @@ const Footer: React.FC<FooterProps> = ({ webElements, logoUrl }) => {
                 </li>
                 <li>
                   <Link
-                    href="/browse"
+                    href="/catalogo/todos"
                     className="text-muted-foreground hover:text-primary"
                   >
                     Vehículos

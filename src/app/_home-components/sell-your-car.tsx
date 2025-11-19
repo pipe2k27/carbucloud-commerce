@@ -38,13 +38,12 @@ export default async function SellYourCar() {
             cotización en menos de 24hs
           </p>
           <p className="my-3 flex items-center">
-            <CheckCircle className="mr-2 w-4 text-primary" /> Compramos usados
-            de todas las Marcas
+            <CheckCircle className="mr-2 w-4 text-primary" /> Nos interesa tu
+            usado
           </p>
-          <p className="my-3 flex items-center">
-            <CheckCircle className="mr-2 w-4 text-primary" /> Pagamos en Dólares
-            y al contado
-          </p>
+          {/* <p className="my-3 flex items-center">
+            <CheckCircle className="mr-2 w-4 text-primary" /> Cotizamos respondiendo 
+          </p> */}
         </div>
         <div className="flex flex-col sm:flex-row gap-4 my-16">
           <Button asChild size="lg" className="py-6 md:px-24 ">
