@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Footer from "@/components/Footer/footer.client";
 import { getWebElementsByCompanyId } from "@/dynamo-db/web-elements.db";
 import { getSellerTypeServer } from "@/utils/sellerTypeServer";
+import { BrandsProvider } from "@/components/Providers/brands-provider.client";
 
 export const metadata: Metadata = {
   title: process.env.PAGE_NAME || "Carbucloud Commerce",
@@ -46,8 +47,10 @@ export default async function RootLayout({
           <Navbar logoUrl={logoUrl} companyId={companyId} />
           <div className="min-h-[83vh]">{children}</div>
           <Toaster />
-          <CommonComponentsProvider sellerType={sellerType} />
-          <Footer logoUrl={logoUrl} webElements={webElements?.data[0]} />
+          <BrandsProvider>
+            <CommonComponentsProvider sellerType={sellerType} />
+            <Footer logoUrl={logoUrl} webElements={webElements?.data[0]} />
+          </BrandsProvider>
         </ThemeProvider>
       </body>
     </html>

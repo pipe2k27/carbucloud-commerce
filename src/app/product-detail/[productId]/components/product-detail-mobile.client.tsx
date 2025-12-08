@@ -22,6 +22,9 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ProductDetailPdf } from "./product-detail-pdf.client";
 import RichTextDisplay from "@/components/ui/rich-text-display";
 import PriceBar from "./price-bar.client";
+import { useAtomValue } from "jotai";
+import { brandsAtom } from "@/jotai/brands-atom.jotai";
+import Image from "next/image";
 
 interface Props {
   data: Car | Sale;
@@ -42,6 +45,12 @@ export default function ProductDetailMobile({
   const [currentImages, setCurrentImages] = useState<string[]>();
 
   const soldCar = data as Sale;
+
+  const carBrands = useAtomValue(brandsAtom);
+
+  const brandLogoPath = car
+    ? carBrands.brands.find((brand) => brand.brandName === car.brand)?.logoPath
+    : undefined;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -76,16 +85,28 @@ export default function ProductDetailMobile({
         <ArrowLeft className="w-4 mr-1" /> Volver
       </div>
       <div className="text-lg font-bold mb-4 pl-2 flex relative w-full ">
-        <div className="w-[45px]">
-          {car.vehicleType === "car" && (
-            <CarIcon className="mr-2  scale-x-[-1] text-primary w-8 h-8 translate-y-[-3px]" />
-          )}
-          {car.vehicleType === "motorbike" && (
-            <Bike className="mr-2  scale-x-[-1] text-primary w-8 h-8 translate-y-[-3px]" />
+        <div className="w-[45px] flex-shrink-0">
+          {brandLogoPath ? (
+            <Image
+              src={brandLogoPath}
+              alt={`${car.brand} Logo`}
+              width={45}
+              height={45}
+              className="mr-4 rounded-[6px] object-contain translate-y-[-13px]"
+            />
+          ) : (
+            <>
+              {car.vehicleType === "car" && (
+                <CarIcon className="mr-2  scale-x-[-1] text-primary w-8 h-8 translate-y-[-3px]" />
+              )}
+              {car.vehicleType === "motorbike" && (
+                <Bike className="mr-2  scale-x-[-1] text-primary w-8 h-8 translate-y-[-3px]" />
+              )}
+            </>
           )}
         </div>
-        <div className="w-full">
-          <div className="text-[11px] text-muted-foreground font-normal absolute top-[-18px] left-[50px]">
+        <div className="min-w-0 flex-1 pl-2">
+          <div className="text-[11px] text-muted-foreground font-normal absolute top-[-18px] left-[58px]">
             {car.year} - {Number(car.km).toLocaleString("es")}km
           </div>
           <div className="lg:max-w-[calc(100%_-_230px)]">

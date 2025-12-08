@@ -10,9 +10,19 @@ import { CarStatusBadge } from "./car-status-badge";
 import { useRouter } from "next/navigation";
 import { openWhatsappModal } from "../Modals/transformation/new-contact-modal.client";
 import { Sale } from "@/dynamo-db/sales.db";
+import { useAtomValue } from "jotai";
+import { brandsAtom } from "@/jotai/brands-atom.jotai";
 
 export default function CarCard({ car }: { car: Car | Sale }) {
   const router = useRouter();
+
+  const carBrands = useAtomValue(brandsAtom);
+
+  const brandLogoPath = carBrands.brands.find(
+    (brand) => brand.brandName === car.brand
+  )?.logoPath;
+
+  console.log(carBrands);
 
   let sold = false;
 
@@ -38,6 +48,15 @@ export default function CarCard({ car }: { car: Car | Sale }) {
             }}
           />
         </div>
+        {brandLogoPath && (
+          <Image
+            src={brandLogoPath}
+            alt={`${car.brand} Logo`}
+            width={60}
+            height={60}
+            className="absolute top-[7.5px] right-[7.5px] rounded-bl-[8px] rounded-tr-[8px] "
+          />
+        )}
         <div className="p-4">
           <div className="flex w-full items-start justify-between">
             <h3 className="text-[16px] font-semibold pr-1">

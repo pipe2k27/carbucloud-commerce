@@ -19,6 +19,9 @@ import { ProductDetailPdf } from "./product-detail-pdf.client";
 import ImageViewer from "./image-viewer";
 import { Sale } from "@/dynamo-db/sales.db";
 import PriceBar from "./price-bar.client";
+import { useAtomValue } from "jotai";
+import { brandsAtom } from "@/jotai/brands-atom.jotai";
+import Image from "next/image";
 
 interface Props {
   data: Car | Sale;
@@ -40,6 +43,12 @@ export default function ProductDetailDesktop({
   const [currentImages, setCurrentImages] = useState<string[]>();
   const [viewingImageIndex, setViewingImageIndex] = useState<number>(0);
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
+
+  const carBrands = useAtomValue(brandsAtom);
+
+  const brandLogoPath = car
+    ? carBrands.brands.find((brand) => brand.brandName === car.brand)?.logoPath
+    : undefined;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -80,20 +89,32 @@ export default function ProductDetailDesktop({
       <div className="py-8 mb-24 w-[1050px] relative left-[50%] translate-x-[-50%] max-w-[90vw]">
         <div className="mt-4 mb-8 flex justify-between items-center">
           <div className="flex items-center relative">
-            <div className="text-[12px] text-primary font-normal absolute top-[-16px] left-[40px] truncate">
+            <div className="text-[12px] text-primary font-normal absolute top-[0px] left-[54px] truncate">
               {car.year} - {Number(car.km).toLocaleString("es")}km
             </div>
-            <div className="max-w-[35vw] whitespace-nowrap overflow-hidden text-lg  xl:text-xl font-bold flex relative">
-              <div className="w-[45px]">
-                {car.vehicleType !== "motorbike" && (
-                  <CarIcon className="mr-2  scale-x-[-1] text-primary w-7 h-7 translate-y-[-1px]" />
-                )}
-                {car.vehicleType === "motorbike" && (
-                  <Bike className="mr-2  scale-x-[-1] text-primary w-7 h-7 translate-y-[-1px]" />
+            <div className="max-w-[35vw] whitespace-nowrap text-lg  xl:text-xl font-bold flex relative">
+              <div className="w-[45px] flex-shrink-0">
+                {brandLogoPath ? (
+                  <Image
+                    src={brandLogoPath}
+                    alt={`${car.brand} Logo`}
+                    width={45}
+                    height={45}
+                    className="mr-2 rounded-[6px] object-contain relative z-10 shadow-md"
+                  />
+                ) : (
+                  <>
+                    {car.vehicleType !== "motorbike" && (
+                      <CarIcon className="mr-2  scale-x-[-1] text-primary w-7 h-7 translate-y-[-1px]" />
+                    )}
+                    {car.vehicleType === "motorbike" && (
+                      <Bike className="mr-2  scale-x-[-1] text-primary w-7 h-7 translate-y-[-1px]" />
+                    )}
+                  </>
                 )}
               </div>
-              <div className="w-full">
-                <div className="translate-y-[5px] xl:translate-y-0">
+              <div className="min-w-0 flex-1 pl-2">
+                <div className="translate-y-[16px] truncate w-full xl:max-w-[500px]">
                   {car.brand} {car.model}
                 </div>
               </div>
