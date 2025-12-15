@@ -41,10 +41,7 @@ const FormCurrency: React.FC<Props> = ({
   name,
   control,
   label,
-  helperText,
   required,
-  disabled,
-  icon,
 }) => {
   const { country } = useAtomValue(companyCountryAtom);
 
@@ -62,10 +59,7 @@ const FormCurrency: React.FC<Props> = ({
       name={name}
       control={control}
       label={label}
-      helperText={helperText}
       required={required}
-      disabled={disabled}
-      icon={icon}
     />
   );
 };
