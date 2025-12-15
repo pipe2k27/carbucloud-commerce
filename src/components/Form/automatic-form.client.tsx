@@ -4,6 +4,7 @@ import FormInput from "./form-input.client";
 import FormNumber from "./form-number.client";
 import FormTextArea from "./form-text-area.client";
 import FormPhone from "./form-phone.client";
+import FormCurrency from "./form-currency.client";
 
 export type Field = {
   name: string;
@@ -17,6 +18,7 @@ export type Field = {
     | "email"
     | "date"
     | "plainDate"
+    | "currency"
     | "phone";
   required?: boolean;
   options?: Option[];
@@ -45,6 +47,20 @@ const FormFields = ({ control, field }: any) => {
         label={field.label}
         name={field.name}
         required={field.required || false}
+        //   isInvalid={errors && errors[field.name]}
+      />
+    );
+  }
+  if (field.type === "currency") {
+    return (
+      <FormCurrency
+        key={field.name}
+        control={control}
+        label={field.label}
+        helperText={field.helperText}
+        name={field.name}
+        required={field.required || false}
+        icon={field.icon}
         //   isInvalid={errors && errors[field.name]}
       />
     );

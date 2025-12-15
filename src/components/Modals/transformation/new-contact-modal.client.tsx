@@ -32,8 +32,8 @@ const whatsappSchema = z.object({
   phone: z
     .string()
     .regex(
-      /^\+549\d{6,10}$/,
-      "Número inválido. Debe iniciar con +549 seguido de 6 a 10 dígitos"
+      /^\+\d{7,15}$/,
+      "Número inválido. Debe iniciar con + seguido de 6 a 10 dígitos"
     ),
 });
 
@@ -54,7 +54,7 @@ const WhatsappModal = () => {
     mode: "onChange",
     defaultValues: {
       fullName: "",
-      phone: "+549",
+      phone: "",
     },
   });
 
@@ -129,7 +129,6 @@ const WhatsappModal = () => {
             control={control}
             label="Tu número de WhatsApp"
             required={true}
-            defaultValue="+549"
           />
         </div>
       </div>

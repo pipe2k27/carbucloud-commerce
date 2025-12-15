@@ -4,6 +4,8 @@ import React from "react";
 import { Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import FormLabel from "./form-label.client";
+import { useAtomValue } from "jotai";
+import { companyCountryAtom } from "@/jotai/company-country-atom.jotai";
 
 type Props = {
   name: string;
@@ -27,7 +29,11 @@ const FormPhone: React.FC<Props> = ({
   rules,
 }) => {
   const customRules = rules || {};
-  const PHONE_PREFIX = "+549";
+  const { country } = useAtomValue(companyCountryAtom);
+
+  // Determine phone prefix based on country: +598 for UY, +549 for AR (default)
+  const PHONE_PREFIX = country === "UY" ? "+598" : "+549";
+  const defaultPhoneValue = defaultValue || PHONE_PREFIX;
 
   return (
     <div className="">
@@ -42,7 +48,7 @@ const FormPhone: React.FC<Props> = ({
           },
           ...customRules,
         }}
-        defaultValue={defaultValue}
+        defaultValue={defaultPhoneValue}
         render={({ field: { onChange, value }, fieldState: { error } }) => {
           // Ensure the value always starts with the prefix
           const displayValue =

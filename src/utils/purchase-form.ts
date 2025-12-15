@@ -73,8 +73,8 @@ export const PurchaseSchema = z.object({
   ownerPhone: z
     .string()
     .regex(
-      /^\+549\d{6,10}$/,
-      "Número inválido. Debe iniciar con +549 seguido de 6 a 10 dígitos"
+      /^\+\d{7,15}$/,
+      "Número inválido. Debe iniciar con + seguido de 6 a 14 dígitos"
     ),
 });
 
@@ -142,7 +142,7 @@ export const purchasaeFormFields: Field[] = [
   {
     name: "currency",
     label: "Moneda",
-    type: "options",
+    type: "currency",
     options: currencyOptions,
   },
   {
@@ -246,7 +246,7 @@ export const priceAndCurrencyFields: Field[] = [
   {
     name: "currency",
     label: "Moneda",
-    type: "options",
+    type: "currency",
     options: currencyOptions,
   },
 ];
@@ -293,7 +293,7 @@ export const purchaseToStockFormFields: Field[] = [
   {
     name: "currency",
     label: "Moneda:",
-    type: "options",
+    type: "currency",
     options: currencyOptions,
   },
   {
@@ -368,8 +368,8 @@ export const ownerSchema = z.object({
   ownerPhone: z
     .string()
     .regex(
-      /^\+549\d{6,10}$/,
-      "Número inválido. Debe iniciar con +549 seguido de 6 a 10 dígitos"
+      /^\+\d{7,15}$/,
+      "Número inválido. Debe iniciar con + seguido de 6 a 14 dígitos"
     ),
 });
 

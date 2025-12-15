@@ -67,7 +67,7 @@ export const CarGridFilters = ({
   const { control, watch, setValue, reset, getValues } = useForm<FilterForm>({
     defaultValues: {
       km: [0, 1000000],
-      year: [1990, new Date().getFullYear()],
+      year: [1990, 2034],
       status: [],
       brand: "all",
       transmission: [],
@@ -375,6 +375,7 @@ const FiltersPanel = ({
                   <SelectItem value="none">Todas las Monedas</SelectItem>
                   <SelectItem value="USD">Dólar estadounidense</SelectItem>
                   <SelectItem value="ARS">Peso argentino</SelectItem>
+                  <SelectItem value="UYU">Peso uruguayo</SelectItem>
                 </SelectContent>
               </Select>
             )}
@@ -586,7 +587,7 @@ const FiltersPanel = ({
             localStorage.removeItem(FILTER_STORAGE_KEY);
             reset({
               km: [0, 350000],
-              year: [1990, new Date().getFullYear()],
+              year: [1990, 2034],
               status: [],
               brand: "all",
               transmission: [],
@@ -606,7 +607,7 @@ const FiltersPanel = ({
               localStorage.removeItem(FILTER_STORAGE_KEY);
               reset({
                 km: [0, 350000],
-                year: [1990, new Date().getFullYear()],
+                year: [1990, 2034],
                 status: [],
                 brand: "all",
                 transmission: [],

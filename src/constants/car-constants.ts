@@ -74,6 +74,7 @@ export const transmisionTypes: string[] = ["Automática", "Manual"];
 export const currencyOptions = [
   { value: "USD", label: "Dólares Estadounidenses" },
   { value: "ARS", label: "Pesos Argentinos" },
+  { value: "UYU", label: "Pesos Uruguayos" },
 ];
 
 export const carYears = [

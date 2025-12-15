@@ -8,6 +8,7 @@ export type Company = {
   companyId: string;
   companyName: string;
   sellerType?: SellerType;
+  country?: "AR" | "UY";
 };
 
 const REGION = process.env.AWS_REGION || "us-east-1";
@@ -52,5 +53,26 @@ export async function getCompanyByCompanyId(
   } catch (err) {
     console.error("[getCompanyByCompanyId] Error:", err);
     return { status: 500, message: "Failed to retrieve company" };
+  }
+}
+
+/**
+ * Get company country with default fallback to "AR"
+ */
+export async function getCompanyCountry(
+  companyId: string
+): Promise<"AR" | "UY"> {
+  try {
+    const companyRes = await getCompanyByCompanyId(companyId);
+
+    if (companyRes.status === 200 && companyRes.data?.country) {
+      return companyRes.data.country;
+    }
+
+    // Default to "AR" if company not found or country is missing
+    return "AR";
+  } catch (error) {
+    console.error("[getCompanyCountry] Error:", error);
+    return "AR";
   }
 }
