@@ -12,11 +12,13 @@ import { openWhatsappModal } from "../Modals/transformation/new-contact-modal.cl
 import { Sale } from "@/dynamo-db/sales.db";
 import { useAtomValue } from "jotai";
 import { brandsAtom } from "@/jotai/brands-atom.jotai";
+import { companyCountryAtom } from "@/jotai/company-country-atom.jotai";
 
 export default function CarCard({ car }: { car: Car | Sale }) {
   const router = useRouter();
 
   const carBrands = useAtomValue(brandsAtom);
+  const { country } = useAtomValue(companyCountryAtom);
 
   const brandLogoPath = carBrands.brands.find(
     (brand) => brand.brandName === car.brand
@@ -71,11 +73,14 @@ export default function CarCard({ car }: { car: Car | Sale }) {
           </p>
           <p className="text-lg font-semibold mt-2">
             {!sold && formatCurrency(car.price, car.currency)}
-            {!sold && car.priceUsd && car.currency === "ARS" && (
-              <span className="text-muted-foreground text-sm opacity-55 italic ml-2 font-normal">
-                ({formatCurrency(car.priceUsd, "USD")})
-              </span>
-            )}
+            {!sold &&
+              car.priceUsd &&
+              car.currency === "ARS" &&
+              country !== "UY" && (
+                <span className="text-muted-foreground text-sm opacity-55 italic ml-2 font-normal">
+                  ({formatCurrency(car.priceUsd, "USD")})
+                </span>
+              )}
             {/* Show "Venta" badge or info if car is a Sale */}
             {"soldPrice" in car && (
               <span className="text-muted-foreground opacity-55">
