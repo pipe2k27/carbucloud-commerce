@@ -35,7 +35,7 @@ export default function CarCard({ car }: { car: Car | Sale }) {
     <Card className="overflow-hidden max-w-[500px] h-fit w-full hover:scale-[0.995] transition-all duration-[400ms] ease-in relative">
       <CardContent
         className={`p-0 min-h-[550px] ${
-          (car.status === "reserved" || sold) && "opacity-50"
+          car.status === "reserved" && "opacity-50"
         }`}
       >
         <div className="relative aspect-square border-8 border-muted bg-muted rounded-sm overflow-hidden">
