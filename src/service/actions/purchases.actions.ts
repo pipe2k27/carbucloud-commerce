@@ -25,6 +25,12 @@ const carSchema = z.object({
     .max(100, "El modelo no puede superar 100 caracteres")
     .optional()
     .nullable(),
+  version: z
+    .string()
+    .trim()
+    .max(100, "La versión no puede superar 100 caracteres")
+    .optional()
+    .nullable(),
   year: z
     .string()
     .length(4, "El año debe tener 4 dígitos")

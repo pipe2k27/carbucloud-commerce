@@ -19,6 +19,7 @@ export const ownershipOptions = [
 export type FormCar = {
   brand: string;
   model: string;
+  version?: string;
   year: string;
   carType: string;
   transmission: string;

@@ -9,6 +9,7 @@ import {
 
 import { tractionOptions } from "@/dynamo-db/cars.db";
 import { Field } from "@/components/Form/automatic-form.client";
+import { z } from "zod";
 
 export const PurchaseSchema = z.object({
   brand: z
@@ -21,6 +22,12 @@ export const PurchaseSchema = z.object({
     .trim()
     .max(100, "El modelo no puede superar 100 caracteres")
     .min(1, "Por favor complete este campo"),
+  version: z
+    .string()
+    .trim()
+    .max(100, "La versión no puede superar 100 caracteres")
+    .optional()
+    .nullable(),
   year: z
     .string()
     .min(1, "Por favor complete este campo")
@@ -91,6 +98,7 @@ export const purchasaeFormFields: Field[] = [
       })),
   },
   { name: "model", label: "Modelo", type: "text", required: true },
+  { name: "version", label: "Versión", type: "text", required: false },
   {
     name: "year",
     label: "Año",
@@ -217,7 +225,8 @@ export const brandAndModelFields: Field[] = [
         label: brand,
       })),
   },
-  { name: "model", label: "Modelo y versión", type: "text", required: true },
+  { name: "model", label: "Modelo", type: "text", required: true },
+  { name: "version", label: "Versión", type: "text", required: false },
 ];
 
 export const yearAndKmFields: Field[] = [
@@ -314,8 +323,6 @@ export const purchaseToStockFormFields: Field[] = [
   },
 ];
 
-import { z } from "zod";
-
 // Grupo 1: Marca y modelo
 export const brandAndModelSchema = z.object({
   vehicleType: z
@@ -333,6 +340,12 @@ export const brandAndModelSchema = z.object({
     .trim()
     .max(100, "El modelo no puede superar 100 caracteres")
     .min(1, "Por favor complete este campo"),
+  version: z
+    .string()
+    .trim()
+    .max(100, "La versión no puede superar 100 caracteres")
+    .optional()
+    .nullable(),
 });
 
 // Grupo 2: Año y kilometraje

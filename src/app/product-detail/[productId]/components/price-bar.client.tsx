@@ -6,6 +6,7 @@ import { MessageCircleWarning } from "lucide-react";
 import { Car } from "@/dynamo-db/cars.db";
 import { Sale } from "@/dynamo-db/sales.db";
 import { openWhatsappModal } from "@/components/Modals/transformation/new-contact-modal.client";
+import { formatModelVersion } from "@/utils/carUtils";
 
 interface PriceBarProps {
   car: Car | Sale;
@@ -16,7 +17,7 @@ export default function PriceBar({ car, sold }: PriceBarProps) {
   const soldCar = car as Sale;
   const displayPrice = sold ? soldCar.soldPrice : car.price;
   const currency = car.currency;
-  const carModel = `${car.brand} ${car.model}`;
+  const carModel = `${car.brand} ${formatModelVersion(car.model, car.version)}`;
 
   return (
     <>

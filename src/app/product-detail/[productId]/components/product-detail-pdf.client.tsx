@@ -12,6 +12,7 @@ import {
 } from "@react-pdf/renderer";
 import { Car } from "@/dynamo-db/cars.db";
 import { formatCurrency } from "@/utils/currencyUtils";
+import { formatModelVersion } from "@/utils/carUtils";
 
 interface Props {
   car: Car;
@@ -154,7 +155,7 @@ export function ProductDetailPdf({ car, imageBase64, logoUrl }: Props) {
               <Image src={carIcon} style={styles.carIcon} />
             )}
             <Text style={styles.title}>
-              {car.brand} {car.model}
+              {car.brand} {formatModelVersion(car.model, car.version)}
             </Text>
           </View>
           <Image src={imageBase64} style={styles.image} />
@@ -166,7 +167,7 @@ export function ProductDetailPdf({ car, imageBase64, logoUrl }: Props) {
             </View>
             <View style={styles.specBox}>
               <Text style={styles.label}>Modelo</Text>
-              <Text style={styles.value}>{car.model}</Text>
+              <Text style={styles.value}>{formatModelVersion(car.model, car.version)}</Text>
             </View>
             <View style={styles.specBox}>
               <Text style={styles.label}>Año</Text>

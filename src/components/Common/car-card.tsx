@@ -13,6 +13,7 @@ import { Sale } from "@/dynamo-db/sales.db";
 import { useAtomValue } from "jotai";
 import { brandsAtom } from "@/jotai/brands-atom.jotai";
 import { companyCountryAtom } from "@/jotai/company-country-atom.jotai";
+import { formatModelVersion } from "@/utils/carUtils";
 
 export default function CarCard({ car }: { car: Car | Sale }) {
   const router = useRouter();
@@ -41,7 +42,7 @@ export default function CarCard({ car }: { car: Car | Sale }) {
         <div className="relative aspect-square border-8 border-muted bg-muted rounded-sm overflow-hidden">
           <Image
             src={car.mainImageUrl || "/placeholder.svg?height=300&width=500"}
-            alt={`${car.brand} ${car.model}`}
+            alt={`${car.brand} ${formatModelVersion(car.model, car.version)}`}
             fill
             className="object-cover rounded-lg"
             onClick={() => {
@@ -62,7 +63,7 @@ export default function CarCard({ car }: { car: Car | Sale }) {
         <div className="p-4">
           <div className="flex w-full items-start justify-between">
             <h3 className="text-[16px] font-semibold pr-1">
-              {car.brand} {car.model}
+              {car.brand} {formatModelVersion(car.model, car.version)}
             </h3>
             <div className="bg-muted p-2 rounded-sm">
               <CarStatusBadge car={car} status={car.status} />

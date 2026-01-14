@@ -25,6 +25,7 @@ import PriceBar from "./price-bar.client";
 import { useAtomValue } from "jotai";
 import { brandsAtom } from "@/jotai/brands-atom.jotai";
 import Image from "next/image";
+import { formatModelVersion } from "@/utils/carUtils";
 
 interface Props {
   data: Car | Sale;
@@ -110,7 +111,7 @@ export default function ProductDetailMobile({
             {car.year} - {Number(car.km).toLocaleString("es")}km
           </div>
           <div className="lg:max-w-[calc(100%_-_230px)]">
-            {car.brand} {car.model}
+            {car.brand} {formatModelVersion(car.model, car.version)}
           </div>
         </div>
       </div>
@@ -239,7 +240,7 @@ export default function ProductDetailMobile({
             logoUrl={logoWhiteUrl}
           />
         }
-        fileName={`${car.brand}-${car.model}.pdf`}
+        fileName={`${car.brand}-${formatModelVersion(car.model, car.version)}.pdf`}
       >
         {() => (
           <Button className="w-full mt-4">

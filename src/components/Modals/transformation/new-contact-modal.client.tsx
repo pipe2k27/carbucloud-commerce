@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import FormPhone from "@/components/Form/form-phone.client";
 import { Car } from "@/dynamo-db/cars.db";
 import { createLeadAction } from "@/service/actions/leads.actions";
+import { formatModelVersion } from "@/utils/carUtils";
 
 export const openWhatsappModal = (car: Car) => {
   setCommonComponentAtom({
@@ -74,7 +75,7 @@ const WhatsappModal = () => {
       // Simulate server-side save
       createLeadAction(carData);
 
-      const message = `Hola, soy ${data.fullName} y vi el vehículo ${currentCar?.brand} ${currentCar?.model} ${currentCar?.year} en tu página. Te quería hacer la siguiente consulta:`;
+      const message = `Hola, soy ${data.fullName} y vi el vehículo ${currentCar?.brand} ${formatModelVersion(currentCar?.model || "", currentCar?.version)} ${currentCar?.year} en tu página. Te quería hacer la siguiente consulta:`;
       const encodedMsg = encodeURIComponent(message);
       const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMsg}`;
 

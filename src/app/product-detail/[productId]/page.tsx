@@ -6,6 +6,7 @@ import ProductDetailDesktop from "./components/product-detail-desktop.client";
 import ProductDetailMobile from "./components/product-detail-mobile.client";
 import { Car } from "@/dynamo-db/cars.db";
 import { Metadata } from "next";
+import { formatModelVersion } from "@/utils/carUtils";
 
 export const dynamic = "force-dynamic";
 
@@ -32,10 +33,10 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   const car = res.data as Car;
 
   return {
-    title: `${car.brand} - ${car.model} - ${car.year}`,
+    title: `${car.brand} - ${formatModelVersion(car.model, car.version)} - ${car.year}`,
     description: "Vehiculo Usado en impecable estado",
     openGraph: {
-      title: `${car.brand} - ${car.model} - ${car.year}`,
+      title: `${car.brand} - ${formatModelVersion(car.model, car.version)} - ${car.year}`,
       description: "Vehiculo Usado en impecable estado",
       url: `https://carbucloud.com`,
       images: [

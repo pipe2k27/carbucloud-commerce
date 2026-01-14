@@ -4,6 +4,7 @@ import { statusConfig } from "@/components/Common/car-status-badge";
 import RichTextDisplay from "@/components/ui/rich-text-display";
 import { Car } from "@/dynamo-db/cars.db";
 import { Sale } from "@/dynamo-db/sales.db";
+import { formatModelVersion } from "@/utils/carUtils";
 
 type CarSpecsProps = { car: Car | Sale; sold?: boolean };
 
@@ -15,7 +16,7 @@ const CarSpecs: React.FC<CarSpecsProps> = ({ car, sold }) => {
       <div className="w-full h-[1px] bg-gray-300 mt-4 mb-8" />
       <div className="grid grid-cols-2 gap-4">
         <DetailItem label="Marca" value={car.brand} />
-        <DetailItem label="Modelo y versión" value={car.model} />
+        <DetailItem label="Modelo y versión" value={formatModelVersion(car.model, car.version)} />
         <DetailItem label="Año" value={car.year} />
         <DetailItem label="Tipo" value={car.carType} />
         <DetailItem label="Transmisión" value={car.transmission} />

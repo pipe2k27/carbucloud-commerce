@@ -5,6 +5,7 @@ import CarGridBanner from "@/components/Common/car-grid-banner.server";
 import { Car } from "@/dynamo-db/cars.db";
 import { Metadata } from "next";
 import { getSale } from "@/dynamo-db/sales.db";
+import { formatModelVersion } from "@/utils/carUtils";
 import ProductDetailDesktop from "@/app/product-detail/[productId]/components/product-detail-desktop.client";
 import ProductDetailMobile from "@/app/product-detail/[productId]/components/product-detail-mobile.client";
 
@@ -33,10 +34,10 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   const car = res.data as Car;
 
   return {
-    title: `${car.brand} - ${car.model} - ${car.year}`,
+    title: `${car.brand} - ${formatModelVersion(car.model, car.version)} - ${car.year}`,
     description: "Vehículo Usado en impecable estado",
     openGraph: {
-      title: `${car.brand} - ${car.model} - ${car.year}`,
+      title: `${car.brand} - ${formatModelVersion(car.model, car.version)} - ${car.year}`,
       description: "Vehículo Usado en impecable estado",
       url: `https://carbucloud.com`,
       images: [
