@@ -6,6 +6,7 @@ import {
   Purchase,
   updatePurchase,
 } from "@/dynamo-db/purchases.db";
+import { applyRateLimit, recordAction } from "@/utils/rateLimit";
 const carSchema = z.object({
   vehicleType: z
     .string()
@@ -86,6 +87,15 @@ export async function createPurchaseAction(
       };
     }
 
+    // ✅ Rate limit check by owner phone number
+    const ownerPhone = validatedBody.data.ownerPhone;
+    if (ownerPhone) {
+      const rateLimitResponse = await applyRateLimit(ownerPhone, "purchase");
+      if (rateLimitResponse) {
+        return rateLimitResponse;
+      }
+    }
+
     const now = String(Date.now());
 
     const companyId = process.env.COMPANY_ID;
@@ -107,7 +117,14 @@ export async function createPurchaseAction(
     ) as Purchase;
 
     // ✅ Call createCar function to save to DynamoDB
-    return await createPurchase(sanitizedData);
+    const result = await createPurchase(sanitizedData);
+
+    // ✅ Record successful action for rate limiting
+    if (result.status === 200 && ownerPhone) {
+      await recordAction(ownerPhone, "purchase");
+    }
+
+    return result;
   } catch {
     return errorObject;
   }

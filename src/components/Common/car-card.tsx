@@ -5,10 +5,10 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/utils/currencyUtils";
 import { Car } from "@/dynamo-db/cars.db";
-import { MessageCircleWarning, Plus } from "lucide-react";
+import { Plus, SearchCheck } from "lucide-react";
 import { CarStatusBadge } from "./car-status-badge";
 import { useRouter } from "next/navigation";
-import { openWhatsappModal } from "../Modals/transformation/new-contact-modal.client";
+import { openAppointmentModal } from "../Modals/transformation/appointment-modal.client";
 import { Sale } from "@/dynamo-db/sales.db";
 import { useAtomValue } from "jotai";
 import { brandsAtom } from "@/jotai/brands-atom.jotai";
@@ -22,7 +22,7 @@ export default function CarCard({ car }: { car: Car | Sale }) {
   const { country } = useAtomValue(companyCountryAtom);
 
   const brandLogoPath = carBrands.brands.find(
-    (brand) => brand.brandName === car.brand
+    (brand) => brand.brandName === car.brand,
   )?.logoPath;
 
   console.log(carBrands);
@@ -130,11 +130,11 @@ export default function CarCard({ car }: { car: Car | Sale }) {
             variant="secondary"
             className="w-[48%]"
             onClick={() => {
-              openWhatsappModal(car);
+              openAppointmentModal(car);
             }}
           >
-            Consultar
-            <MessageCircleWarning className="ml-[-2px] scale-110" />
+            Agendar Visita
+            <SearchCheck className="ml-[-2px] scale-110" />
           </Button>
         </div>
       </CardFooter>

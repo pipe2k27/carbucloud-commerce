@@ -11,6 +11,7 @@ import {
 import { Car } from "@/dynamo-db/cars.db";
 import { useEffect, useState } from "react";
 import { openWhatsappModal } from "@/components/Modals/transformation/new-contact-modal.client";
+import { openAppointmentModal } from "@/components/Modals/transformation/appointment-modal.client";
 import ImageGrid from "./image-grid.client";
 import SpecCards from "./spec-cards.client";
 import CarSpecs from "./car-specs.client";
@@ -186,10 +187,9 @@ export default function ProductDetailDesktop({
             <CarSpecs car={car} sold={sold} />
             <div className="flex justify-between items-center w-full mt-2">
               <Button
-                // asChild
                 className="w-[48%]"
                 onClick={() => {
-                  openWhatsappModal(car);
+                  openAppointmentModal(car);
                 }}
               >
                 Agendar Visita{" "}

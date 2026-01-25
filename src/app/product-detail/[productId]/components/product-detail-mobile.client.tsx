@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import ImageCarousel from "@/components/ui/image-carousel";
 import { statusConfig } from "@/components/Common/car-status-badge";
 import { openWhatsappModal } from "@/components/Modals/transformation/new-contact-modal.client";
+import { openAppointmentModal } from "@/components/Modals/transformation/appointment-modal.client";
 import SpecCards from "./spec-cards.client";
 import { Sale } from "@/dynamo-db/sales.db";
 import { PDFDownloadLink } from "@react-pdf/renderer";
@@ -208,10 +209,9 @@ export default function ProductDetailMobile({
           {/* <DetailText label="Notas Internas" value={car.internalNotes} /> */}
           <div className="flex justify-between items-center w-full mt-2">
             <Button
-              // asChild
               className="w-[48%]"
               onClick={() => {
-                openWhatsappModal(car);
+                openAppointmentModal(car);
               }}
             >
               Agendar Visita <SearchCheckIcon size={20} className="ml-[-4px]" />

@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { createLead, Lead } from "@/dynamo-db/leads.db";
 import { errorObject, ServerResponse } from "@/constants/api-constants";
+import { applyRateLimit, recordAction } from "@/utils/rateLimit";
 
 // ✅ Schema matching the Lead type (excluding system-generated fields)
 const leadSchema = z.object({
@@ -36,6 +37,15 @@ export async function createLeadAction(body: unknown): Promise<ServerResponse> {
       };
     }
 
+    // ✅ Rate limit check by phone number
+    const rateLimitResponse = await applyRateLimit(
+      validatedBody.data.phone,
+      "lead"
+    );
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
     const sanitizedData = Object.fromEntries(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       Object.entries(validatedBody.data).filter(([_, value]) => value !== null)
@@ -51,12 +61,20 @@ export async function createLeadAction(body: unknown): Promise<ServerResponse> {
         data: null,
       };
     }
-    return await createLead({
+
+    const result = await createLead({
       ...sanitizedData,
       leadId: now,
       createdAt: now,
       companyId: companyId,
     });
+
+    // ✅ Record successful action for rate limiting
+    if (result.status === 200) {
+      await recordAction(validatedBody.data.phone, "lead");
+    }
+
+    return result;
   } catch (error) {
     console.error("[createLeadAction] Error:", error);
     return errorObject;

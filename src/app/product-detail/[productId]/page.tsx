@@ -33,10 +33,14 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   const car = res.data as Car;
 
   return {
-    title: `${car.brand} - ${formatModelVersion(car.model, car.version)} - ${car.year}`,
+    title: `${car.brand} - ${formatModelVersion(car.model, car.version)} - ${
+      car.year
+    }`,
     description: "Vehiculo Usado en impecable estado",
     openGraph: {
-      title: `${car.brand} - ${formatModelVersion(car.model, car.version)} - ${car.year}`,
+      title: `${car.brand} - ${formatModelVersion(car.model, car.version)} - ${
+        car.year
+      }`,
       description: "Vehiculo Usado en impecable estado",
       url: `https://carbucloud.com`,
       images: [

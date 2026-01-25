@@ -6,6 +6,7 @@ const store = getDefaultStore();
 type CommonComponentAtomType = {
   currentCar?: Car;
   showWhatsappModal: boolean;
+  showAppointmentModal: boolean;
   confirmModal: {
     show: boolean;
     title?: string;
@@ -16,6 +17,7 @@ type CommonComponentAtomType = {
 
 export const initialCommonComponentState: CommonComponentAtomType = {
   showWhatsappModal: false,
+  showAppointmentModal: false,
   confirmModal: {
     show: false,
   },
