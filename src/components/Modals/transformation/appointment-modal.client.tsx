@@ -41,7 +41,6 @@ import {
   setHours,
   setMinutes,
   getDay,
-  isPast,
   startOfDay,
 } from "date-fns";
 import { es } from "date-fns/locale";
