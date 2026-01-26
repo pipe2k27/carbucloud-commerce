@@ -35,7 +35,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { format, addMinutes, setHours, setMinutes } from "date-fns";
+import {
+  format,
+  addMinutes,
+  setHours,
+  setMinutes,
+  getDay,
+  isPast,
+  startOfDay,
+} from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
@@ -113,17 +121,57 @@ const appointmentSchema = z.object({
 
 type FormData = z.infer<typeof appointmentSchema>;
 
-// Generate time slots from 8:00 to 20:00 in 30-minute increments
-const TIME_SLOTS = Array.from({ length: 25 }, (_, i) => {
-  const hour = Math.floor(i / 2) + 8;
-  const minute = (i % 2) * 30;
-  const formattedHour = hour.toString().padStart(2, "0");
-  const formattedMinute = minute.toString().padStart(2, "0");
-  return {
-    value: `${formattedHour}:${formattedMinute}`,
-    label: `${formattedHour}:${formattedMinute}`,
-  };
-});
+// Generate time slots based on day of week
+// Monday-Friday: 10:00 to 18:00 (10am to 6pm)
+// Saturday: 10:00 to 13:00 (10am to 1pm)
+// Sunday: No slots (disabled in calendar)
+function getTimeSlotsForDate(date: Date | undefined): Array<{
+  value: string;
+  label: string;
+}> {
+  if (!date) return [];
+
+  const dayOfWeek = getDay(date); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  const slots: Array<{ value: string; label: string }> = [];
+
+  // Sunday (0) - no slots
+  if (dayOfWeek === 0) {
+    return [];
+  }
+
+  // Saturday (6) - 10:00 to 13:00 (inclusive)
+  if (dayOfWeek === 6) {
+    for (let hour = 10; hour <= 13; hour++) {
+      // For 13:00, only add 00, not 30
+      const maxMinute = hour === 13 ? 0 : 30;
+      for (let minute = 0; minute <= maxMinute; minute += 30) {
+        const formattedHour = hour.toString().padStart(2, "0");
+        const formattedMinute = minute.toString().padStart(2, "0");
+        slots.push({
+          value: `${formattedHour}:${formattedMinute}`,
+          label: `${formattedHour}:${formattedMinute}`,
+        });
+      }
+    }
+    return slots;
+  }
+
+  // Monday-Friday (1-5) - 10:00 to 18:00 (inclusive)
+  for (let hour = 10; hour <= 18; hour++) {
+    // For 18:00, only add 00, not 30
+    const maxMinute = hour === 18 ? 0 : 30;
+    for (let minute = 0; minute <= maxMinute; minute += 30) {
+      const formattedHour = hour.toString().padStart(2, "0");
+      const formattedMinute = minute.toString().padStart(2, "0");
+      slots.push({
+        value: `${formattedHour}:${formattedMinute}`,
+        label: `${formattedHour}:${formattedMinute}`,
+      });
+    }
+  }
+
+  return slots;
+}
 
 const AppointmentModal = () => {
   const { toast } = useToast();
@@ -140,6 +188,8 @@ const AppointmentModal = () => {
     handleSubmit,
     control,
     reset,
+    watch,
+    setValue,
     formState: { errors, isValid },
   } = useForm<FormData>({
     resolver: zodResolver(appointmentSchema),
@@ -150,6 +200,10 @@ const AppointmentModal = () => {
       clientMessage: "",
     },
   });
+
+  // Watch the selected date to update time slots
+  const selectedDate = watch("date");
+  const selectedTime = watch("time");
 
   // Reset form when modal opens with a new car
   useEffect(() => {
@@ -162,6 +216,17 @@ const AppointmentModal = () => {
       setSuccessData(null);
     }
   }, [currentCar, reset]);
+
+  // Reset time if selected date changes and current time is not valid for new date
+  useEffect(() => {
+    if (selectedDate && selectedTime) {
+      const timeSlots = getTimeSlotsForDate(selectedDate);
+      const isValidTime = timeSlots.some((slot) => slot.value === selectedTime);
+      if (!isValidTime) {
+        setValue("time", undefined as any, { shouldValidate: false });
+      }
+    }
+  }, [selectedDate, selectedTime, setValue]);
 
   const handleClose = () => {
     setSuccessData(null);
@@ -325,9 +390,21 @@ const AppointmentModal = () => {
                       setCalendarOpen(false);
                     }}
                     disabled={(date) => {
-                      const today = new Date();
-                      today.setHours(0, 0, 0, 0);
-                      return date < today;
+                      const today = startOfDay(new Date());
+                      const dateStart = startOfDay(date);
+                      const dayOfWeek = getDay(date);
+
+                      // Disable past dates
+                      if (dateStart < today) {
+                        return true;
+                      }
+
+                      // Disable Sundays (dayOfWeek === 0)
+                      if (dayOfWeek === 0) {
+                        return true;
+                      }
+
+                      return false;
                     }}
                   />
                 </PopoverContent>
@@ -347,24 +424,45 @@ const AppointmentModal = () => {
           <Controller
             name="time"
             control={control}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Selecciona un horario" />
-                </SelectTrigger>
-                <SelectContent>
-                  {TIME_SLOTS.map((slot) => (
-                    <SelectItem key={slot.value} value={slot.value}>
-                      {slot.label} hs
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+            render={({ field }) => {
+              const timeSlots = getTimeSlotsForDate(selectedDate);
+
+              return (
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={!selectedDate || timeSlots.length === 0}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue
+                      placeholder={
+                        !selectedDate
+                          ? "Primero selecciona una fecha"
+                          : timeSlots.length === 0
+                            ? "No hay horarios disponibles"
+                            : "Selecciona un horario"
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {timeSlots.map((slot) => (
+                      <SelectItem key={slot.value} value={slot.value}>
+                        {slot.label} hs
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              );
+            }}
           />
           {errors.time && (
             <p className="text-[11px] text-red-500 mt-1">
               {errors.time.message}
+            </p>
+          )}
+          {selectedDate && getTimeSlotsForDate(selectedDate).length === 0 && (
+            <p className="text-[11px] text-muted-foreground mt-1">
+              No hay horarios disponibles para este día
             </p>
           )}
         </div>

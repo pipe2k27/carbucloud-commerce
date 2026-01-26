@@ -129,6 +129,15 @@ export default function ProductDetailDesktop({
           <div>
             <Button
               onClick={() => {
+                openAppointmentModal(car);
+              }}
+              className="w-[140px] mr-4"
+            >
+              Agendar Visita
+              <SearchCheckIcon className="ml-[-2px] scale-110" />
+            </Button>
+            <Button
+              onClick={() => {
                 openWhatsappModal(car);
               }}
               className="w-[140px] mr-4"
