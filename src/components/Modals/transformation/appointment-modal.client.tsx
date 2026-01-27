@@ -227,6 +227,44 @@ const AppointmentModal = () => {
     }
   }, [selectedDate, selectedTime, setValue]);
 
+  // Open WhatsApp after successful appointment booking
+  useEffect(() => {
+    if (successData && currentCar) {
+      const timeoutId = setTimeout(() => {
+        const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+        if (!whatsappNumber) {
+          console.error("WhatsApp number not configured");
+          return;
+        }
+
+        // Format date in Spanish
+        const formattedDate = format(
+          successData.date,
+          "EEEE d 'de' MMMM, yyyy",
+          { locale: es }
+        );
+
+        // Build car description
+        const carDescription = currentCar.model
+          ? `${currentCar.brand} ${formatModelVersion(currentCar.model, currentCar.version)}`
+          : `${currentCar.brand}`;
+
+        // Create WhatsApp message in Spanish
+        const message = `Reservé una cita el ${formattedDate} a las ${successData.time} para ver el ${carDescription}.`;
+        const encodedMsg = encodeURIComponent(message);
+        const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMsg}`;
+
+        // Open WhatsApp (with fallback for iOS Safari)
+        const newWindow = window.open(whatsappURL, "_blank");
+        if (!newWindow) {
+          window.location.href = whatsappURL;
+        }
+      }, 1000); // 1 second timeout
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [successData, currentCar]);
+
   const handleClose = () => {
     setSuccessData(null);
     resetCommonComponentAtom();
